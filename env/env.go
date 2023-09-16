@@ -6,8 +6,9 @@ import (
 )
 
 const (
-	PROD Env = "production"
-	DEV  Env = "development"
+	PROD    Env = "production"
+	DEV     Env = "development"
+	TESTING Env = "testing"
 )
 
 type Env string

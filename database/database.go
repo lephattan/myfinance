@@ -12,6 +12,8 @@ func NewDB(e env.Env) DB {
 		return &proddb{}
 	case env.DEV:
 		return &devdb{}
+	case env.TESTING:
+		return &devdb{}
 	default:
 		panic("unknown environment")
 	}
