@@ -16,6 +16,8 @@ func main() {
 
   app.UseRouter(ac.Handler)
 
+  app.RegisterView(iris.Blocks("./views", ".html").Reload(true))
+
   app.Get("/", getRoot)
   app.Listen("0.0.0.0:8080")
 }
@@ -51,5 +53,12 @@ func makeAccessLog() *accesslog.AccessLog{
 }
 
 func getRoot(ctx iris.Context){
-  ctx.Writef("Hello, world")
+  data := iris.Map{
+    "Title": "My Finance",
+  }
+  ctx.ViewLayout("main")
+  if err := ctx.View("index", data); err != nil {
+    ctx.HTML("<h3>%s</h3>", err.Error())
+    return
+  }
 }
