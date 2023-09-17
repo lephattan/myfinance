@@ -1,9 +1,14 @@
 package database
 
-import "myfinace/env"
+import (
+	"myfinace/env"
+
+	"github.com/golang-migrate/migrate/v4/database"
+)
 
 type DB interface {
 	Exec(q string) error
+	MigrateDriver() (string, database.Driver, error)
 }
 
 func NewDB(e env.Env) DB {
