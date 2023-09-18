@@ -24,3 +24,4 @@ go.work
 # ignore iris project file
 .iris.yml
 *.db
+myfinace

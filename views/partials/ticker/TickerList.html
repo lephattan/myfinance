@@ -1,0 +1,16 @@
+{{ if .Tickers }}
+<table>
+  <tr>
+    <th>Symbol</th>
+    <th>Name</th>
+  </tr>
+  {{range .Tickers}}
+  <tr>
+    <td>{{ .Symbol }}</td>
+    <td>{{ .Name }}</td>
+  </tr>
+  {{ end }}
+</table>
+{{ else }}
+<p>No ticker found!</p>
+{{ end }}

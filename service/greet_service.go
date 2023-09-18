@@ -15,7 +15,7 @@ func NewGreetService(e env.Env, db database.DB) GreetSerivce {
 	switch e {
 	case env.PROD:
 		return service
-	case env.DEV:
+	case env.DEV, env.TESTING:
 		return &greeterWithLogging{service}
 	default:
 		panic("unknown env")

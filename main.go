@@ -26,6 +26,7 @@ func main() {
 	app.RegisterView(iris.Blocks("./views", ".html").Reload(true))
 
 	mvc.Configure(app.Party("greet"), setup)
+	mvc.Configure(app.Party("ticker"), tickerSetup)
 
 	app.Get("/", getRoot)
 	app.Listen("0.0.0.0:8080")
@@ -84,4 +85,15 @@ func setup(app *mvc.Application) {
 		service.NewGreetService,
 	)
 	app.Handle(new(controller.GreetController))
+}
+
+func tickerSetup(app *mvc.Application) {
+	app_env := env.ReadEnv("APP_ENV", "production")
+	app.Register(
+		app_env,
+		database.NewDB,
+		service.NewTickerService,
+	)
+
+	app.Handle(new(controller.TickerController))
 }
