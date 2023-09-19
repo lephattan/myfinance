@@ -38,7 +38,7 @@ func (t *Ticker) String() string {
 // List of Tickers
 type Tickers []*Ticker
 
-// Scan binds mysql rows to this Categories. NOTE: wtf is this
+// Scan binds mysql rows to this Tickers. NOTE: wtf is this
 func (ts *Tickers) Scan(rows *sql.Rows) (err error) {
 	cp := *ts
 	for rows.Next() {
