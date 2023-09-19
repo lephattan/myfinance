@@ -27,6 +27,7 @@ func main() {
 
 	mvc.Configure(app.Party("greet"), setup)
 	mvc.Configure(app.Party("ticker"), tickerSetup)
+	mvc.Configure(app.Party("portfolio"), portfolioSetup)
 
 	app.Get("/", getRoot)
 	app.Listen("0.0.0.0:8080")
@@ -96,4 +97,15 @@ func tickerSetup(app *mvc.Application) {
 	)
 
 	app.Handle(new(controller.TickerController))
+}
+
+func portfolioSetup(app *mvc.Application) {
+	app_env := env.ReadEnv("APP_ENV", "production")
+	app.Register(
+		app_env,
+		database.NewDB,
+		service.NewPortfolioService,
+	)
+
+	app.Handle(new(controller.PortfolioController))
 }
