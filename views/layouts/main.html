@@ -11,6 +11,7 @@
 </head>
 
 <body>
+  <div class="nav">{{ partial "partials/nav" . }}</div>
   <div class="errors">
     {{ if .Errors }} {{ range .Errors }}
     <p>{{ . }}</p>
