@@ -14,6 +14,7 @@ type PortfolioService interface {
 	Create(ctx context.Context, t model.Portfolio) (int64, error)
 	Get(ctx context.Context, id uint64, dest interface{}) (err error)
 	Update(ctx context.Context, t model.Portfolio) (int, error)
+	Delete(ctx context.Context, id uint64) (int, error)
 }
 
 func NewPortfolioService(e env.Env, db database.DB) PortfolioService {
@@ -69,4 +70,14 @@ func (s *portfolio) Update(ctx context.Context, t model.Portfolio) (int, error) 
 	}
 	n := database.GetAffectedRows(res)
 	return n, err
+}
+
+func (s *portfolio) Delete(ctx context.Context, id uint64) (n int, err error) {
+	q := fmt.Sprintf("Delete From %s Where %s=?", "portfolios", "id")
+	res, err := s.db.Exec(ctx, q, id)
+	if err != nil {
+		return 0, err
+	}
+	n = database.GetAffectedRows(res)
+	return
 }

@@ -11,6 +11,11 @@ import (
 type PortfolioController struct {
 	Service service.PortfolioService
 	Ctx     iris.Context
+	Errors  []string
+}
+
+func (c *PortfolioController) Error(err string) {
+	c.Errors = append(c.Errors, err)
 }
 
 func (c *PortfolioController) Get() {
@@ -21,6 +26,7 @@ func (c *PortfolioController) Get() {
 	data := iris.Map{
 		"Title":      "Portfolios",
 		"Portfolios": portfolios,
+		"Errors":     c.Errors,
 	}
 	if err := c.Ctx.View("portfolio/portfolios", data); err != nil {
 		c.Ctx.HTML("<h3>%s</h3>", err.Error())
@@ -42,15 +48,14 @@ func (c *PortfolioController) Post() {
 func (c *PortfolioController) GetBy(id uint64) {
 	c.Ctx.ViewLayout("main")
 	var portfolio model.Portfolio
-	errors := []string{}
 	err := c.Service.Get(c.Ctx.Request().Context(), id, &portfolio)
 	if err != nil {
-		errors = append(errors, err.Error())
+		c.Error(err.Error())
 	}
 	data := iris.Map{
 		"Title":     strings.ToUpper(portfolio.Name),
 		"Portfolio": &portfolio,
-		"Errors":    &errors,
+		"Errors":    c.Errors,
 	}
 	if err := c.Ctx.View("portfolio/detail", data); err != nil {
 		c.Ctx.HTML("<h3>%s</h3>", err.Error())
@@ -75,4 +80,14 @@ func (c *PortfolioController) PostBy(id uint64) {
 		return
 	}
 	c.GetBy(id)
+}
+
+func (c *PortfolioController) PostDeleteBy(id uint64) {
+	_, err := c.Service.Delete(c.Ctx.Request().Context(), id)
+	if err != nil {
+		c.Error(err.Error())
+		c.GetBy(id)
+		return
+	}
+	c.Ctx.Redirect("/portfolio")
 }
