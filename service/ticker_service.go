@@ -6,6 +6,7 @@ import (
 	"myfinace/database"
 	"myfinace/env"
 	"myfinace/model"
+	"strings"
 )
 
 type TickerService interface {
@@ -37,7 +38,7 @@ func (s *ticker) Create(ctx context.Context, t model.Ticker) (int64, error) {
 		return 0, database.ErrUnprocessable
 	}
 	query := fmt.Sprintf("Insert Into %s (symbol, name) Values (Lower(?),?);", t.TableName())
-	res, err := s.db.Exec(ctx, query, t.Symbol, t.Name)
+	res, err := s.db.Exec(ctx, query, strings.TrimSpace(t.Symbol), t.Name)
 	if err != nil {
 		return 0, err
 	}
