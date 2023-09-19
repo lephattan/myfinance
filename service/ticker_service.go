@@ -36,7 +36,7 @@ func (s *ticker) Create(ctx context.Context, t model.Ticker) (int64, error) {
 	if !t.ValidateInsert() {
 		return 0, database.ErrUnprocessable
 	}
-	query := fmt.Sprintf("Insert Into %s (symbol, name) Values (?,?);", t.TableName())
+	query := fmt.Sprintf("Insert Into %s (symbol, name) Values (Lower(?),?);", t.TableName())
 	res, err := s.db.Exec(ctx, query, t.Symbol, t.Name)
 	if err != nil {
 		return 0, err
