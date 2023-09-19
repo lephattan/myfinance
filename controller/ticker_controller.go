@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"myfinace/model"
 	"myfinace/service"
 	"strings"
@@ -38,8 +39,12 @@ func (c *TickerController) Post() {
 		Symbol: symbol,
 		Name:   name,
 	}
-	c.Service.Create(c.Ctx.Request().Context(), ticker)
-	c.Get()
+	_, err := c.Service.Create(c.Ctx.Request().Context(), ticker)
+	if err != nil {
+		c.Ctx.HTML("<h3>%s</h3>", err.Error())
+		return
+	}
+	c.Ctx.Redirect("/ticker", iris.StatusSeeOther)
 }
 
 func (c *TickerController) GetBy(symbol string) {
@@ -69,9 +74,8 @@ func (c *TickerController) PostBy(symbol string) {
 	}
 	_, err := c.Service.Update(c.Ctx.Request().Context(), ticker)
 	if err != nil {
-		c.Ctx.ViewLayout("main")
 		c.Ctx.HTML("<h3>%s</h3>", err.Error())
 		return
 	}
-	c.GetBy(symbol)
+	c.Ctx.Redirect(fmt.Sprintf("/ticker/%s", symbol), iris.StatusSeeOther)
 }

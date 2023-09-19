@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"myfinace/model"
 	"myfinace/service"
 	"strings"
@@ -41,8 +42,12 @@ func (c *PortfolioController) Post() {
 		Name:        name,
 		Description: des,
 	}
-	c.Service.Create(c.Ctx.Request().Context(), portfolio)
-	c.Get()
+	_, err := c.Service.Create(c.Ctx.Request().Context(), portfolio)
+	if err != nil {
+		c.Ctx.HTML("<h3>%s</h3>", err.Error())
+		return
+	}
+	c.Ctx.Redirect("/portfolio", iris.StatusSeeOther)
 }
 
 func (c *PortfolioController) GetBy(id uint64) {
@@ -75,19 +80,17 @@ func (c *PortfolioController) PostBy(id uint64) {
 	}
 	_, err := c.Service.Update(c.Ctx.Request().Context(), portfolio)
 	if err != nil {
-		c.Ctx.ViewLayout("main")
 		c.Ctx.HTML("<h3>%s</h3>", err.Error())
 		return
 	}
-	c.GetBy(id)
+	c.Ctx.Redirect(fmt.Sprintf("/portfolio/%d", id), iris.StatusSeeOther)
 }
 
 func (c *PortfolioController) PostDeleteBy(id uint64) {
 	_, err := c.Service.Delete(c.Ctx.Request().Context(), id)
 	if err != nil {
-		c.Error(err.Error())
-		c.GetBy(id)
+		c.Ctx.HTML("<h3>%s</h3>", err.Error())
 		return
 	}
-	c.Ctx.Redirect("/portfolio")
+	c.Ctx.Redirect("/portfolio", iris.StatusSeeOther)
 }
