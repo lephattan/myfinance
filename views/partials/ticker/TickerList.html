@@ -4,9 +4,11 @@
     <th>Symbol</th>
     <th>Name</th>
   </tr>
-  {{range .Tickers}}
+  {{range .Tickers }}
   <tr>
-    <td>{{ .Symbol }}</td>
+    <td>
+      <a href="/ticker/{{ .Symbol }}">{{ .Symbol}}</a>
+    </td>
     <td>{{ .Name }}</td>
   </tr>
   {{ end }}

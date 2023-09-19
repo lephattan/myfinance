@@ -12,6 +12,7 @@ import (
 type TickerService interface {
 	List(ctx context.Context, dest interface{}) error
 	Create(ctx context.Context, t model.Ticker) (int64, error)
+	Get(ctx context.Context, symbol string, dest interface{}) (err error)
 }
 
 func NewTickerService(e env.Env, db database.DB) TickerService {
@@ -43,4 +44,10 @@ func (s *ticker) Create(ctx context.Context, t model.Ticker) (int64, error) {
 		return 0, err
 	}
 	return res.LastInsertId()
+}
+
+func (s *ticker) Get(ctx context.Context, symbol string, dest interface{}) (err error) {
+	q := fmt.Sprintf("Select * From %s Where `symbol` = ?;", "tickers")
+	err = s.db.Get(ctx, dest, q, strings.TrimSpace(symbol))
+	return
 }

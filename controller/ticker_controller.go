@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"myfinace/model"
 	"myfinace/service"
 
@@ -23,7 +24,7 @@ func (c *TickerController) Get() {
 	data := iris.Map{
 		"Tickers": tickers,
 	}
-	if err := c.Ctx.View("tickers", data); err != nil {
+	if err := c.Ctx.View("ticker/tickers", data); err != nil {
 		c.Ctx.HTML("<h3>%s</h3>", err.Error())
 		return
 	}
@@ -38,4 +39,23 @@ func (c *TickerController) Post() {
 	}
 	c.Service.Create(c.Ctx.Request().Context(), ticker)
 	c.Get()
+}
+
+func (c *TickerController) GetBy(symbol string) {
+	c.Ctx.ViewLayout("main")
+	var ticker model.Ticker
+	errors := []string{}
+	err := c.Service.Get(c.Ctx.Request().Context(), symbol, &ticker)
+	if err != nil {
+		errors = append(errors, err.Error())
+	}
+	fmt.Println(errors)
+	data := iris.Map{
+		"Ticker": &ticker,
+		"Errors": &errors,
+	}
+	if err := c.Ctx.View("ticker/detail", data); err != nil {
+		c.Ctx.HTML("<h3>%s</h3>", err.Error())
+		return
+	}
 }

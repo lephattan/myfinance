@@ -69,3 +69,21 @@ func (db *devdb) Exec(ctx context.Context, query string, args ...interface{}) (s
 	res, err := conn.ExecContext(ctx, query, args...)
 	return res, err
 }
+
+func (db *devdb) Get(ctx context.Context, dest interface{}, query string, args ...interface{}) (err error) {
+	conn := db.Connect(dbconn{})
+	defer conn.Close()
+	rows, err := conn.QueryContext(ctx, query, args...)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		return sql.ErrNoRows
+	}
+
+	if Scannable, ok := dest.(Scannable); ok {
+		return Scannable.Scan(rows)
+	}
+	return rows.Scan(dest)
+}

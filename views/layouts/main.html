@@ -10,6 +10,11 @@
 </head>
 
 <body>
+  <div class="errors">
+    {{ if .Errors }} {{ range .Errors }}
+    <p>{{ . }}</p>
+    {{ end }} {{ end }}
+  </div>
   {{ template "content" . }}
 
   <footer>{{ partial "partials/footer" . }}</footer>
