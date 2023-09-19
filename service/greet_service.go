@@ -28,9 +28,6 @@ type greeter struct {
 }
 
 func (s *greeter) Say(input string) (string, error) {
-	if err := s.db.Exec("simulate query..."); err != nil {
-		return "", err
-	}
 	result := s.prefix + " " + input
 	return result, nil
 }

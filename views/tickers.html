@@ -1,2 +1,12 @@
 <h3>Ticker page</h3>
+<div>
+  <p>Add New Ticker</p>
+  <form method="post">
+    <label for="ticker-symbol">Symbol</label>
+    <input name="ticker-symbol" required type="text" />
+    <label for="ticker-name">Name</label>
+    <input name="ticker-name" type="text" />
+    <button type="submit">Add</button>
+  </form>
+</div>
 <div class="tickers-list">{{ partial "partials/ticker/TickerList" . }}</div>

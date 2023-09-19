@@ -13,11 +13,6 @@ type devdb struct{}
 
 const DB_TYPE = "sqlite3"
 
-/* Execute query string */
-func (db *devdb) Exec(q string) error {
-	return nil
-}
-
 /*
 Driver for database migration
 Return:
@@ -49,6 +44,7 @@ func (db *devdb) Connect(s dbconn) *sql.DB {
 	return conn
 }
 
+/* Execute query string and return result*/
 func (db *devdb) Select(ctx context.Context, dest interface{}, query string, args ...interface{}) error {
 	conn := db.Connect(dbconn{})
 	defer conn.Close()
@@ -64,4 +60,12 @@ func (db *devdb) Select(ctx context.Context, dest interface{}, query string, arg
 		return sql.ErrNoRows
 	}
 	return rows.Scan(dest)
+}
+
+/* Similar to Select but does not return the result*/
+func (db *devdb) Exec(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+	conn := db.Connect(dbconn{})
+	defer conn.Close()
+	res, err := conn.ExecContext(ctx, query, args...)
+	return res, err
 }

@@ -14,7 +14,7 @@ import (
 )
 
 type DB interface {
-	Exec(q string) error
+	Exec(ctx context.Context, query string, args ...interface{}) (sql.Result, error)
 	MigrateDriver() (string, database.Driver, error)
 	Select(ctx context.Context, dest interface{}, query string, args ...interface{}) error
 }

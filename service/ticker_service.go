@@ -10,6 +10,7 @@ import (
 
 type TickerService interface {
 	List(ctx context.Context, dest interface{}) error
+	Create(ctx context.Context, t model.Ticker) (int64, error)
 }
 
 func NewTickerService(e env.Env, db database.DB) TickerService {
@@ -26,18 +27,19 @@ func (s *ticker) List(ctx context.Context, dest interface{}) error {
 	opt := database.ListOptions{
 		Table: "tickers",
 	}
-	fmt.Printf("%+v\n", opt)
 	q, args := opt.BuildQuery()
 	err := s.db.Select(ctx, dest, q, args...)
 	return err
 }
 
-func (s *ticker) Create(ctx context.Context, t model.Ticker) (model.Ticker, error) {
+func (s *ticker) Create(ctx context.Context, t model.Ticker) (int64, error) {
 	if !t.ValidateInsert() {
-		return model.Ticker{}, database.ErrUnprocessable
+		return 0, database.ErrUnprocessable
 	}
-	query := fmt.Sprintf("Insert Into %s (symbol, name) Value (?,?);", t.TableName())
-	newTicker := new(model.Ticker)
-	err := s.db.Select(ctx, newTicker, query, t.Symbol, t.Name)
-	return *newTicker, err
+	query := fmt.Sprintf("Insert Into %s (symbol, name) Values (?,?);", t.TableName())
+	res, err := s.db.Exec(ctx, query, t.Symbol, t.Name)
+	if err != nil {
+		return 0, err
+	}
+	return res.LastInsertId()
 }
