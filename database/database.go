@@ -122,3 +122,11 @@ func ParseListOptions(q url.Values) ListOptions {
 }
 
 var ErrUnprocessable = errors.New("invalid model")
+
+func GetAffectedRows(result sql.Result) int {
+	if result == nil {
+		return 0
+	}
+	n, _ := result.RowsAffected()
+	return int(n)
+}

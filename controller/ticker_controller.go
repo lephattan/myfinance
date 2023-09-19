@@ -1,9 +1,9 @@
 package controller
 
 import (
-	"fmt"
 	"myfinace/model"
 	"myfinace/service"
+	"strings"
 
 	"github.com/kataras/iris/v12"
 )
@@ -22,6 +22,7 @@ func (c *TickerController) Get() {
 	ctx := c.Ctx.Request().Context()
 	c.Service.List(ctx, &tickers)
 	data := iris.Map{
+		"Title":   "Tickers",
 		"Tickers": tickers,
 	}
 	if err := c.Ctx.View("ticker/tickers", data); err != nil {
@@ -49,8 +50,8 @@ func (c *TickerController) GetBy(symbol string) {
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
-	fmt.Println(errors)
 	data := iris.Map{
+		"Title":  strings.ToUpper(symbol),
 		"Ticker": &ticker,
 		"Errors": &errors,
 	}
@@ -58,4 +59,19 @@ func (c *TickerController) GetBy(symbol string) {
 		c.Ctx.HTML("<h3>%s</h3>", err.Error())
 		return
 	}
+}
+
+func (c *TickerController) PostBy(symbol string) {
+	symbol = strings.TrimSpace(symbol)
+	ticker := model.Ticker{
+		Symbol: symbol,
+		Name:   c.Ctx.FormValue("ticker-name"),
+	}
+	_, err := c.Service.Update(c.Ctx.Request().Context(), ticker)
+	if err != nil {
+		c.Ctx.ViewLayout("main")
+		c.Ctx.HTML("<h3>%s</h3>", err.Error())
+		return
+	}
+	c.GetBy(symbol)
 }

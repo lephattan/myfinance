@@ -57,6 +57,7 @@ func (ts *Tickers) Scan(rows *sql.Rows) (err error) {
 }
 
 // The requests.
+// Ref: https://github.com/kataras/iris/blob/24ba4e8933b9d58096a56e5c6f2de968f80eb602/_examples/database/mysql/entity/product.go#L73C10-L73C10
 type (
 	CreateTickerRequest struct { // all required.
 		Symbol string `json:"symbol"`

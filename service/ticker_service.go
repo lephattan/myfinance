@@ -13,6 +13,7 @@ type TickerService interface {
 	List(ctx context.Context, dest interface{}) error
 	Create(ctx context.Context, t model.Ticker) (int64, error)
 	Get(ctx context.Context, symbol string, dest interface{}) (err error)
+	Update(ctx context.Context, t model.Ticker) (int, error)
 }
 
 func NewTickerService(e env.Env, db database.DB) TickerService {
@@ -50,4 +51,21 @@ func (s *ticker) Get(ctx context.Context, symbol string, dest interface{}) (err 
 	q := fmt.Sprintf("Select * From %s Where `symbol` = ?;", "tickers")
 	err = s.db.Get(ctx, dest, q, strings.TrimSpace(symbol))
 	return
+}
+
+func (s *ticker) Update(ctx context.Context, t model.Ticker) (int, error) {
+	if !t.ValidateInsert() {
+		return 0, database.ErrUnprocessable
+	}
+	q := fmt.Sprintf(`Update %s
+		Set
+			name = ?
+		Where %s = Lower(?);
+		`, t.TableName(), t.PrimaryKey())
+	res, err := s.db.Exec(ctx, q, t.Name, strings.ToLower(t.Symbol))
+	if err != nil {
+		return 0, err
+	}
+	n := database.GetAffectedRows(res)
+	return n, err
 }
