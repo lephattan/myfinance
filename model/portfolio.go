@@ -39,7 +39,7 @@ func (t *Portfolio) String() string {
 // List of Portfolios
 type Portfolios []*Portfolio
 
-// Scan binds mysql rows to this Categories. NOTE: wtf is this
+// Scan binds mysql rows to this Portfolios. NOTE: wtf is this
 func (ts *Portfolios) Scan(rows *sql.Rows) (err error) {
 	cp := *ts
 	for rows.Next() {
