@@ -7,6 +7,7 @@ import (
 	"fmt"
 	"myfinace/env"
 	"net/url"
+	"reflect"
 	"strconv"
 	"strings"
 
@@ -129,4 +130,41 @@ func GetAffectedRows(result sql.Result) int {
 	}
 	n, _ := result.RowsAffected()
 	return int(n)
+}
+
+func GenerateInsertStatement(m Record) (stmt string, args []interface{}, err error) {
+
+	tablename := m.TableName()
+	pk := m.PrimaryKey()
+	tag_name := "db"
+	stmt = fmt.Sprintf("Insert Into %s ", tablename)
+
+	type_m := reflect.TypeOf(m)
+	m_values := reflect.ValueOf(m)
+
+	args = []any{}
+	cols := []string{}
+
+	for i := 0; i < type_m.NumField(); i++ {
+		value := m_values.Field(i).Interface()
+		struct_field := type_m.Field(i)
+		db_tag := string(struct_field.Tag.Get(tag_name))
+		switch db_tag {
+		case "":
+		case pk:
+			continue
+		}
+
+		cols = append(cols, db_tag)
+		args = append(args, value)
+	}
+	if len(cols) > 0 {
+		placeholders := make([]string, len(args))
+		for i := range placeholders {
+			placeholders[i] = "?"
+		}
+		stmt = stmt + fmt.Sprintf("(%s) Values (%s)", strings.Join(cols, ", "), strings.Join(placeholders, ","))
+	}
+
+	return
 }
