@@ -46,6 +46,7 @@ func (s *transaction) Create(ctx context.Context, t model.Transaction) (int64, e
 		sql.Named("ticker_symbol", t.TickerSymbol),
 		sql.Named("transaction_type", t.TransactionType),
 		sql.Named("volume", t.Volume),
+		sql.Named("price", t.Price),
 		sql.Named("commission", t.Commission),
 		sql.Named("note", t.Note),
 		sql.Named("portfolio_id", t.PortfolioID),
