@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"os"
 
 	"myfinace/controller"
@@ -14,6 +15,7 @@ import (
 )
 
 func main() {
+	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	ac := makeAccessLog()
 	defer ac.Close()
 
@@ -28,6 +30,7 @@ func main() {
 	mvc.Configure(app.Party("greet"), setup)
 	mvc.Configure(app.Party("ticker"), tickerSetup)
 	mvc.Configure(app.Party("portfolio"), portfolioSetup)
+	mvc.Configure(app.Party("transaction"), transactionSetup)
 
 	app.Get("/", getRoot)
 	app.Listen("0.0.0.0:8080")
@@ -108,4 +111,15 @@ func portfolioSetup(app *mvc.Application) {
 	)
 
 	app.Handle(new(controller.PortfolioController))
+}
+
+func transactionSetup(app *mvc.Application) {
+	app_env := env.ReadEnv("APP_ENV", "production")
+	app.Register(
+		app_env,
+		database.NewDB,
+		service.NewTransactionService,
+	)
+
+	app.Handle(new(controller.TransactionController))
 }
