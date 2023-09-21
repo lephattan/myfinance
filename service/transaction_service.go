@@ -37,21 +37,11 @@ func (s *transaction) Create(ctx context.Context, t model.Transaction) (int64, e
 	if !t.ValidateInsert() {
 		return 0, database.ErrUnprocessable
 	}
-	query := fmt.Sprintf(`
-		Insert Into %s (date, ticker_symbol, transaction_type, volume, price, commission, note, portfolio_id, ref_id) 
-		Values (:date, :ticker_symbol, :transaction_type, :volume, :price, :commission, :note, :portfolio_id, :ref_id)
-		;`, t.TableName())
-	res, err := s.db.Exec(ctx, query,
-		sql.Named("date", t.Date),
-		sql.Named("ticker_symbol", t.TickerSymbol),
-		sql.Named("transaction_type", t.TransactionType),
-		sql.Named("volume", t.Volume),
-		sql.Named("price", t.Price),
-		sql.Named("commission", t.Commission),
-		sql.Named("note", t.Note),
-		sql.Named("portfolio_id", t.PortfolioID),
-		sql.Named("ref_id", t.RefID),
-	)
+	query, args, err := t.GenerateInsertStatement()
+	if err != nil {
+		return 0, err
+	}
+	res, err := s.db.Exec(ctx, query, args...)
 	if err != nil {
 		return 0, err
 	}
