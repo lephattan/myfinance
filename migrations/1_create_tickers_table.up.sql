@@ -1,7 +1,7 @@
 -- tickers definition
 
 CREATE TABLE tickers (
-	symbol TEXT(20),
+	symbol TEXT Not NULL,
 	name TEXT,
 	CONSTRAINT tickers_PK PRIMARY KEY (symbol)
 );
