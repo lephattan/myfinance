@@ -42,6 +42,7 @@ func (c *TransactionController) Post() {
 	ticker := c.Ctx.FormValue("ticker")
 	transaction_type := c.Ctx.FormValue("type")
 	volume := c.Ctx.FormValue("volume")
+	price := c.Ctx.FormValue("price")
 	commission := c.Ctx.FormValue("commission")
 	note := c.Ctx.FormValue("note")
 	portfolio_id := c.Ctx.FormValue("portfolio-id")
@@ -57,6 +58,11 @@ func (c *TransactionController) Post() {
 	i_volume, err := ParseUint64(volume)
 	if err != nil {
 		errors = append(errors, "Error parsing volume "+err.Error())
+	}
+
+	i_price, err := ParseUint64(price)
+	if err != nil {
+		errors = append(errors, "Error parsing price "+err.Error())
 	}
 
 	i_commission, err := ParseUint64(commission)
@@ -80,6 +86,7 @@ func (c *TransactionController) Post() {
 		TickerSymbol:    strings.TrimSpace(ticker),
 		TransactionType: model.TransactionType(transaction_type),
 		Volume:          uint64(i_volume),
+		Price:           uint64(i_price),
 		Commission:      uint64(i_commission),
 		PortfolioID:     i_portfolio,
 		Note:            sql.NullString{String: note, Valid: note == ""},
