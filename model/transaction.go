@@ -3,6 +3,7 @@ package model
 import (
 	"database/sql"
 	"fmt"
+	"myfinace/database"
 	"strings"
 )
 
@@ -13,24 +14,29 @@ const (
 	Sell                 = "sell"
 )
 
-type Transaction struct {
-	ID              uint64          `db:"id"`
-	Date            uint64          `db:"date"`
-	TickerSymbol    string          `db:"ticker_symbol"`
-	TransactionType TransactionType `db:"transaction_type"`
-	Volume          uint64          `db:"volume"`
-	Price           uint64          `db:"price"`
-	Commission      uint64          `db:"commission"`
-	Note            string          `db:"note"`
-	PortfolioID     uint64          `db:"portfolio_id"`
-	RefID           uint64          `db:"ref_id"`
+var TransactionTypes = [...]TransactionType{
+	Buy,
+	Sell,
 }
 
-func (t *Transaction) TableName() string {
+type Transaction struct {
+	ID              uint64             `db:"id"`
+	Date            uint64             `db:"date"`
+	TickerSymbol    string             `db:"ticker_symbol"`
+	TransactionType TransactionType    `db:"transaction_type"`
+	Volume          uint64             `db:"volume"`
+	Price           uint64             `db:"price"`
+	Commission      uint64             `db:"commission"`
+	Note            sql.NullString     `db:"note"`
+	PortfolioID     uint64             `db:"portfolio_id"`
+	RefID           database.NullInt64 `db:"ref_id"`
+}
+
+func (t Transaction) TableName() string {
 	return "transactions"
 }
 
-func (t *Transaction) PrimaryKey() string {
+func (t Transaction) PrimaryKey() string {
 	return "id"
 }
 
@@ -48,11 +54,7 @@ func (t *Transaction) ValidateInsert() bool {
 
 // Validate TransactionType
 func (t *Transaction) ValidateType() bool {
-	types := []TransactionType{
-		Buy,
-		Sell,
-	}
-	for _, trans_type := range types {
+	for _, trans_type := range TransactionTypes {
 		if t.TransactionType == trans_type {
 			return true
 		}
@@ -79,12 +81,17 @@ func (t *Transaction) Scan(rows *sql.Rows) error {
 // Preresentative string of a transaction
 func (t *Transaction) String() string {
 	return fmt.Sprintf(
-		"<Transaction %s %s @%d of PortfolioID: %d>",
+		"<Transaction %s %d %s @%d in PortfolioID: %d>",
 		t.TransactionType,
+		t.Volume,
 		strings.ToUpper(t.TickerSymbol),
 		t.Price,
 		t.PortfolioID,
 	)
+}
+
+func (t *Transaction) GenerateInsertStatement() (stmt string, args []interface{}, err error) {
+	return database.GenerateInsertStatement(*t)
 }
 
 // List of Transactions
