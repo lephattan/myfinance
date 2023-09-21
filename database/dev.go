@@ -35,7 +35,7 @@ type dbconn struct {
 
 func (db *devdb) Connect(s dbconn) *sql.DB {
 	if s.dsn == "" {
-		s.dsn = "file:dev-database.db?cache=shared"
+		s.dsn = "file:dev-database.db?cache=shared&_foreign_keys=true"
 	}
 	conn, err := sql.Open(DB_TYPE, s.dsn)
 	if err != nil {
