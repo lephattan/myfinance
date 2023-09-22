@@ -82,6 +82,7 @@ func (opt ListOptions) BuildQuery() (q string, args []interface{}) {
 	if opt.Offset > 0 {
 		q += fmt.Sprintf(" Offset %d", opt.Offset)
 	}
+	q += ";"
 	return
 }
 

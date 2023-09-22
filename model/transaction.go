@@ -3,6 +3,7 @@ package model
 import (
 	"database/sql"
 	"fmt"
+	"log"
 	"myfinace/database"
 	"strings"
 )
@@ -23,12 +24,12 @@ type Transaction struct {
 	ID              uint64             `db:"id"`
 	Date            uint64             `db:"date"`
 	TickerSymbol    string             `db:"ticker_symbol"`
+	PortfolioID     uint64             `db:"portfolio_id"`
 	TransactionType TransactionType    `db:"transaction_type"`
 	Volume          uint64             `db:"volume"`
 	Price           uint64             `db:"price"`
 	Commission      uint64             `db:"commission"`
 	Note            sql.NullString     `db:"note"`
-	PortfolioID     uint64             `db:"portfolio_id"`
 	RefID           database.NullInt64 `db:"ref_id"`
 }
 
@@ -40,7 +41,7 @@ func (t Transaction) PrimaryKey() string {
 	return "id"
 }
 
-func (t *Transaction) SortBy() string {
+func (t Transaction) SortBy() string {
 	return "id"
 }
 
@@ -68,12 +69,12 @@ func (t *Transaction) Scan(rows *sql.Rows) error {
 		&t.ID,
 		&t.Date,
 		&t.TickerSymbol,
+		&t.PortfolioID,
 		&t.TransactionType,
 		&t.Volume,
 		&t.Price,
 		&t.Commission,
 		&t.Note,
-		&t.PortfolioID,
 		&t.RefID,
 	)
 }
@@ -103,6 +104,7 @@ func (ts *Transactions) Scan(rows *sql.Rows) (err error) {
 	for rows.Next() {
 		t := new(Transaction)
 		if err = t.Scan(rows); err != nil {
+			log.Printf("Error scanning row: %s", err.Error())
 			return
 		}
 		cp = append(cp, t)
