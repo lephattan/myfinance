@@ -1,0 +1,12 @@
+<form hx-post="/htmx/components/ticker/addnewform" hx-swap="outerHTML">
+  <div class="errors">
+    {{ if .Errors }} {{ range .Errors }}
+    <p>{{ . }}</p>
+    {{ end }} {{ end }}
+  </div>
+  <label for="ticker-symbol">Symbol</label>
+  <input name="ticker-symbol" required type="text" />
+  <label for="ticker-name">Name</label>
+  <input name="ticker-name" type="text" />
+  <button type="submit">Add</button>
+</form>

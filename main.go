@@ -38,6 +38,7 @@ func main() {
 
 	// HTMX
 	mvc.Configure(app.Party("/htmx/components/transaction"), htmxComponentSetup)
+	mvc.Configure(app.Party("/htmx/components/ticker"), htmxTickerSetup)
 
 	app.Get("/", getRoot)
 	app.Listen("0.0.0.0:8080")
@@ -147,7 +148,15 @@ func htmxComponentSetup(app *mvc.Application) {
 		database.NewDB,
 		service.NewTransactionService,
 	)
-
 	app.Handle(new(htmx.HtmxTransactionController))
+}
 
+func htmxTickerSetup(app *mvc.Application) {
+	app_env := env.ReadEnv("APP_ENV", "production")
+	app.Register(
+		app_env,
+		database.NewDB,
+		service.NewTickerService,
+	)
+	app.Handle(new(htmx.HTMXTickerController))
 }

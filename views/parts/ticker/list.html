@@ -1,0 +1,26 @@
+<div class="ticker-list" id="ticker-list" hx-trigger="new-ticker from:body" hx-swap="outerHTML"
+  hx-get="htmx/components/ticker/list">
+  <div class="errors">
+    {{ if .Errors }} {{ range .Errors }}
+    <p>{{ . }}</p>
+    {{ end }} {{ end }}
+  </div>
+  {{ if .Tickers }}
+  <table>
+    <tr>
+      <th>Symbol</th>
+      <th>Name</th>
+    </tr>
+    {{range .Tickers }}
+    <tr>
+      <td>
+        <a href="/ticker/{{ .Symbol }}">{{ .Symbol}}</a>
+      </td>
+      <td>{{ .Name }}</td>
+    </tr>
+    {{ end }}
+  </table>
+  {{ else }}
+  <p>No ticker found!</p>
+  {{ end }}
+</div>
