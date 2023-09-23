@@ -5,6 +5,7 @@ import (
 	"os"
 
 	"myfinace/controller"
+	"myfinace/controller/htmx"
 	"myfinace/database"
 	"myfinace/env"
 	"myfinace/service"
@@ -31,6 +32,9 @@ func main() {
 	mvc.Configure(app.Party("ticker"), tickerSetup)
 	mvc.Configure(app.Party("portfolio"), portfolioSetup)
 	mvc.Configure(app.Party("transaction"), transactionSetup)
+
+	// HTMX
+	mvc.Configure(app.Party("/htmx/components/transaction"), htmxComponentSetup)
 
 	app.Get("/", getRoot)
 	app.Listen("0.0.0.0:8080")
@@ -122,4 +126,16 @@ func transactionSetup(app *mvc.Application) {
 	)
 
 	app.Handle(new(controller.TransactionController))
+}
+
+func htmxComponentSetup(app *mvc.Application) {
+	app_env := env.ReadEnv("APP_ENV", "production")
+	app.Register(
+		app_env,
+		database.NewDB,
+		service.NewTransactionService,
+	)
+
+	app.Handle(new(htmx.HtmxTransactionController))
+
 }

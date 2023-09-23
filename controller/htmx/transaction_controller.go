@@ -1,4 +1,4 @@
-package controller
+package htmx
 
 import (
 	"database/sql"
@@ -13,33 +13,54 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
-type TransactionController struct {
+type HtmxTransactionController struct {
 	Service service.TransactionService
 	Ctx     iris.Context
 }
 
-func (c *TransactionController) Get() {
-	c.Ctx.ViewLayout("main")
+func (c *HtmxTransactionController) GetList() {
+	errors := []string{}
+	var transactions model.Transactions
+	ctx := c.Ctx.Request().Context()
+	opt := database.ListOptions{
+		Table: "transactions",
+	}
+	if err := c.Service.List(ctx, opt, &transactions); err != nil {
+		errors = append(errors, err.Error())
+
+	}
 	data := iris.Map{
-		"Title": "Transactions",
+		"Transactions": transactions,
+		"Errors":       errors,
 	}
 
-	if err := c.Ctx.View("transaction/transactions", data); err != nil {
+	if err := c.Ctx.View("parts/transaction/list", data); err != nil {
 		c.Ctx.HTML("<h3>%s</h3>", err.Error())
 		return
 	}
 }
 
-func (c *TransactionController) Post() {
-	date := c.Ctx.FormValue("date")
-	ticker := c.Ctx.FormValue("ticker")
-	transaction_type := c.Ctx.FormValue("type")
-	volume := c.Ctx.FormValue("volume")
-	price := c.Ctx.FormValue("price")
-	commission := c.Ctx.FormValue("commission")
-	note := c.Ctx.FormValue("note")
-	portfolio_id := c.Ctx.FormValue("portfolio-id")
-	ref_id := c.Ctx.FormValue("ref-id")
+func (c *HtmxTransactionController) GetAddnewform() {
+	data := iris.Map{
+		"ID": "add-transaction",
+	}
+	if err := c.Ctx.View("parts/transaction/add-new-form", data); err != nil {
+		c.Ctx.HTML("<h3>%s</h3>", err.Error())
+		return
+	}
+}
+
+func (c *HtmxTransactionController) PostAddnewform() {
+	ctx := c.Ctx
+	date := ctx.FormValue("date")
+	ticker := ctx.FormValue("ticker")
+	transaction_type := ctx.FormValue("type")
+	volume := ctx.FormValue("volume")
+	price := ctx.FormValue("price")
+	commission := ctx.FormValue("commission")
+	note := ctx.FormValue("note")
+	portfolio_id := ctx.FormValue("portfolio-id")
+	ref_id := ctx.FormValue("ref-id")
 
 	errors := []string{}
 	date_fmt := "2006-01-02"
@@ -87,11 +108,22 @@ func (c *TransactionController) Post() {
 	if i_ref > 0 {
 		transaction.RefID = database.NullInt64{Int64: int64(i_ref), Valid: true}
 	}
+
 	log.Print(transaction.String())
+
 	_, err = c.Service.Create(c.Ctx.Request().Context(), transaction)
 	if err != nil {
+		errors = append(errors, err.Error())
+	} else {
+		ctx.Header("HX-Trigger", "new-transaction")
+	}
+	data := iris.Map{
+		"ID":     "add-transaction",
+		"Errors": errors,
+	}
+
+	if err := c.Ctx.View("parts/transaction/add-new-form", data); err != nil {
 		c.Ctx.HTML("<h3>%s</h3>", err.Error())
 		return
 	}
-	c.Ctx.Redirect("/transaction", iris.StatusSeeOther)
 }

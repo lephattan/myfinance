@@ -1,0 +1,40 @@
+<div class="transactions-list" id="transactions-list" hx-trigger="new-transaction from:body" hx-swap="outerHTML"
+  hx-get="htmx/components/transaction/list">
+  <div class="errors">
+    {{ if .Errors }} {{ range .Errors }}
+    <p>{{ . }}</p>
+    {{ end }} {{ end }}
+  </div>
+  {{ if .Transactions }}
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Date</th>
+      <th>TickerSymbol</th>
+      <th>TransactionType</th>
+      <th>Volume</th>
+      <th>Price</th>
+      <th>Commission</th>
+      <th>Note</th>
+      <th>PortfolioID</th>
+      <th>RefID</th>
+    </tr>
+    {{range .Transactions }}
+    <tr>
+      <td>{{ .ID }}</td>
+      <td>{{ .Date }}</td>
+      <td>{{ .TickerSymbol }}</td>
+      <td>{{ .TransactionType }}</td>
+      <td>{{ .Volume }}</td>
+      <td>{{ .Price }}</td>
+      <td>{{ .Commission }}</td>
+      <td>{{ .Note }}</td>
+      <td>{{ .PortfolioID }}</td>
+      <td>{{ .RefID }}</td>
+    </tr>
+    {{ end }}
+  </table>
+  {{ else }}
+  <p>No transaction found!</p>
+  {{ end }}
+</div>
