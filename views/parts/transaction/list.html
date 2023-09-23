@@ -22,15 +22,15 @@
     {{range .Transactions }}
     <tr>
       <td>{{ .ID }}</td>
-      <td>{{ .Date }}</td>
+      <td>{{ UnixTimeFmt .Date "02-01-2006" }}</td>
       <td>{{ .TickerSymbol }}</td>
       <td>{{ .TransactionType }}</td>
       <td>{{ .Volume }}</td>
       <td>{{ .Price }}</td>
       <td>{{ .Commission }}</td>
-      <td>{{ .Note }}</td>
+      <td>{{ .Note.Value }}</td>
       <td>{{ .PortfolioID }}</td>
-      <td>{{ .RefID }}</td>
+      <td>{{ .RefID.Value }}</td>
     </tr>
     {{ end }}
   </table>

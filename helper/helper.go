@@ -1,6 +1,9 @@
 package helper
 
-import "strconv"
+import (
+	"strconv"
+	"time"
+)
 
 // Parse string into uint64
 // Return 0 on empty string
@@ -14,4 +17,10 @@ func ParseUint64(s string) (uint64, error) {
 		i = 0
 	}
 	return i, err
+}
+
+// Format unix timestamp into string with given format
+func UnixTimeFmt(unixT uint64, format string) string {
+	t := time.Unix(int64(unixT), 0)
+	return t.Format(format)
 }

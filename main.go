@@ -8,15 +8,18 @@ import (
 	"myfinace/controller/htmx"
 	"myfinace/database"
 	"myfinace/env"
+	"myfinace/helper"
 	"myfinace/service"
 
 	"github.com/kataras/iris/v12"
 	"github.com/kataras/iris/v12/middleware/accesslog"
 	"github.com/kataras/iris/v12/mvc"
+	"github.com/kataras/iris/v12/view"
 )
 
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
+	app_env := env.ReadEnv("APP_ENV", "production")
 	ac := makeAccessLog()
 	defer ac.Close()
 
@@ -26,7 +29,7 @@ func main() {
 	app.UseRouter(ac.Handler)
 	app.Get("/ping", pong).Describe("health check")
 
-	app.RegisterView(iris.Blocks("./views", ".html").Reload(true))
+	app.RegisterView(makeView(app_env))
 
 	mvc.Configure(app.Party("greet"), setup)
 	mvc.Configure(app.Party("ticker"), tickerSetup)
@@ -38,6 +41,15 @@ func main() {
 
 	app.Get("/", getRoot)
 	app.Listen("0.0.0.0:8080")
+}
+
+func makeView(e env.Env) *view.BlocksEngine {
+	view := iris.Blocks("./views", ".html")
+	if e == env.DEV {
+		view = view.Reload(true)
+	}
+	view.AddFunc("UnixTimeFmt", helper.UnixTimeFmt)
+	return view
 }
 
 func makeAccessLog() *accesslog.AccessLog {
