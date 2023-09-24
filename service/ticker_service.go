@@ -10,7 +10,7 @@ import (
 )
 
 type TickerService interface {
-	List(ctx context.Context, dest interface{}) error
+	List(ctx context.Context, opt database.ListOptions, dest interface{}) error
 	Create(ctx context.Context, t model.Ticker) (int64, error)
 	Get(ctx context.Context, symbol string, dest interface{}) (err error)
 	Update(ctx context.Context, t model.Ticker) (int, error)
@@ -26,10 +26,7 @@ type ticker struct {
 	rec database.Record
 }
 
-func (s *ticker) List(ctx context.Context, dest interface{}) error {
-	opt := database.ListOptions{
-		Table: "tickers",
-	}
+func (s *ticker) List(ctx context.Context, opt database.ListOptions, dest interface{}) error {
 	q, args := opt.BuildQuery()
 	err := s.db.Select(ctx, dest, q, args...)
 	return err

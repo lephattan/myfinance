@@ -1,6 +1,7 @@
 package htmx
 
 import (
+	"myfinace/database"
 	"myfinace/model"
 	"myfinace/service"
 
@@ -16,10 +17,11 @@ func (c *HTMXTickerController) GetList() {
 	errors := []string{}
 	var tickers model.Tickers
 	ctx := c.Ctx.Request().Context()
-	// opt := database.ListOptions{
-	// 	Table: "tickers",
-	// }
-	if err := c.Service.List(ctx, &tickers); err != nil {
+
+	opt := database.ListOptions{
+		Table: "tickers",
+	}
+	if err := c.Service.List(ctx, opt, &tickers); err != nil {
 		errors = append(errors, err.Error())
 	}
 	data := iris.Map{
