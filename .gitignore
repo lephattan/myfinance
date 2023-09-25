@@ -27,3 +27,4 @@ go.work
 myfinace
 dev*
 !database/dev.go
+tmp/

@@ -19,7 +19,7 @@
 </head>
 
 <body>
-  <div class="nav">{{ partial "partials/nav" . }}</div>
+  <div class="nav">{{ template "partials/nav" . }}</div>
   <div class="errors">
     {{ if .Errors }} {{ range .Errors }}
     <p>{{ . }}</p>
@@ -27,7 +27,7 @@
   </div>
   {{ template "content" . }}
 
-  <footer>{{ partial "partials/footer" . }}</footer>
+  <footer>{{ template "partials/footer" . }}</footer>
 </body>
 
 </html>
