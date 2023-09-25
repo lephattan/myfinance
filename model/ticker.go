@@ -3,6 +3,9 @@ package model
 import (
 	"database/sql"
 	"fmt"
+	"log"
+	"myfinace/database"
+	"net/url"
 	"strings"
 )
 
@@ -38,6 +41,14 @@ func (t *Ticker) String() string {
 // List of Tickers
 type Tickers []*Ticker
 
+func (t *Tickers) TableName() string {
+	return "tickers"
+}
+
+func (t *Tickers) SearchColumns() []string {
+	return []string{"symbol", "name"}
+}
+
 // Scan binds mysql rows to this Tickers. NOTE: wtf is this
 func (ts *Tickers) Scan(rows *sql.Rows) (err error) {
 	cp := *ts
@@ -56,6 +67,21 @@ func (ts *Tickers) Scan(rows *sql.Rows) (err error) {
 	return rows.Err()
 }
 
+func (t *Tickers) ParseListOptions(q *url.Values) database.ListOptions {
+	opt := database.ParseListOptions(q)
+	opt.SetTableName(t.TableName())
+	if search := q.Get("s"); search != "" {
+		opt.Search(t.SearchColumns(), search)
+	}
+
+	log.Printf("Symbol: %s", q.Get("symbol"))
+	if symbol := q.Get("symbol"); symbol != "" {
+		opt.Where("symbol", symbol)
+	}
+
+	return opt
+}
+
 // The requests.
 // Ref: https://github.com/kataras/iris/blob/24ba4e8933b9d58096a56e5c6f2de968f80eb602/_examples/database/mysql/entity/product.go#L73C10-L73C10
 type (
@@ -63,7 +89,7 @@ type (
 		Symbol string `json:"symbol"`
 	}
 
-	UpdateProductRequest struct {
+	UpdateTickerRequest struct {
 		Name string `json:"name"`
 	} // at least 1 required.
 
