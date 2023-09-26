@@ -17,6 +17,10 @@ import (
 	"github.com/kataras/iris/v12/mvc"
 )
 
+type CanRegister interface {
+	Register(*fiber.App)
+}
+
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	// app_env := env.ReadEnv("APP_ENV", "production")
@@ -25,12 +29,9 @@ func main() {
 	app := fiber.New(fiber.Config{Views: views})
 	MakeAccessLog(app)
 
+	controller.RegisterRootController(app.Group("/"))
+
 	log.Fatal(app.Listen("0.0.0.0:8080"))
-	// defer ac.Close()
-	//
-	// app := iris.New()
-	// app.Logger()
-	//
 	// app.UseRouter(ac.Handler)
 	// app.Get("/ping", pong).Describe("health check")
 	//
@@ -68,10 +69,6 @@ func getRoot(ctx iris.Context) {
 		ctx.HTML("<h3>%s</h3>", err.Error())
 		return
 	}
-}
-
-func pong(ctx iris.Context) {
-	ctx.WriteString("pong")
 }
 
 func setup(app *mvc.Application) {

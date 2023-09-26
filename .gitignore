@@ -28,3 +28,4 @@ myfinace
 dev*
 !database/dev.go
 tmp/
+.air.toml
