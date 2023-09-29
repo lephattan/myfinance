@@ -3,7 +3,6 @@ package model
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"myfinace/database"
 	"net/url"
 	"strings"
@@ -74,7 +73,6 @@ func (t *Tickers) ParseListOptions(q *url.Values) database.ListOptions {
 		opt.Search(t.SearchColumns(), search)
 	}
 
-	log.Printf("Symbol: %s", q.Get("symbol"))
 	if symbol := q.Get("symbol"); symbol != "" {
 		opt.Where("symbol", symbol)
 	}

@@ -3,4 +3,5 @@
   <p>Add New Ticker</p>
   <div hx-get="htmx/components/ticker/addnewform" hx-trigger="load" hx-swap="outerHTML"></div>
 </div>
-<div id="ticker-list" hx-get="htmx/components/ticker/list" hx-trigger="load" hx-swap="outerHTML"></div>
+<div id="ticker-list" hx-get="htmx/components/ticker/list{{ if .QueryString }}?{{.QueryString}}{{ end }}"
+  hx-trigger="load" hx-swap="outerHTML"></div>

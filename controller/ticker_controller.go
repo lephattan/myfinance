@@ -20,11 +20,12 @@ type TickerController struct {
 }
 
 func TickerHanlde(c *fiber.Ctx) error {
+	queryString := string(c.Request().URI().QueryString())
 	data := fiber.Map{
-		"Title": "Tickers",
+		"Title":       "Tickers",
+		"QueryString": queryString,
 	}
 	return c.Render("ticker/tickers", data, "layouts/main")
-
 }
 
 func (c *TickerController) Get() {

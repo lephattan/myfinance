@@ -24,6 +24,7 @@ func HandleTickerList(c *fiber.Ctx) error {
 	app_env := env.ReadEnv("APP_ENV", "production")
 	db := database.NewDB(app_env)
 	errors := []string{}
+	queryString := string(c.Request().URI().QueryString())
 
 	var tickers model.Tickers
 	service := service.NewTickerService(db)
@@ -37,8 +38,9 @@ func HandleTickerList(c *fiber.Ctx) error {
 		errors = append(errors, err.Error())
 	}
 	data := fiber.Map{
-		"Tickers": tickers,
-		"Errors":  errors,
+		"Tickers":     tickers,
+		"Errors":      errors,
+		"QueryString": queryString,
 	}
 	return c.Render("parts/ticker/list", data)
 

@@ -1,5 +1,5 @@
 <div class="ticker-list" id="ticker-list" hx-trigger="new-ticker from:body" hx-swap="outerHTML"
-  hx-get="htmx/components/ticker/list">
+  hx-get="htmx/components/ticker/list{{ if .QueryString }}?{{.QueryString}}{{ end }}">
   <div class="errors">
     {{ if .Errors }} {{ range .Errors }}
     <p>{{ . }}</p>
