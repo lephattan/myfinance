@@ -6,15 +6,25 @@ import (
 	"myfinace/service"
 	"strings"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/kataras/iris/v12"
 )
 
-type TickerRequest struct {
+func RegisterTickerController(router fiber.Router) {
+	router.Get("/", TickerHanlde)
 }
 
 type TickerController struct {
 	Service service.TickerService
 	Ctx     iris.Context
+}
+
+func TickerHanlde(c *fiber.Ctx) error {
+	data := fiber.Map{
+		"Title": "Tickers",
+	}
+	return c.Render("ticker/tickers", data, "layouts/main")
+
 }
 
 func (c *TickerController) Get() {

@@ -1,15 +1,47 @@
 package htmx
 
 import (
+	"myfinace/database"
+	"myfinace/env"
 	"myfinace/model"
 	"myfinace/service"
+	"net/url"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/kataras/iris/v12"
 )
 
 type HTMXTickerController struct {
 	Service service.TickerService
 	Ctx     iris.Context
+}
+
+func RegisterTickerComponentController(router fiber.Router) {
+	router.Get("/list", HandleTickerList)
+}
+
+func HandleTickerList(c *fiber.Ctx) error {
+	app_env := env.ReadEnv("APP_ENV", "production")
+	db := database.NewDB(app_env)
+	errors := []string{}
+
+	var tickers model.Tickers
+	service := service.NewTickerService(db)
+	url, err := url.ParseRequestURI(c.OriginalURL())
+	if err != nil {
+		return err
+	}
+	urlValues := url.Query()
+	opt := tickers.ParseListOptions(&urlValues)
+	if err := service.List(c.Context(), opt, &tickers); err != nil {
+		errors = append(errors, err.Error())
+	}
+	data := fiber.Map{
+		"Tickers": tickers,
+		"Errors":  errors,
+	}
+	return c.Render("parts/ticker/list", data)
+
 }
 
 func (c *HTMXTickerController) GetList() {

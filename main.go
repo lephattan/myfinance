@@ -31,6 +31,9 @@ func main() {
 
 	controller.RegisterRootController(app.Group("/"))
 
+	controller.RegisterTickerController(app.Group("/ticker"))
+	htmx.RegisterTickerComponentController(app.Group("/htmx/components/ticker"))
+
 	log.Fatal(app.Listen("0.0.0.0:8080"))
 	// app.UseRouter(ac.Handler)
 	// app.Get("/ping", pong).Describe("health check")

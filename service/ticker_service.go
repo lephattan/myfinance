@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"myfinace/database"
-	"myfinace/env"
 	"myfinace/model"
 	"strings"
 )
@@ -16,7 +15,7 @@ type TickerService interface {
 	Update(ctx context.Context, t model.Ticker) (int, error)
 }
 
-func NewTickerService(e env.Env, db database.DB) TickerService {
+func NewTickerService(db database.DB) TickerService {
 	service := &ticker{db: db}
 	return service
 }
