@@ -6,6 +6,7 @@ import (
 	"myfinace/model"
 	"myfinace/service"
 	"net/url"
+	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/kataras/iris/v12"
@@ -18,6 +19,7 @@ type HTMXTickerController struct {
 
 func RegisterTickerComponentController(router fiber.Router) {
 	router.Get("/list", HandleTickerList)
+	router.Get("/detail/:symbol", HandleTickerDetail)
 }
 
 func HandleTickerList(c *fiber.Ctx) error {
@@ -43,28 +45,25 @@ func HandleTickerList(c *fiber.Ctx) error {
 		"QueryString": queryString,
 	}
 	return c.Render("parts/ticker/list", data)
-
 }
 
-func (c *HTMXTickerController) GetList() {
+func HandleTickerDetail(c *fiber.Ctx) error {
+	symbol := c.Params("symbol")
+	app_env := env.ReadEnv("APP_ENV", "production")
+	db := database.NewDB(app_env)
+	service := service.NewTickerService(db)
+	var ticker model.Ticker
 	errors := []string{}
-	var tickers model.Tickers
-	ctx := c.Ctx.Request().Context()
-	urlValues := c.Ctx.Request().URL.Query()
-	opt := tickers.ParseListOptions(&urlValues)
-
-	if err := c.Service.List(ctx, opt, &tickers); err != nil {
+	err := service.Get(c.Context(), symbol, &ticker)
+	if err != nil {
 		errors = append(errors, err.Error())
 	}
 	data := iris.Map{
-		"Tickers": tickers,
-		"Errors":  errors,
+		"Title":  strings.ToUpper(symbol),
+		"Ticker": &ticker,
+		"Errors": &errors,
 	}
-	if err := c.Ctx.View("parts/ticker/list", data); err != nil {
-		c.Ctx.HTML("<h3>%s</h3>", err.Error())
-		return
-	}
-
+	return c.Render("parts/ticker/detail", data)
 }
 
 func (c *HTMXTickerController) GetAddnewform() {

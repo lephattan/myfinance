@@ -1,0 +1,12 @@
+<div class="ticker-detail">
+  {{ if .Ticker }} {{ with .Ticker }}
+  <dl>
+    <dt>Symbol</dt>
+    <dd>{{ .Symbol }}</dd>
+    <dt><label for="ticker-name">Name</label></dt>
+    <dd>{{.Name}}</dd>
+  </dl>
+  {{ end }} {{else}}
+  <p>Ticker not found</p>
+  {{ end }}
+</div>

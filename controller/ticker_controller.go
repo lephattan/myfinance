@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"log"
 	"myfinace/model"
 	"myfinace/service"
 	"strings"
@@ -11,7 +12,8 @@ import (
 )
 
 func RegisterTickerController(router fiber.Router) {
-	router.Get("/", TickerHanlde)
+	router.Get("/", TickerListHanlde)
+	router.Get("/:symbol", TickerHanlde)
 }
 
 type TickerController struct {
@@ -19,7 +21,7 @@ type TickerController struct {
 	Ctx     iris.Context
 }
 
-func TickerHanlde(c *fiber.Ctx) error {
+func TickerListHanlde(c *fiber.Ctx) error {
 	queryString := string(c.Request().URI().QueryString())
 	data := fiber.Map{
 		"Title":       "Tickers",
@@ -28,34 +30,14 @@ func TickerHanlde(c *fiber.Ctx) error {
 	return c.Render("ticker/tickers", data, "layouts/main")
 }
 
-func (c *TickerController) Get() {
-	c.Ctx.ViewLayout("main")
-	data := iris.Map{
-		"Title": "Tickers",
-	}
-	if err := c.Ctx.View("ticker/tickers", data); err != nil {
-		c.Ctx.HTML("<h3>%s</h3>", err.Error())
-		return
-	}
-}
-
-func (c *TickerController) GetBy(symbol string) {
-	c.Ctx.ViewLayout("main")
-	var ticker model.Ticker
-	errors := []string{}
-	err := c.Service.Get(c.Ctx.Request().Context(), symbol, &ticker)
-	if err != nil {
-		errors = append(errors, err.Error())
-	}
-	data := iris.Map{
+func TickerHanlde(c *fiber.Ctx) error {
+	log.Print("Ticker detail handling")
+	symbol := c.Params("symbol")
+	data := fiber.Map{
 		"Title":  strings.ToUpper(symbol),
-		"Ticker": &ticker,
-		"Errors": &errors,
+		"Symbol": symbol,
 	}
-	if err := c.Ctx.View("ticker/detail", data); err != nil {
-		c.Ctx.HTML("<h3>%s</h3>", err.Error())
-		return
-	}
+	return c.Render("ticker/detail", data, "layouts/main")
 }
 
 func (c *TickerController) PostBy(symbol string) {

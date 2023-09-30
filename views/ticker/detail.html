@@ -1,14 +1,2 @@
-<div class="ticker-detail">
-  {{ if .Ticker }} {{ with .Ticker }}
-  <form method="post">
-    <dl>
-      <dt>Symbol</dt>
-      <dd>{{ .Symbol }}</dd>
-      <dt><label for="ticker-name">Name</label></dt>
-      <dd><input name="ticker-name" value="{{.Name}}" /></dd>
-    </dl>
-
-    <button type="submit">Save</button>
-  </form>
-  {{ end }}{{ end }}
+<div class="ticker-detail" hx-get="/htmx/components/ticker/detail/{{.Symbol}}" hx-trigger="load" hx-swap="outerHTML">
 </div>
