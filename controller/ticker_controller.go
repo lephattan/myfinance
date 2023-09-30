@@ -9,20 +9,24 @@ import (
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/kataras/iris/v12"
 )
 
 // Register handlers to prefix "/ticker"
 func RegisterTickerController(router fiber.Router) {
+	router.Use(TickerMiddleware)
 	router.Get("/", TickerListHanlde)
 	router.Post("/", HanldeTickerCreate)
 	router.Get("/:symbol", TickerHanlde)
 	router.Put("/:symbol", HandleTickerUpdate)
 }
 
-type TickerController struct {
-	Service service.TickerService
-	Ctx     iris.Context
+func TickerMiddleware(c *fiber.Ctx) error {
+	if db, ok := c.Locals("DB").(database.DB); ok {
+		c.Locals("Service", service.NewTickerService(db))
+	} else {
+		c.Locals("Service", service.NewTickerService(database.GetDB()))
+	}
+	return c.Next()
 }
 
 // Handle ticker list request
@@ -52,10 +56,9 @@ func HandleTickerUpdate(c *fiber.Ctx) error {
 		Symbol: symbol,
 		Name:   c.FormValue("ticker-name"),
 	}
+	svc, _ := c.Locals("Service").(service.TickerService)
 
-	db := database.GetDB()
-	service := service.NewTickerService(db)
-	_, err := service.Update(c.Context(), ticker)
+	_, err := svc.Update(c.Context(), ticker)
 	if err != nil {
 		return c.SendString(fmt.Sprintf("<h3>%s</h3>", err.Error()))
 	}

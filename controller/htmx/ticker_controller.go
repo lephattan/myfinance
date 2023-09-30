@@ -5,26 +5,29 @@ import (
 	"fmt"
 	"log"
 	"myfinace/database"
-	"myfinace/env"
 	"myfinace/model"
 	"myfinace/service"
 	"net/url"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/kataras/iris/v12"
 )
-
-type HTMXTickerController struct {
-	Service service.TickerService
-	Ctx     iris.Context
-}
 
 // Register handlers to prefix "/htmx/components/ticker"
 func RegisterTickerComponentController(router fiber.Router) {
+	router.Use(TickerMiddleware)
 	router.Get("/list", HandleTickerList)
 	router.Get("/detail/:symbol", HandleTickerDetail)
 	router.Get("/edit-form/:symbol", HandleTickerEditForm)
 	router.Get("/add-form", HandleTickerAddForm).Name("CTickerAddForm")
+}
+
+func TickerMiddleware(c *fiber.Ctx) error {
+	if db, ok := c.Locals("DB").(database.DB); ok {
+		c.Locals("Service", service.NewTickerService(db))
+	} else {
+		c.Locals("Service", service.NewTickerService(database.GetDB()))
+	}
+	return c.Next()
 }
 
 // Get ticker by its symbol
@@ -36,20 +39,18 @@ func GetTicker(symbol string, db database.DB, ctx context.Context) (model.Ticker
 }
 
 func HandleTickerList(c *fiber.Ctx) error {
-	app_env := env.ReadEnv("APP_ENV", "production")
-	db := database.NewDB(app_env)
 	errors := []string{}
 	queryString := string(c.Request().URI().QueryString())
 
 	var tickers model.Tickers
-	service := service.NewTickerService(db)
+	svc, _ := c.Locals("Service").(service.TickerService)
 	url, err := url.ParseRequestURI(c.OriginalURL())
 	if err != nil {
 		return err
 	}
 	urlValues := url.Query()
 	opt := tickers.ParseListOptions(&urlValues)
-	if err := service.List(c.Context(), opt, &tickers); err != nil {
+	if err := svc.List(c.Context(), opt, &tickers); err != nil {
 		errors = append(errors, err.Error())
 	}
 	data := fiber.Map{
@@ -62,12 +63,10 @@ func HandleTickerList(c *fiber.Ctx) error {
 
 func HandleTickerDetail(c *fiber.Ctx) error {
 	symbol := c.Params("symbol")
-	app_env := env.ReadEnv("APP_ENV", "production")
-	db := database.NewDB(app_env)
-	service := service.NewTickerService(db)
+	svc, _ := c.Locals("Service").(service.TickerService)
 	var ticker model.Ticker
 	errors := []string{}
-	err := service.Get(c.Context(), symbol, &ticker)
+	err := svc.Get(c.Context(), symbol, &ticker)
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
@@ -81,8 +80,9 @@ func HandleTickerDetail(c *fiber.Ctx) error {
 func HandleTickerEditForm(c *fiber.Ctx) error {
 	symbol := c.Params("symbol")
 	log.Printf("Edit form for %s", symbol)
-	db := database.GetDB()
-	ticker, err := GetTicker(symbol, db, c.Context())
+	svc, _ := c.Locals("Service").(service.TickerService)
+	var ticker model.Ticker
+	err := svc.Get(c.Context(), symbol, ticker)
 	if err != nil {
 		return c.SendString(fmt.Sprintf("<h3>%s</h3>", err.Error()))
 	}
