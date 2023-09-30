@@ -17,10 +17,6 @@ import (
 	"github.com/kataras/iris/v12/mvc"
 )
 
-type CanRegister interface {
-	Register(*fiber.App)
-}
-
 func main() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	// app_env := env.ReadEnv("APP_ENV", "production")
@@ -28,6 +24,8 @@ func main() {
 
 	app := fiber.New(fiber.Config{Views: views})
 	MakeAccessLog(app)
+
+	app.Use(AppMiddleWare)
 
 	controller.RegisterRootController(app.Group("/"))
 
@@ -51,6 +49,12 @@ func main() {
 	//
 	// app.Get("/", getRoot)
 	// app.Listen("0.0.0.0:8080")
+}
+
+func AppMiddleWare(c *fiber.Ctx) error {
+	db := database.GetDB()
+	c.Locals("DB", db)
+	return c.Next()
 }
 
 func MakeViews() *html.Engine {
@@ -84,17 +88,6 @@ func setup(app *mvc.Application) {
 	app.Handle(new(controller.GreetController))
 }
 
-func tickerSetup(app *mvc.Application) {
-	app_env := env.ReadEnv("APP_ENV", "production")
-	app.Register(
-		app_env,
-		database.NewDB,
-		service.NewTickerService,
-	)
-
-	app.Handle(new(controller.TickerController))
-}
-
 func portfolioSetup(app *mvc.Application) {
 	app_env := env.ReadEnv("APP_ENV", "production")
 	app.Register(
@@ -125,14 +118,4 @@ func htmxComponentSetup(app *mvc.Application) {
 		service.NewTransactionService,
 	)
 	app.Handle(new(htmx.HtmxTransactionController))
-}
-
-func htmxTickerSetup(app *mvc.Application) {
-	app_env := env.ReadEnv("APP_ENV", "production")
-	app.Register(
-		app_env,
-		database.NewDB,
-		service.NewTickerService,
-	)
-	app.Handle(new(htmx.HTMXTickerController))
 }
