@@ -2,7 +2,7 @@ package controller
 
 import (
 	"fmt"
-	"log"
+	"myfinace/database"
 	"myfinace/model"
 	"myfinace/service"
 	"strings"
@@ -11,9 +11,11 @@ import (
 	"github.com/kataras/iris/v12"
 )
 
+// Register handlers to prefix "/ticker"
 func RegisterTickerController(router fiber.Router) {
 	router.Get("/", TickerListHanlde)
 	router.Get("/:symbol", TickerHanlde)
+	router.Put("/:symbol", HandleTickerUpdate)
 }
 
 type TickerController struct {
@@ -21,6 +23,7 @@ type TickerController struct {
 	Ctx     iris.Context
 }
 
+// Handle ticker list request
 func TickerListHanlde(c *fiber.Ctx) error {
 	queryString := string(c.Request().URI().QueryString())
 	data := fiber.Map{
@@ -30,8 +33,8 @@ func TickerListHanlde(c *fiber.Ctx) error {
 	return c.Render("ticker/tickers", data, "layouts/main")
 }
 
+// Handle ticker detail request
 func TickerHanlde(c *fiber.Ctx) error {
-	log.Print("Ticker detail handling")
 	symbol := c.Params("symbol")
 	data := fiber.Map{
 		"Title":  strings.ToUpper(symbol),
@@ -40,16 +43,19 @@ func TickerHanlde(c *fiber.Ctx) error {
 	return c.Render("ticker/detail", data, "layouts/main")
 }
 
-func (c *TickerController) PostBy(symbol string) {
-	symbol = strings.TrimSpace(symbol)
+// Handle ticker update request
+func HandleTickerUpdate(c *fiber.Ctx) error {
+	symbol := strings.TrimSpace(c.Params("symbol"))
 	ticker := model.Ticker{
 		Symbol: symbol,
-		Name:   c.Ctx.FormValue("ticker-name"),
+		Name:   c.FormValue("ticker-name"),
 	}
-	_, err := c.Service.Update(c.Ctx.Request().Context(), ticker)
+
+	db := database.GetDB()
+	service := service.NewTickerService(db)
+	_, err := service.Update(c.Context(), ticker)
 	if err != nil {
-		c.Ctx.HTML("<h3>%s</h3>", err.Error())
-		return
+		return c.SendString(fmt.Sprintf("<h3>%s</h3>", err.Error()))
 	}
-	c.Ctx.Redirect(fmt.Sprintf("/ticker/%s", symbol), iris.StatusSeeOther)
+	return c.Redirect(fmt.Sprintf("/htmx/components/ticker/detail/%s", symbol), fiber.StatusSeeOther)
 }

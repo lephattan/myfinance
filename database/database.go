@@ -34,6 +34,14 @@ type Record interface {
 	PrimaryKey() string // the primary key of the record.
 }
 
+// Return DB based on "APP_ENV" environment variable
+func GetDB() DB {
+	app_env := env.ReadEnv("APP_ENV", "production")
+	db := NewDB(app_env)
+	return db
+}
+
+// Return DB besed on given Env
 func NewDB(e env.Env) DB {
 	switch e {
 	case env.PROD:

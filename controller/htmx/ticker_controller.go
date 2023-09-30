@@ -1,12 +1,14 @@
 package htmx
 
 import (
+	"context"
+	"fmt"
+	"log"
 	"myfinace/database"
 	"myfinace/env"
 	"myfinace/model"
 	"myfinace/service"
 	"net/url"
-	"strings"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/kataras/iris/v12"
@@ -17,9 +19,19 @@ type HTMXTickerController struct {
 	Ctx     iris.Context
 }
 
+// Register handlers to prefix "/htmx/components/ticker"
 func RegisterTickerComponentController(router fiber.Router) {
 	router.Get("/list", HandleTickerList)
 	router.Get("/detail/:symbol", HandleTickerDetail)
+	router.Get("/edit-form/:symbol", HandleTickerEditForm)
+}
+
+// Get ticker by its symbol
+func GetTicker(symbol string, db database.DB, ctx context.Context) (model.Ticker, error) {
+	service := service.NewTickerService(db)
+	var ticker model.Ticker
+	err := service.Get(ctx, symbol, &ticker)
+	return ticker, err
 }
 
 func HandleTickerList(c *fiber.Ctx) error {
@@ -58,12 +70,25 @@ func HandleTickerDetail(c *fiber.Ctx) error {
 	if err != nil {
 		errors = append(errors, err.Error())
 	}
-	data := iris.Map{
-		"Title":  strings.ToUpper(symbol),
+	data := fiber.Map{
 		"Ticker": &ticker,
 		"Errors": &errors,
 	}
 	return c.Render("parts/ticker/detail", data)
+}
+
+func HandleTickerEditForm(c *fiber.Ctx) error {
+	symbol := c.Params("symbol")
+	log.Printf("Edit form for %s", symbol)
+	db := database.GetDB()
+	ticker, err := GetTicker(symbol, db, c.Context())
+	if err != nil {
+		return c.SendString(fmt.Sprintf("<h3>%s</h3>", err.Error()))
+	}
+	data := fiber.Map{
+		"Ticker": &ticker,
+	}
+	return c.Render("parts/ticker/edit-form", data)
 }
 
 func (c *HTMXTickerController) GetAddnewform() {

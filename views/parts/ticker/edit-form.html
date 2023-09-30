@@ -1,0 +1,14 @@
+{{ if .Ticker }} {{ with .Ticker }}
+<form hx-put="/ticker/{{.Symbol}}" hx-target="this" hx-swap="outerHTML">
+  <div>
+    <label>Symbol: </label>
+    {{.Symbol}}
+  </div>
+  <div>
+    <label for="ticker-name">Name: </label>
+    <input type="text" name="ticker-name" value="{{.Name}}" />
+  </div>
+  <button>Save</button>
+  <button hx-get="/htmx/components/ticker/detail/{{.Symbol}}">Cancel</button>
+</form>
+{{ end }} {{end}}
