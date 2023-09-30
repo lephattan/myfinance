@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"myfinace/controller/htmx"
 	"myfinace/database"
 	"myfinace/model"
 	"myfinace/service"
@@ -14,6 +15,7 @@ import (
 // Register handlers to prefix "/ticker"
 func RegisterTickerController(router fiber.Router) {
 	router.Get("/", TickerListHanlde)
+	router.Post("/", HanldeTickerCreate)
 	router.Get("/:symbol", TickerHanlde)
 	router.Put("/:symbol", HandleTickerUpdate)
 }
@@ -58,4 +60,22 @@ func HandleTickerUpdate(c *fiber.Ctx) error {
 		return c.SendString(fmt.Sprintf("<h3>%s</h3>", err.Error()))
 	}
 	return c.Redirect(fmt.Sprintf("/htmx/components/ticker/detail/%s", symbol), fiber.StatusSeeOther)
+}
+
+// Hanlde ticker create request
+func HanldeTickerCreate(c *fiber.Ctx) error {
+	symbol := c.FormValue("ticker-symbol")
+	name := c.FormValue("ticker-name", "")
+	ticker := model.Ticker{
+		Symbol: symbol,
+		Name:   name,
+	}
+	db := database.GetDB()
+	service := service.NewTickerService(db)
+	_, err := service.Create(c.Context(), ticker)
+	if err != nil {
+		return c.SendString(fmt.Sprintf("<h3>%s</h3>", err.Error()))
+	}
+	c.Set("HX-Trigger", "new-ticker")
+	return htmx.HandleTickerAddForm(c)
 }

@@ -24,6 +24,7 @@ func RegisterTickerComponentController(router fiber.Router) {
 	router.Get("/list", HandleTickerList)
 	router.Get("/detail/:symbol", HandleTickerDetail)
 	router.Get("/edit-form/:symbol", HandleTickerEditForm)
+	router.Get("/add-form", HandleTickerAddForm).Name("CTickerAddForm")
 }
 
 // Get ticker by its symbol
@@ -91,38 +92,6 @@ func HandleTickerEditForm(c *fiber.Ctx) error {
 	return c.Render("parts/ticker/edit-form", data)
 }
 
-func (c *HTMXTickerController) GetAddnewform() {
-	data := iris.Map{
-		"ID": "add-ticker",
-	}
-	if err := c.Ctx.View("parts/ticker/add-new-form", data); err != nil {
-		c.Ctx.HTML("<h3>%s</h3>", err.Error())
-		return
-	}
-}
-
-func (c *HTMXTickerController) PostAddnewform() {
-	errors := []string{}
-	ctx := c.Ctx
-	symbol := ctx.FormValue("ticker-symbol")
-	name := ctx.FormValueDefault("ticker-name", "")
-	ticker := model.Ticker{
-		Symbol: symbol,
-		Name:   name,
-	}
-
-	_, err := c.Service.Create(c.Ctx.Request().Context(), ticker)
-	if err != nil {
-		errors = append(errors, err.Error())
-	} else {
-		ctx.Header("HX-Trigger", "new-ticker")
-	}
-	data := iris.Map{
-		"Errors": errors,
-	}
-
-	if err := c.Ctx.View("parts/ticker/add-new-form", data); err != nil {
-		c.Ctx.HTML("<h3>%s</h3>", err.Error())
-		return
-	}
+func HandleTickerAddForm(c *fiber.Ctx) error {
+	return c.Render("parts/ticker/add-form", fiber.Map{})
 }
