@@ -2,10 +2,12 @@ package controller
 
 import (
 	"fmt"
+	"myfinace/middleware"
 	"myfinace/model"
 	"myfinace/service"
 	"strings"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/kataras/iris/v12"
 )
 
@@ -19,20 +21,19 @@ func (c *PortfolioController) Error(err string) {
 	c.Errors = append(c.Errors, err)
 }
 
-func (c *PortfolioController) Get() {
-	c.Ctx.ViewLayout("main")
-	var portfolios model.Portfolios
-	ctx := c.Ctx.Request().Context()
-	c.Service.List(ctx, &portfolios)
-	data := iris.Map{
-		"Title":      "Portfolios",
-		"Portfolios": portfolios,
-		"Errors":     c.Errors,
+func RegisterPortfolioController(router fiber.Router) {
+	router.Use(middleware.PortfolioMiddleware)
+	router.Get("/", HandlePortfolioList)
+
+}
+
+func HandlePortfolioList(c *fiber.Ctx) error {
+	queryString := string(c.Request().URI().QueryString())
+	data := fiber.Map{
+		"Title":       "Portfolio",
+		"QueryString": queryString,
 	}
-	if err := c.Ctx.View("portfolio/portfolios", data); err != nil {
-		c.Ctx.HTML("<h3>%s</h3>", err.Error())
-		return
-	}
+	return c.Render("portfolio/portfolios", data, "layouts/main")
 }
 
 func (c *PortfolioController) Post() {

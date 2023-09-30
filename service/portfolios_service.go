@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"myfinace/database"
-	"myfinace/env"
 	"myfinace/model"
 	"strings"
 )
@@ -17,7 +16,7 @@ type PortfolioService interface {
 	Delete(ctx context.Context, id uint64) (int, error)
 }
 
-func NewPortfolioService(e env.Env, db database.DB) PortfolioService {
+func NewPortfolioService(db database.DB) PortfolioService {
 	service := &portfolio{db: db}
 	return service
 }

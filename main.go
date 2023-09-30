@@ -32,14 +32,10 @@ func main() {
 	controller.RegisterTickerController(app.Group("/ticker"))
 	htmx.RegisterTickerComponentController(app.Group("/htmx/components/ticker"))
 
+	controller.RegisterPortfolioController(app.Group("/portfolio"))
+	htmx.RegisterPortfolioComponentController(app.Group("/htmx/components/portfolio"))
+
 	log.Fatal(app.Listen("0.0.0.0:8080"))
-	// app.UseRouter(ac.Handler)
-	// app.Get("/ping", pong).Describe("health check")
-	//
-	// app.RegisterView(makeView(app_env))
-	//
-	// mvc.Configure(app.Party("greet"), setup)
-	// mvc.Configure(app.Party("ticker"), tickerSetup)
 	// mvc.Configure(app.Party("portfolio"), portfolioSetup)
 	// mvc.Configure(app.Party("transaction"), transactionSetup)
 	//

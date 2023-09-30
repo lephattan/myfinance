@@ -1,0 +1,23 @@
+<div class="portfolio-list" id="portfolio-list" hx-trigger="new-portfolio from:body" hx-swap="outerHTML"
+  hx-get="htmx/components/portfolio/list{{ if .QueryString }}?{{.QueryString}}{{ end }}">
+  {{ if .Portfolios }}
+  <table>
+    <tr>
+      <th>ID</th>
+      <th>Name</th>
+      <th>Description</th>
+    </tr>
+    {{range .Portfolios }}
+    <tr>
+      <td>{{ .ID }}</td>
+      <td>
+        <a href="/portfolio/{{ .ID }}">{{ .Name}}</a>
+      </td>
+      <td>{{ .Description }}</td>
+    </tr>
+    {{ end }}
+  </table>
+  {{ else }}
+  <p>No portfolio found!</p>
+  {{ end }}
+</div>
