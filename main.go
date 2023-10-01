@@ -84,17 +84,6 @@ func setup(app *mvc.Application) {
 	app.Handle(new(controller.GreetController))
 }
 
-func portfolioSetup(app *mvc.Application) {
-	app_env := env.ReadEnv("APP_ENV", "production")
-	app.Register(
-		app_env,
-		database.NewDB,
-		service.NewPortfolioService,
-	)
-
-	app.Handle(new(controller.PortfolioController))
-}
-
 func transactionSetup(app *mvc.Application) {
 	app_env := env.ReadEnv("APP_ENV", "production")
 	app.Register(

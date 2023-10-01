@@ -12,6 +12,7 @@ type PortfolioService interface {
 	List(ctx context.Context, dest interface{}) error
 	Create(ctx context.Context, t model.Portfolio) (int64, error)
 	Get(ctx context.Context, id uint64, dest interface{}) (err error)
+	// Update Portfolio to database, return number of affected rows and error
 	Update(ctx context.Context, t model.Portfolio) (int, error)
 	Delete(ctx context.Context, id uint64) (int, error)
 }
@@ -53,6 +54,7 @@ func (s *portfolio) Get(ctx context.Context, id uint64, dest interface{}) (err e
 	return
 }
 
+// Update Portfolio to database, return number of affected rows and error
 func (s *portfolio) Update(ctx context.Context, t model.Portfolio) (int, error) {
 	if !t.ValidateInsert() {
 		return 0, database.ErrUnprocessable
