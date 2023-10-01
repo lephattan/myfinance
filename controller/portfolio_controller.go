@@ -75,7 +75,6 @@ func HandlePortfolioUpdate(c *fiber.Ctx) error {
 }
 
 // Portfolio delete request handler
-
 func HandlePortfolioDelete(c *fiber.Ctx) error {
 	id, err := c.ParamsInt("id")
 	if err != nil {
@@ -88,12 +87,3 @@ func HandlePortfolioDelete(c *fiber.Ctx) error {
 	c.Set("HX-Redirect", c.App().GetRoute("VPortfolioList").Path)
 	return c.SendString("deleted")
 }
-
-// func (c *PortfolioController) PostDeleteBy(id uint64) {
-// 	_, err := c.Service.Delete(c.Ctx.Request().Context(), id)
-// 	if err != nil {
-// 		c.Ctx.HTML("<h3>%s</h3>", err.Error())
-// 		return
-// 	}
-// 	c.Ctx.Redirect("/portfolio", iris.StatusSeeOther)
-// }

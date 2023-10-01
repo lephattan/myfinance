@@ -8,13 +8,7 @@ import (
 	"myfinace/service"
 
 	"github.com/gofiber/fiber/v2"
-	"github.com/kataras/iris/v12"
 )
-
-type TransactionController struct {
-	Service service.TransactionService
-	Ctx     iris.Context
-}
 
 func RegisterTransactionController(router fiber.Router) {
 	router.Use(middleware.TransactionMiddleware)
