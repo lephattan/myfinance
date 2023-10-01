@@ -36,15 +36,15 @@ var TransactionTypes = [...]TransactionType{
 
 type Transaction struct {
 	ID              uint64             `db:"id"`
-	Date            uint64             `db:"date"`
-	TickerSymbol    string             `db:"ticker_symbol"`
-	PortfolioID     uint64             `db:"portfolio_id"`
-	TransactionType TransactionType    `db:"transaction_type"`
-	Volume          uint64             `db:"volume"`
-	Price           uint64             `db:"price"`
-	Commission      uint64             `db:"commission"`
-	Note            sql.NullString     `db:"note"`
-	RefID           database.NullInt64 `db:"ref_id"`
+	Date            database.UnixDate  `db:"date" form:"date"`
+	TickerSymbol    string             `db:"ticker_symbol" form:"ticker-symbol"`
+	PortfolioID     uint64             `db:"portfolio_id" form:"portfolio-id"`
+	TransactionType TransactionType    `db:"transaction_type" form:"transaction-type"`
+	Volume          uint64             `db:"volume" form:"volume"`
+	Price           uint64             `db:"price" form:"price"`
+	Commission      uint64             `db:"commission" form:"commission"`
+	Note            sql.NullString     `db:"note" form:"note"`
+	RefID           database.NullInt64 `db:"ref_id" form:"ref-id"`
 }
 
 func (t Transaction) TableName() string {
@@ -60,7 +60,7 @@ func (t Transaction) SortBy() string {
 }
 
 func (t *Transaction) ValidateInsert() bool {
-	return t.Date > 0 &&
+	return t.Date.Init64() > 0 &&
 		t.TickerSymbol != "" &&
 		t.ValidateType() &&
 		t.Volume > 0 &&

@@ -17,7 +17,7 @@
     {{range .Transactions }}
     <tr>
       <td>{{ .ID }}</td>
-      <td>{{ UnixTimeFmt .Date "02-01-2006" }}</td>
+      <td>{{ .Date.String }}</td>
       <td>{{ .TickerSymbol }}</td>
       <td>{{ .TransactionType }}</td>
       <td>{{ .Volume }}</td>

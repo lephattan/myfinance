@@ -1,23 +1,17 @@
-<form hx-post="/htmx/components/transaction/addnewform" hx-swap="outerHTML">
-  <div class="errors">
-    {{ if .Errors }} {{ range .Errors }}
-    <p>{{ . }}</p>
-    {{ end }} {{ end }}
-  </div>
+<form hx-post="/transaction" hx-swap="outerHTML">
   <label for="date">Date</label>
   <input name="date" required type="date" />
   <br />
 
-  <label for="ticker">Ticker</label>
-  <input name="ticker" required type="text" value="xxx" />
+  <label for="ticker-symbol">Ticker</label>
+  <input name="ticker-symbol" required type="text" value="xxx" />
   <br />
 
-  <label for="type">Type</label>
-  <select name="type" required value="buy">
+  <label for="transaction-type">Type</label>
+  <select name="transaction-type" required value="buy">
     <option disabled selected value="">Select a type</option>
     <option value="buy">Buy</option>
     <option value="sell">Sell</option>
-    <option value="some">Some</option>
   </select>
   <br />
 
