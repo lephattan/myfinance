@@ -12,6 +12,7 @@ import (
 func RegisterPortfolioComponentController(router fiber.Router) {
 	router.Use(middleware.PortfolioMiddleware)
 	router.Get("/list", HandlePortfolioList)
+	router.Get("/add-form", HandlePortfolioAddForm)
 
 }
 
@@ -38,5 +39,8 @@ func HandlePortfolioList(c *fiber.Ctx) error {
 		"Portfolios":  portfolios,
 	}
 	return c.Render("parts/portfolio/list", data)
+}
 
+func HandlePortfolioAddForm(c *fiber.Ctx) error {
+	return c.Render("parts/portfolio/add-form", fiber.Map{})
 }

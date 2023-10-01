@@ -2,6 +2,7 @@ package controller
 
 import (
 	"fmt"
+	"myfinace/controller/htmx"
 	"myfinace/middleware"
 	"myfinace/model"
 	"myfinace/service"
@@ -24,9 +25,11 @@ func (c *PortfolioController) Error(err string) {
 func RegisterPortfolioController(router fiber.Router) {
 	router.Use(middleware.PortfolioMiddleware)
 	router.Get("/", HandlePortfolioList)
+	router.Post("/", HandlePortfolioCreate)
 
 }
 
+// Get portfolios request
 func HandlePortfolioList(c *fiber.Ctx) error {
 	queryString := string(c.Request().URI().QueryString())
 	data := fiber.Map{
@@ -34,6 +37,21 @@ func HandlePortfolioList(c *fiber.Ctx) error {
 		"QueryString": queryString,
 	}
 	return c.Render("portfolio/portfolios", data, "layouts/main")
+}
+
+// Create portfolio request handler
+func HandlePortfolioCreate(c *fiber.Ctx) error {
+	portfolio := new(model.Portfolio)
+	if err := c.BodyParser(portfolio); err != nil {
+		return err
+	}
+	svc, _ := c.Locals("Service").(service.PortfolioService)
+	if _, err := svc.Create(c.Context(), *portfolio); err != nil {
+		return err
+	}
+	c.Set("HX-Trigger", "new-portfolio")
+	return htmx.HandlePortfolioAddForm(c)
+
 }
 
 func (c *PortfolioController) Post() {

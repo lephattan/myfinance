@@ -8,8 +8,8 @@ import (
 
 type Portfolio struct {
 	ID          uint64 `db:"id" json:"id"`
-	Name        string `db:"name" json:"name"`
-	Description string `db:"description" json:"description"`
+	Name        string `db:"name" json:"name" form:"name"`
+	Description string `db:"description" json:"description" form:"description"`
 }
 
 func (t *Portfolio) TableName() string {

@@ -1,13 +1,7 @@
 <h3>Portfolios page</h3>
 <div>
   <p>Add New Portfolio</p>
-  <form method="post">
-    <label for="portfolio-name">Name</label>
-    <input name="portfolio-name" required type="text" />
-    <label for="portfolio-des">Description</label>
-    <input name="portfolio-des" type="text" />
-    <button type="submit">Add</button>
-  </form>
+  <div hx-get="htmx/components/portfolio/add-form" hx-trigger="load" hx-swap="outerHTML"></div>
 </div>
 <div id="portfolio-list" hx-get="htmx/components/portfolio/list{{ if .QueryString }}?{{.QueryString}}{{ end }}"
   hx-trigger="load" hx-swap="outerHTML"></div>
