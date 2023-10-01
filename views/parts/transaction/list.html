@@ -1,10 +1,5 @@
-<div class="transactions-list" id="transactions-list" hx-trigger="new-transaction from:body" hx-swap="outerHTML"
-  hx-get="htmx/components/transaction/list">
-  <div class="errors">
-    {{ if .Errors }} {{ range .Errors }}
-    <p>{{ . }}</p>
-    {{ end }} {{ end }}
-  </div>
+<div class="transactions-list" id="transaction-list" hx-trigger="new-transaction from:body" hx-swap="outerHTML"
+  hx-get="htmx/components/transaction/list{{ if .QueryString }}?{{.QueryString}}{{ end }}">
   {{ if .Transactions }}
   <table>
     <tr>

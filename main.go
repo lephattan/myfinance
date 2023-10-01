@@ -35,6 +35,9 @@ func main() {
 	controller.RegisterPortfolioController(app.Group("/portfolio"))
 	htmx.RegisterPortfolioComponentController(app.Group("/htmx/components/portfolio"))
 
+	controller.RegisterTransactionController(app.Group("/transaction"))
+	htmx.RegisterTransactionComponentController(app.Group("/htmx/components/transaction"))
+
 	log.Fatal(app.Listen("0.0.0.0:8080"))
 	// mvc.Configure(app.Party("portfolio"), portfolioSetup)
 	// mvc.Configure(app.Party("transaction"), transactionSetup)
@@ -82,25 +85,4 @@ func setup(app *mvc.Application) {
 		service.NewGreetService,
 	)
 	app.Handle(new(controller.GreetController))
-}
-
-func transactionSetup(app *mvc.Application) {
-	app_env := env.ReadEnv("APP_ENV", "production")
-	app.Register(
-		app_env,
-		database.NewDB,
-		service.NewTransactionService,
-	)
-
-	app.Handle(new(controller.TransactionController))
-}
-
-func htmxComponentSetup(app *mvc.Application) {
-	app_env := env.ReadEnv("APP_ENV", "production")
-	app.Register(
-		app_env,
-		database.NewDB,
-		service.NewTransactionService,
-	)
-	app.Handle(new(htmx.HtmxTransactionController))
 }

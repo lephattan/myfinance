@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"myfinace/database"
+	"net/url"
 	"strings"
 )
 
@@ -14,6 +15,19 @@ const (
 	Buy  TransactionType = "buy"
 	Sell                 = "sell"
 )
+
+// transaction table name
+func TransactionsTable() string { return "transactions" }
+
+// transaction columns to perform search query
+func TransactionsSearchColumns() []string {
+	return []string{
+		"date",
+		"ticker_symbol",
+		"transaction_type",
+		"note",
+	}
+}
 
 var TransactionTypes = [...]TransactionType{
 	Buy,
@@ -116,4 +130,30 @@ func (ts *Transactions) Scan(rows *sql.Rows) (err error) {
 	*ts = cp
 	return rows.Err()
 
+}
+
+func (t *Transactions) ParseListOptions(q *url.Values) database.ListOptions {
+	opt := database.ParseListOptions(q)
+	opt.SetTableName(TransactionsTable())
+	if search := q.Get("s"); search != "" {
+		opt.Search(TransactionsSearchColumns(), search)
+	}
+
+	if id := q.Get("id"); id != "" {
+		opt.Where("id", id)
+	}
+
+	if date := q.Get("date"); date != "" {
+		opt.Where("date", date)
+	}
+
+	if portfolio_id := q.Get("portfolio_id"); portfolio_id != "" {
+		opt.Where("portfolio_id", portfolio_id)
+	}
+
+	if transaction_type := q.Get("transaction_type"); transaction_type != "" {
+		opt.Where("transaction_type", transaction_type)
+	}
+
+	return opt
 }

@@ -5,7 +5,6 @@ import (
 	"database/sql"
 	"fmt"
 	"myfinace/database"
-	"myfinace/env"
 	"myfinace/model"
 )
 
@@ -17,7 +16,7 @@ type TransactionService interface {
 	Delete(ctx context.Context, id uint64) (int, error)
 }
 
-func NewTransactionService(e env.Env, db database.DB) (service TransactionService) {
+func NewTransactionService(db database.DB) (service TransactionService) {
 	service = &transaction{db: db}
 	return
 }

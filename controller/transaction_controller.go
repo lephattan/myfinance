@@ -5,17 +5,36 @@ import (
 	"log"
 	"myfinace/database"
 	"myfinace/helper"
+	"myfinace/middleware"
 	"myfinace/model"
+	"myfinace/names"
 	"myfinace/service"
 	"strings"
 	"time"
 
+	"github.com/gofiber/fiber/v2"
 	"github.com/kataras/iris/v12"
 )
 
 type TransactionController struct {
 	Service service.TransactionService
 	Ctx     iris.Context
+}
+
+func RegisterTransactionController(router fiber.Router) {
+	router.Use(middleware.TransactionMiddleware)
+
+	router.Get("/", HandleTransactionsView).Name(names.VTransactionList)
+}
+
+// Handle get transtions view req
+func HandleTransactionsView(c *fiber.Ctx) error {
+	queryString := string(c.Request().URI().QueryString())
+	data := fiber.Map{
+		"Title":       "Portfolio",
+		"QueryString": queryString,
+	}
+	return c.Render("transaction/transactions", data, "layouts/main")
 }
 
 func (c *TransactionController) Get() {
