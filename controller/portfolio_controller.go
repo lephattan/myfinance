@@ -11,10 +11,11 @@ import (
 
 func RegisterPortfolioController(router fiber.Router) {
 	router.Use(middleware.PortfolioMiddleware)
-	router.Get("/", HandlePortfolioList)
+	router.Get("/", HandlePortfolioList).Name("VPortfolioList")
 	router.Post("/", HandlePortfolioCreate)
-	router.Get("/:id", HandlePortfolioDetail).Name("CPortfolioDetail")
+	router.Get("/:id", HandlePortfolioDetail).Name("VPortfolioDetail")
 	router.Put("/:id", HandlePortfolioUpdate)
+	router.Delete("/:id", HandlePortfolioDelete)
 }
 
 // Get portfolios request
@@ -71,7 +72,21 @@ func HandlePortfolioUpdate(c *fiber.Ctx) error {
 		return err
 	}
 	return htmx.RenderPortfolioDetail(c, *portfolio)
+}
 
+// Portfolio delete request handler
+
+func HandlePortfolioDelete(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return err
+	}
+	svc, _ := c.Locals("Service").(service.PortfolioService)
+	if _, err = svc.Delete(c.Context(), uint64(id)); err != nil {
+		return err
+	}
+	c.Set("HX-Redirect", c.App().GetRoute("VPortfolioList").Path)
+	return c.SendString("deleted")
 }
 
 // func (c *PortfolioController) PostDeleteBy(id uint64) {
