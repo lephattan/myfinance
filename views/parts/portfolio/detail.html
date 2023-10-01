@@ -1,0 +1,24 @@
+<div class="portfolio-detail" hx-target="this" hx-swap="outerHTML">
+  {{ if .Portfolio }} {{with .Portfolio}}
+  <div><label>ID:</label>{{.ID}}</div>
+  <div><label>Name: </label>{{.Name}}</div>
+  <div><label>Description: </label>{{.Description}}</div>
+  <button hx-get="/htmx/components/portfolio/edit-form/{{.ID}}">Edit</button>
+  <!-- <form method="post"> -->
+  <!--   <dl> -->
+  <!--     <dt>ID</dt> -->
+  <!--     <dd>{{ .ID }}</dd> -->
+  <!--     <dt><label for="portfolio-name">Name</label></dt> -->
+  <!--     <dd><input name="portfolio-name" value="{{.Name}}" /></dd> -->
+  <!--     <dt><label for="portfolio-des">Name</label></dt> -->
+  <!--     <dd><input name="portfolio-des" value="{{.Description}}" /></dd> -->
+  <!--   </dl> -->
+  <!--   <button type="submit">Save</button> -->
+  <!-- </form> -->
+  <!-- <div> -->
+  <!--   <form method="post" action="/portfolio/delete/{{.ID}}"> -->
+  <!--     <button type="submit">Delete</button> -->
+  <!--   </form> -->
+  <!-- </div> -->
+  {{ end }}{{ end }}
+</div>

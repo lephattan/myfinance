@@ -1,20 +1,2 @@
-<div class="portfolio-detail">
-  {{ if .Portfolio }} {{ with .Portfolio }}
-  <form method="post">
-    <dl>
-      <dt>ID</dt>
-      <dd>{{ .ID }}</dd>
-      <dt><label for="portfolio-name">Name</label></dt>
-      <dd><input name="portfolio-name" value="{{.Name}}" /></dd>
-      <dt><label for="portfolio-des">Name</label></dt>
-      <dd><input name="portfolio-des" value="{{.Description}}" /></dd>
-    </dl>
-    <button type="submit">Save</button>
-  </form>
-  <!-- <div> -->
-  <!--   <form method="post" action="/portfolio/delete/{{.ID}}"> -->
-  <!--     <button type="submit">Delete</button> -->
-  <!--   </form> -->
-  <!-- </div> -->
-  {{ end }}{{ end }}
-</div>
+<div class="portfolio-detail" hx-get="/htmx/components/portfolio/detail/{{.PortfolioID}}" hx-trigger="load"
+  hx-swap="outerHTML"></div>

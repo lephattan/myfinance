@@ -26,6 +26,7 @@ func RegisterPortfolioController(router fiber.Router) {
 	router.Use(middleware.PortfolioMiddleware)
 	router.Get("/", HandlePortfolioList)
 	router.Post("/", HandlePortfolioCreate)
+	router.Get("/:id", HandlePortfolioDetail)
 
 }
 
@@ -51,22 +52,23 @@ func HandlePortfolioCreate(c *fiber.Ctx) error {
 	}
 	c.Set("HX-Trigger", "new-portfolio")
 	return htmx.HandlePortfolioAddForm(c)
-
 }
 
-func (c *PortfolioController) Post() {
-	name := c.Ctx.FormValue("portfolio-name")
-	des := c.Ctx.FormValueDefault("portfolio-des", "")
-	portfolio := model.Portfolio{
-		Name:        name,
-		Description: des,
-	}
-	_, err := c.Service.Create(c.Ctx.Request().Context(), portfolio)
+// Ticker detail request handler
+func HandlePortfolioDetail(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
 	if err != nil {
-		c.Ctx.HTML("<h3>%s</h3>", err.Error())
-		return
+		return err
 	}
-	c.Ctx.Redirect("/portfolio", iris.StatusSeeOther)
+	data := fiber.Map{
+		"Title":       "Portfolio",
+		"PortfolioID": id,
+	}
+	return c.Render("portfolio/detail", data, "layouts/main")
+	// portfolio := new(model.Portfolio)
+	// svc, _ := c.Locals("Service").(service.PortfolioService)
+	// err = svc.Get(c.Context(), uint64(id), &portfolio)
+
 }
 
 func (c *PortfolioController) GetBy(id uint64) {

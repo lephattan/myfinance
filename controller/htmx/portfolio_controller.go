@@ -13,6 +13,7 @@ func RegisterPortfolioComponentController(router fiber.Router) {
 	router.Use(middleware.PortfolioMiddleware)
 	router.Get("/list", HandlePortfolioList)
 	router.Get("/add-form", HandlePortfolioAddForm)
+	router.Get("/detail/:id", HandlePortfolioDetail)
 
 }
 
@@ -43,4 +44,21 @@ func HandlePortfolioList(c *fiber.Ctx) error {
 
 func HandlePortfolioAddForm(c *fiber.Ctx) error {
 	return c.Render("parts/portfolio/add-form", fiber.Map{})
+}
+
+func HandlePortfolioDetail(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return err
+	}
+	var portfolio model.Portfolio
+	svc, _ := c.Locals("Service").(service.PortfolioService)
+	err = svc.Get(c.Context(), uint64(id), &portfolio)
+	if err != nil {
+		return err
+	}
+	data := fiber.Map{
+		"Portfolio": &portfolio,
+	}
+	return c.Render("parts/portfolio/detail", data)
 }
