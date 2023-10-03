@@ -8,6 +8,7 @@ import (
 	"myfinance/env"
 	"net/url"
 	"reflect"
+	"slices"
 	"strconv"
 	"strings"
 
@@ -157,7 +158,6 @@ func GetAffectedRows(result sql.Result) int {
 func GenerateInsertStatement(m Record) (stmt string, args []interface{}, err error) {
 
 	tablename := m.TableName()
-	pk := m.PrimaryKey()
 	tag_name := "db"
 	stmt = fmt.Sprintf("Insert Into %s ", tablename)
 
@@ -170,10 +170,12 @@ func GenerateInsertStatement(m Record) (stmt string, args []interface{}, err err
 	for i := 0; i < type_m.NumField(); i++ {
 		value := m_values.Field(i).Interface()
 		struct_field := type_m.Field(i)
-		db_tag := string(struct_field.Tag.Get(tag_name))
-		switch db_tag {
-		case "":
-		case pk:
+		db_tags := strings.Split(string(struct_field.Tag.Get(tag_name)), ",")
+		if slices.Contains(db_tags, "omitinsert") {
+			continue
+		}
+		db_tag := db_tags[0]
+		if db_tag == "" {
 			continue
 		}
 

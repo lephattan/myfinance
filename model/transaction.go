@@ -35,7 +35,7 @@ var TransactionTypes = [...]TransactionType{
 }
 
 type Transaction struct {
-	ID              uint64             `db:"id"`
+	ID              uint64             `db:"id,omitinsert"`
 	Date            database.UnixDate  `db:"date" form:"date"`
 	TickerSymbol    string             `db:"ticker_symbol" form:"ticker-symbol"`
 	PortfolioID     uint64             `db:"portfolio_id" form:"portfolio-id"`

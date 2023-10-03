@@ -7,7 +7,7 @@ import (
 )
 
 type Portfolio struct {
-	ID          uint64 `db:"id" json:"id"`
+	ID          uint64 `db:"id,omitinsert" json:"id"`
 	Name        string `db:"name" json:"name" form:"name"`
 	Description string `db:"description" json:"description" form:"description"`
 }
