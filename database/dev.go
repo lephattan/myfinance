@@ -3,7 +3,6 @@ package database
 import (
 	"context"
 	"database/sql"
-	"path/filepath"
 
 	"github.com/golang-migrate/migrate/v4/database"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
@@ -12,6 +11,7 @@ import (
 type devdb struct{}
 
 const DB_TYPE = "sqlite3"
+const DEFAULT_DSN = "dev-database.db?cache=shared&_foreign_keys=true"
 
 /*
 Driver for database migration
@@ -21,7 +21,7 @@ Return:
 - (error) error when creating database driver
 */
 func (db *devdb) MigrateDriver() (string, database.Driver, error) {
-	conn, err := sql.Open(DB_TYPE, filepath.Join(".", "dev-database.db"))
+	conn, err := sql.Open(DB_TYPE, DEFAULT_DSN)
 	if err != nil {
 		panic("Error opening dev db connection: " + err.Error())
 	}

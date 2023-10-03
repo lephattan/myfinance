@@ -1,6 +1,7 @@
 package main
 
 import (
+	"log"
 	"myfinance/database"
 	"myfinance/env"
 
@@ -20,5 +21,22 @@ func main() {
 		db_type,
 		driver,
 	)
-	m.Up()
+	version, dirty, err := m.Version()
+	if err != nil {
+		log.Panic(err)
+	}
+	log.Printf("Current version: %d, dirty: %v", version, dirty)
+
+	err = m.Up()
+	if err == nil {
+		log.Println("Migration is success")
+		return
+	}
+	switch err {
+	case migrate.ErrNoChange:
+		log.Println(err)
+	default:
+		log.Panic(err)
+	}
+
 }
