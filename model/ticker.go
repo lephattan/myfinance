@@ -9,8 +9,10 @@ import (
 )
 
 type Ticker struct {
-	Symbol string `db:"symbol" json:"symbol"`
-	Name   string `db:"name" json:"name"`
+	Symbol         string                   `db:"symbol" json:"symbol"`
+	Name           string                   `db:"name" json:"name"`
+	CurrentPrice   database.Nullable[int64] `db:"current_price"`
+	PriceUpdatedAt database.Nullable[int64] `db:"price_updated_at"`
 }
 
 func (t *Ticker) TableName() string {
@@ -30,7 +32,7 @@ func (t *Ticker) ValidateInsert() bool {
 }
 
 func (t *Ticker) Scan(rows *sql.Rows) error {
-	return rows.Scan(&t.Symbol, &t.Name)
+	return ModelScan(t, rows)
 }
 
 func (t *Ticker) String() string {

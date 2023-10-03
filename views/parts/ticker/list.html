@@ -10,6 +10,8 @@
     <tr>
       <th>Symbol</th>
       <th>Name</th>
+      <th>Current Price</th>
+      <th>Price Updated At</th>
     </tr>
     {{range .Tickers }}
     <tr>
@@ -17,6 +19,8 @@
         <a href="/ticker/{{ .Symbol }}">{{ .Symbol}}</a>
       </td>
       <td>{{ .Name }}</td>
+      <td>{{ .CurrentPrice.Value}}</td>
+      <td>{{ .PriceUpdatedAt.Value }}</td>
     </tr>
     {{ end }}
   </table>
