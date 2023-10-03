@@ -82,8 +82,8 @@ func (db *devdb) Get(ctx context.Context, dest interface{}, query string, args .
 		return sql.ErrNoRows
 	}
 
-	if Scannable, ok := dest.(Scannable); ok {
-		return Scannable.Scan(rows)
+	if scannable, ok := dest.(Scannable); ok {
+		return scannable.Scan(rows)
 	}
 	return rows.Scan(dest)
 }
