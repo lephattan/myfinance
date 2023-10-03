@@ -4,8 +4,8 @@ import (
 	"context"
 	"database/sql"
 	"fmt"
-	"myfinace/database"
-	"myfinace/model"
+	"myfinance/database"
+	"myfinance/model"
 )
 
 type TransactionService interface {

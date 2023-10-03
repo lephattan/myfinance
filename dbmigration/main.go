@@ -1,8 +1,8 @@
 package main
 
 import (
-	"myfinace/database"
-	"myfinace/env"
+	"myfinance/database"
+	"myfinance/env"
 
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/source/file"

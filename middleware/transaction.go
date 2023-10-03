@@ -1,8 +1,8 @@
 package middleware
 
 import (
-	"myfinace/database"
-	"myfinace/service"
+	"myfinance/database"
+	"myfinance/service"
 
 	"github.com/gofiber/fiber/v2"
 )

@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"fmt"
-	"myfinace/database"
-	"myfinace/model"
+	"myfinance/database"
+	"myfinance/model"
 	"strings"
 )
 

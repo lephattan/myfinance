@@ -2,8 +2,8 @@ package service
 
 import (
 	"fmt"
-	"myfinace/database"
-	"myfinace/env"
+	"myfinance/database"
+	"myfinance/env"
 )
 
 type GreetSerivce interface {

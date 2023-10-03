@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"myfinace/database"
+	"myfinance/database"
 	"net/url"
 	"strings"
 )

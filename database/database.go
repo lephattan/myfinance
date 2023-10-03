@@ -5,7 +5,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
-	"myfinace/env"
+	"myfinance/env"
 	"net/url"
 	"reflect"
 	"strconv"

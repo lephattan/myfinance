@@ -3,10 +3,10 @@ package main
 import (
 	"log"
 
-	"myfinace/controller"
-	"myfinace/controller/htmx"
-	"myfinace/database"
-	"myfinace/helper"
+	"myfinance/controller"
+	"myfinance/controller/htmx"
+	"myfinance/database"
+	"myfinance/helper"
 
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"

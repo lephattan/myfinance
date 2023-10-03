@@ -1,4 +1,4 @@
-module myfinace
+module myfinance
 
 go 1.21.0
 

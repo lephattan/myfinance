@@ -1,9 +1,9 @@
 package htmx
 
 import (
-	"myfinace/middleware"
-	"myfinace/model"
-	"myfinace/service"
+	"myfinance/middleware"
+	"myfinance/model"
+	"myfinance/service"
 	"net/url"
 
 	"github.com/gofiber/fiber/v2"

@@ -1,11 +1,11 @@
 package controller
 
 import (
-	"myfinace/controller/htmx"
-	"myfinace/middleware"
-	"myfinace/model"
-	"myfinace/names"
-	"myfinace/service"
+	"myfinance/controller/htmx"
+	"myfinance/middleware"
+	"myfinance/model"
+	"myfinance/names"
+	"myfinance/service"
 
 	"github.com/gofiber/fiber/v2"
 )

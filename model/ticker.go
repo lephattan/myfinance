@@ -3,7 +3,7 @@ package model
 import (
 	"database/sql"
 	"fmt"
-	"myfinace/database"
+	"myfinance/database"
 	"net/url"
 	"strings"
 )

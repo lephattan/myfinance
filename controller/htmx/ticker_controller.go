@@ -4,9 +4,9 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"myfinace/database"
-	"myfinace/model"
-	"myfinace/service"
+	"myfinance/database"
+	"myfinance/model"
+	"myfinance/service"
 	"net/url"
 
 	"github.com/gofiber/fiber/v2"

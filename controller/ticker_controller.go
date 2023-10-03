@@ -2,10 +2,10 @@ package controller
 
 import (
 	"fmt"
-	"myfinace/controller/htmx"
-	"myfinace/database"
-	"myfinace/model"
-	"myfinace/service"
+	"myfinance/controller/htmx"
+	"myfinance/database"
+	"myfinance/model"
+	"myfinance/service"
 	"strings"
 
 	"github.com/gofiber/fiber/v2"
