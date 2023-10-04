@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"myfinance/database"
+	"myfinance/helper"
 	"net/url"
 	"strings"
 )
@@ -32,7 +33,7 @@ func (t *Ticker) ValidateInsert() bool {
 }
 
 func (t *Ticker) Scan(rows *sql.Rows) error {
-	return ModelScan(t, rows)
+	return helper.ModelScan(t, rows)
 }
 
 func (t *Ticker) String() string {

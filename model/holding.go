@@ -3,6 +3,7 @@ package model
 import (
 	"database/sql"
 	"myfinance/database"
+	"myfinance/helper"
 )
 
 type Holding struct {
@@ -32,7 +33,7 @@ func (h *Holding) ValidateInsert() bool {
 }
 
 func (h *Holding) Scan(rows *sql.Rows) error {
-	return ModelScan(h, rows)
+	return helper.ModelScan(h, rows)
 }
 
 func (h *Holding) GenerateInsertStatement() (stmt string, args []interface{}, err error) {
