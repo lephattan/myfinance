@@ -1,6 +1,8 @@
 package main
 
 import (
+	// "errors"
+	"fmt"
 	"log"
 
 	"myfinance/controller"
@@ -25,7 +27,10 @@ func main() {
 
 	views := MakeViews()
 
-	app := fiber.New(fiber.Config{Views: views})
+	app := fiber.New(fiber.Config{
+		Views:        views,
+		ErrorHandler: ErrorHandle,
+	})
 	MakeAccessLog(app)
 
 	app.Use(AppMiddleWare)
@@ -58,4 +63,11 @@ func MakeViews() *html.Engine {
 
 func MakeAccessLog(app *fiber.App) {
 	app.Use(logger.New())
+}
+
+// Recover and handle error
+// Ref: https://docs.gofiber.io/guide/error-handling/
+func ErrorHandle(ctx *fiber.Ctx, err error) error {
+	err = ctx.SendString(fmt.Sprintf(`<h4 class="errors">%s</h4>`, err))
+	return err
 }
