@@ -13,6 +13,7 @@
       <th>Note</th>
       <th>PortfolioID</th>
       <th>RefID</th>
+      <th>Total</th>
     </tr>
     {{range .Transactions }}
     <tr>
@@ -26,6 +27,7 @@
       <td>{{ .Note.Value }}</td>
       <td>{{ .PortfolioID }}</td>
       <td>{{ .RefID.Value }}</td>
+      <td>{{ .Total}}</td>
     </tr>
     {{ end }}
   </table>

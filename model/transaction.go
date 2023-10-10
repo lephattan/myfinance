@@ -2,6 +2,7 @@ package model
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"myfinance/database"
 	"myfinance/helper"
@@ -107,6 +108,22 @@ func (t *Transaction) String() string {
 
 func (t *Transaction) GenerateInsertStatement() (stmt string, args []interface{}, err error) {
 	return database.GenerateInsertStatement(*t)
+}
+
+func (t *Transaction) Total() (total int64, err error) {
+	switch t.TransactionType {
+	case "buy":
+		{
+			return int64(t.Price*t.Volume + t.Commission), nil
+		}
+	case "sell":
+		{
+			return int64(t.Price*t.Volume - t.Commission), nil
+		}
+	default:
+		return 0, errors.New(fmt.Sprintf("transaction total is not implemented for type: %s", t.TransactionType))
+	}
+
 }
 
 // List of Transactions
