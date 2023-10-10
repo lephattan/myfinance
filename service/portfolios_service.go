@@ -102,6 +102,6 @@ func (s *portfolio) HoldingSymbols(ctx context.Context, id uint64) (holding_symb
 	}
 	defer rows.Close()
 	var dest []*HoldingSymbol
-	err = helper.ModelListScan(dest, rows)
+	err = helper.ModelListScan(&dest, rows)
 	return dest, err
 }
