@@ -44,22 +44,22 @@ func (db *devdb) Connect(s dbconn) *sql.DB {
 	return conn
 }
 
-/* Execute query string and return result*/
-func (db *devdb) Select(ctx context.Context, dest interface{}, query string, args ...interface{}) error {
+// Execute query string and return result as Rows
+func (db *devdb) Select(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error) {
 	conn := db.Connect(dbconn{})
 	defer conn.Close()
-	rows, err := conn.QueryContext(ctx, query, args...)
-	if err != nil {
+	return conn.QueryContext(ctx, query, args...)
+	/* if err != nil {
 		panic("Error querying database: " + err.Error())
 	}
-	defer rows.Close()
+	// defer rows.Close()
 	if scannable, ok := dest.(Scannable); ok {
 		return scannable.Scan(rows)
 	}
 	if !rows.Next() {
 		return sql.ErrNoRows
 	}
-	return rows.Scan(dest)
+	return rows.Scan(dest) */
 }
 
 /* Similar to Select but does not return the result*/

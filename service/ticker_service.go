@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"myfinance/database"
+	"myfinance/helper"
 	"myfinance/model"
 	"strings"
 )
@@ -27,8 +28,11 @@ type ticker struct {
 
 func (s *ticker) List(ctx context.Context, opt database.ListOptions, dest interface{}) error {
 	q, args := opt.BuildQuery()
-	err := s.db.Select(ctx, dest, q, args...)
-	return err
+	rows, err := s.db.Select(ctx, q, args...)
+	if err != nil {
+		return err
+	}
+	return helper.ModelListScan(dest, rows)
 }
 
 func (s *ticker) Create(ctx context.Context, t model.Ticker) (int64, error) {

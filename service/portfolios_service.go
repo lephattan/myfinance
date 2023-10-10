@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"myfinance/database"
+	"myfinance/helper"
 	"myfinance/model"
 	"strings"
 )
@@ -33,8 +34,11 @@ func (s *portfolio) List(ctx context.Context, dest interface{}) error {
 		Table: "portfolios",
 	}
 	q, args := opt.BuildQuery()
-	err := s.db.Select(ctx, dest, q, args...)
-	return err
+	rows, err := s.db.Select(ctx, q, args...)
+	if err != nil {
+		return err
+	}
+	return helper.ModelListScan(dest, rows)
 }
 
 func (s *portfolio) Create(ctx context.Context, t model.Portfolio) (int64, error) {

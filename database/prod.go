@@ -16,7 +16,7 @@ func (db *proddb) Exec(ctx context.Context, query string, args ...interface{}) (
 func (db *proddb) MigrateDriver() (string, database.Driver, error) {
 	panic("not implemented")
 }
-func (db *proddb) Select(ctx context.Context, dest interface{}, query string, args ...interface{}) error {
+func (db *proddb) Select(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error) {
 	panic("not implemented")
 }
 func (db *proddb) Get(ctx context.Context, dest interface{}, query string, args ...interface{}) (err error) {

@@ -5,6 +5,7 @@ import (
 	"database/sql"
 	"fmt"
 	"myfinance/database"
+	"myfinance/helper"
 	"myfinance/model"
 )
 
@@ -28,8 +29,11 @@ type transaction struct {
 
 func (s *transaction) List(ctx context.Context, opt database.ListOptions, dest interface{}) error {
 	q, args := opt.BuildQuery()
-	err := s.db.Select(ctx, dest, q, args...)
-	return err
+	rows, err := s.db.Select(ctx, q, args...)
+	if err != nil {
+		return err
+	}
+	return helper.ModelListScan(dest, rows)
 }
 
 func (s *transaction) Create(ctx context.Context, t model.Transaction) (int64, error) {

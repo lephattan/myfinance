@@ -86,6 +86,7 @@ func HandlePortfolioEditForm(c *fiber.Ctx) error {
 }
 
 func HandlePortfolioHolding(c *fiber.Ctx) error {
+	// svc, _ := c.Locals("Service").(service.PortfolioService)
 
 	data := fiber.Map{}
 	return c.Render("parts/portfolio/holding", data)
