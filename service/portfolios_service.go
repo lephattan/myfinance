@@ -16,6 +16,7 @@ type PortfolioService interface {
 	// Update Portfolio to database, return number of affected rows and error
 	Update(ctx context.Context, t model.Portfolio) (int, error)
 	Delete(ctx context.Context, id uint64) (int, error)
+	HoldingSymbols(ctx context.Context, id uint64) (holding_symbols []*HoldingSymbol, err error)
 }
 
 func NewPortfolioService(db database.DB) PortfolioService {
@@ -86,4 +87,21 @@ func (s *portfolio) Delete(ctx context.Context, id uint64) (n int, err error) {
 	}
 	n = database.GetAffectedRows(res)
 	return
+}
+
+type HoldingSymbol struct {
+	TickerSymbol string
+}
+
+// Return slice of ticker symbols that portfolio_id is holding
+func (s *portfolio) HoldingSymbols(ctx context.Context, id uint64) (holding_symbols []*HoldingSymbol, err error) {
+	q := fmt.Sprintf("Select Distinct ticker_symbol from %s Where portfolio_id = ?", TransactionTablename)
+	rows, err := s.db.Select(ctx, q, id)
+	if err != nil {
+		return
+	}
+	defer rows.Close()
+	var dest []*HoldingSymbol
+	err = helper.ModelListScan(dest, rows)
+	return dest, err
 }

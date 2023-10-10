@@ -27,6 +27,8 @@ type transaction struct {
 	rec database.Record
 }
 
+const TransactionTablename = "transactions"
+
 func (s *transaction) List(ctx context.Context, opt database.ListOptions, dest interface{}) error {
 	q, args := opt.BuildQuery()
 	rows, err := s.db.Select(ctx, q, args...)
