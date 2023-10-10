@@ -15,6 +15,7 @@ func RegisterPortfolioComponentController(router fiber.Router) {
 	router.Get("/add-form", HandlePortfolioAddForm)
 	router.Get("/detail/:id", HandlePortfolioDetail)
 	router.Get("/edit-form/:id", HandlePortfolioEditForm)
+	router.Get("/holding/:id", HandlePortfolioHolding)
 }
 
 func HandlePortfolioList(c *fiber.Ctx) error {
@@ -82,4 +83,10 @@ func HandlePortfolioEditForm(c *fiber.Ctx) error {
 		"Portfolio": &portfolio,
 	}
 	return c.Render("parts/portfolio/edit-form", data)
+}
+
+func HandlePortfolioHolding(c *fiber.Ctx) error {
+
+	data := fiber.Map{}
+	return c.Render("parts/portfolio/holding", data)
 }
