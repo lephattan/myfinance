@@ -18,13 +18,14 @@ type PortfolioService interface {
 }
 
 func NewPortfolioService(db database.DB) PortfolioService {
-	service := &portfolio{db: db}
+	holding_svc := NewHoldingService(db)
+	service := &portfolio{db: db, holding: holding_svc}
 	return service
 }
 
 type portfolio struct {
-	db  database.DB
-	rec database.Record
+	db      database.DB
+	holding HoldingService
 }
 
 func (s *portfolio) List(ctx context.Context, dest interface{}) error {
