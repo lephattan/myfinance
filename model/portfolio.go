@@ -3,6 +3,7 @@ package model
 import (
 	"database/sql"
 	"fmt"
+	"myfinance/helper"
 	"strings"
 )
 
@@ -39,20 +40,7 @@ func (t *Portfolio) String() string {
 // List of Portfolios
 type Portfolios []*Portfolio
 
-// Scan binds mysql rows to this Portfolios. NOTE: wtf is this
+// Scan binds mysql rows to this Portfolios
 func (ts *Portfolios) Scan(rows *sql.Rows) (err error) {
-	cp := *ts
-	for rows.Next() {
-		t := new(Portfolio)
-		if err = t.Scan(rows); err != nil {
-			return
-		}
-		cp = append(cp, t)
-	}
-
-	if len(cp) == 0 {
-		return sql.ErrNoRows
-	}
-	*ts = cp
-	return rows.Err()
+	return helper.ModelListScan(ts, rows)
 }

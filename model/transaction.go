@@ -3,8 +3,8 @@ package model
 import (
 	"database/sql"
 	"fmt"
-	"log"
 	"myfinance/database"
+	"myfinance/helper"
 	"net/url"
 	"strings"
 )
@@ -114,22 +114,7 @@ type Transactions []*Transaction
 
 // Scan binds mysql rows to list of Transactions
 func (ts *Transactions) Scan(rows *sql.Rows) (err error) {
-	cp := *ts
-	for rows.Next() {
-		t := new(Transaction)
-		if err = t.Scan(rows); err != nil {
-			log.Printf("Error scanning row: %s", err.Error())
-			return
-		}
-		cp = append(cp, t)
-	}
-
-	if len(cp) == 0 {
-		return sql.ErrNoRows
-	}
-	*ts = cp
-	return rows.Err()
-
+	return helper.ModelListScan(ts, rows)
 }
 
 func (t *Transactions) ParseListOptions(q *url.Values) database.ListOptions {

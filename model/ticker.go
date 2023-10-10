@@ -53,20 +53,8 @@ func (t *Tickers) SearchColumns() []string {
 
 // Scan binds mysql rows to this Tickers. NOTE: wtf is this
 func (ts *Tickers) Scan(rows *sql.Rows) (err error) {
-	cp := *ts
-	for rows.Next() {
-		t := new(Ticker)
-		if err = t.Scan(rows); err != nil {
-			return
-		}
-		cp = append(cp, t)
-	}
-
-	if len(cp) == 0 {
-		return sql.ErrNoRows
-	}
-	*ts = cp
-	return rows.Err()
+	err = helper.ModelListScan(ts, rows)
+	return
 }
 
 func (t *Tickers) ParseListOptions(q *url.Values) database.ListOptions {
