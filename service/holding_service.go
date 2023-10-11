@@ -5,11 +5,13 @@ import (
 	// "database/sql"
 	// "fmt"
 	"myfinance/database"
+	"myfinance/helper"
 	"myfinance/model"
 )
 
 type HoldingService interface {
 	Create(ctx context.Context, h model.Holding) error
+	List(ctx context.Context, opt database.ListOptions, dest interface{}) error
 }
 
 func NewHoldingService(db database.DB) HoldingService {
@@ -32,4 +34,14 @@ func (s *holding) Create(ctx context.Context, h model.Holding) error {
 		args...,
 	)
 	return err
+}
+
+func (s *holding) List(ctx context.Context, opt database.ListOptions, dest interface{}) (err error) {
+	opt.SetTableName(model.HoldingTablename)
+	q, args := opt.BuildQuery()
+	rows, err := s.db.Select(ctx, q, args...)
+	if err != nil {
+		return err
+	}
+	return helper.ModelListScan(dest, rows)
 }
