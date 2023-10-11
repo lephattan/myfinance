@@ -2,6 +2,8 @@ package model
 
 import (
 	"database/sql"
+	"errors"
+	"fmt"
 	"myfinance/database"
 	"myfinance/helper"
 )
@@ -47,4 +49,34 @@ func (h *Holding) GetAveragePrice() int64 {
 		return 0
 	}
 	return int64(h.TotalCost / h.TotalShares)
+}
+
+func (h *Holding) HandleTransaction(t *Transaction) (err error) {
+	switch t.TransactionType {
+	case "buy":
+		{
+			h.TotalShares += int64(t.Volume)
+			total, err := t.Total()
+			if err != nil {
+				return err
+			}
+			h.TotalCost += total
+		}
+	case "sell":
+		{
+			h.TotalShares -= int64(t.Volume)
+			total, err := t.Total()
+			if err != nil {
+				return err
+			}
+			h.TotalCost -= total
+		}
+	default:
+		{
+			return errors.New(
+				fmt.Sprintf("cannot calculate holding from transaction type %s", t.TransactionType),
+			)
+		}
+	}
+	return nil
 }

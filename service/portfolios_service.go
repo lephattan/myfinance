@@ -3,7 +3,6 @@ package service
 import (
 	"context"
 	"database/sql"
-	"errors"
 	"fmt"
 	"log"
 	"myfinance/database"
@@ -22,6 +21,7 @@ type PortfolioService interface {
 	Delete(ctx context.Context, id uint64) (int, error)
 	HoldingSymbols(ctx context.Context, id uint64) (holding_symbols []*HoldingSymbol, err error)
 	UpdateHolding(ctx context.Context, portfolio_id uint64) (err error)
+	UpdateSymbolHolding(ctx context.Context, portfolio_id uint64, symbol string) error
 }
 
 func NewPortfolioService(db database.DB) PortfolioService {
@@ -128,77 +128,8 @@ func (s *portfolio) UpdateHolding(ctx context.Context, portfolio_id uint64) (err
 	log.Printf("Holding Symbols: %v", holding_symbols)
 
 	for _, holding_symbol := range holding_symbols {
-		var ticker model.Ticker
-		err = s.ticker.Get(ctx, holding_symbol.TickerSymbol, &ticker)
+		err = s.UpdateSymbolHolding(ctx, portfolio_id, holding_symbol.TickerSymbol)
 		if err != nil {
-			log.Printf("Error geting ticker for symbol %s", holding_symbol.TickerSymbol)
-			return
-		}
-		ticker_holding := model.Holding{
-			Symbol:      holding_symbol.TickerSymbol,
-			PortfolioID: portfolio_id,
-			UpdatedAt: database.Nullable[int64]{
-				Valid:  true,
-				Actual: time.Now().Unix(),
-			},
-		}
-		var transactions model.Transactions
-		transaction_query := fmt.Sprintf(
-			"Select * From %s Where %s = :symbol And %s = :portfolio_id;",
-			model.TransactionsTablename,
-			"ticker_symbol",
-			"portfolio_id",
-		)
-		rows, select_err := s.db.Select(
-			ctx,
-			transaction_query,
-			sql.Named("symbol", holding_symbol.TickerSymbol),
-			sql.Named("portfolio_id", portfolio_id),
-		)
-		if select_err != nil {
-			return select_err
-		}
-
-		err = helper.ModelListScan(&transactions, rows)
-		if err != nil {
-			log.Printf("Error scaning transaction list")
-			return err
-		}
-
-		for _, transaction := range transactions {
-			switch transaction.TransactionType {
-			case "buy":
-				{
-					ticker_holding.TotalShares += int64(transaction.Volume)
-					total, err := transaction.Total()
-					if err != nil {
-						return err
-					}
-					ticker_holding.TotalCost += total
-				}
-			case "sell":
-				{
-					ticker_holding.TotalShares -= int64(transaction.Volume)
-					total, err := transaction.Total()
-					if err != nil {
-						return err
-					}
-					ticker_holding.TotalCost -= total
-				}
-			default:
-				{
-					return errors.New(
-						fmt.Sprintf("cannot calculate holding from transaction type %s", transaction.TransactionType),
-					)
-				}
-
-			}
-		}
-		ticker_holding.AveragePrice = ticker_holding.GetAveragePrice()
-		log.Printf("Ticker holding: %v", ticker_holding)
-		err = s.holding.Create(ctx, ticker_holding)
-		if err != nil {
-			log.Print("Error creating ticker holding")
 			return err
 		}
 	}
@@ -210,5 +141,68 @@ func (s *portfolio) ClearHolding(ctx context.Context, portfolio_id uint64) error
 	log.Printf("Clear holding for portfolio_id: %d", portfolio_id)
 	q := fmt.Sprintf("Delete From %s Where portfolio_id=?", model.HoldingTablename)
 	_, err := s.db.Exec(ctx, q, portfolio_id)
+	return err
+}
+
+func (s *portfolio) UpdateSymbolHolding(ctx context.Context, portfolio_id uint64, symbol string) (err error) {
+	err = s.ClearSymbolHolding(ctx, portfolio_id, symbol)
+	if err != nil {
+		return err
+	}
+	var ticker model.Ticker
+	err = s.ticker.Get(ctx, symbol, &ticker)
+	if err != nil {
+		log.Printf("Error geting ticker for symbol %s", symbol)
+		return
+	}
+	ticker_holding := model.Holding{
+		Symbol:      symbol,
+		PortfolioID: portfolio_id,
+		UpdatedAt: database.Nullable[int64]{
+			Valid:  true,
+			Actual: time.Now().Unix(),
+		},
+	}
+	var transactions model.Transactions
+	transaction_query := fmt.Sprintf(
+		"Select * From %s Where %s = :symbol And %s = :portfolio_id;",
+		model.TransactionsTablename,
+		"ticker_symbol",
+		"portfolio_id",
+	)
+	rows, select_err := s.db.Select(
+		ctx,
+		transaction_query,
+		sql.Named("symbol", symbol),
+		sql.Named("portfolio_id", portfolio_id),
+	)
+	if select_err != nil {
+		return select_err
+	}
+
+	err = helper.ModelListScan(&transactions, rows)
+	if err != nil {
+		log.Printf("Error scaning transaction list")
+		return err
+	}
+
+	for _, transaction := range transactions {
+		ticker_holding.HandleTransaction(transaction)
+	}
+	ticker_holding.AveragePrice = ticker_holding.GetAveragePrice()
+	log.Printf("Ticker holding: %v", ticker_holding)
+	err = s.holding.Create(ctx, ticker_holding)
+	if err != nil {
+		log.Print("Error creating ticker holding")
+		return err
+	}
+	return nil
+}
+
+// Clear hold record of given symbol in portfolio
+func (s *portfolio) ClearSymbolHolding(ctx context.Context, portfolio_id uint64, symbol string) error {
+	log.Printf("Clear holding of %s for portfolio_id %d", symbol, portfolio_id)
+	q := fmt.Sprintf("Delete From %s Where portfolio_id=? And symbol=?;", model.HoldingTablename)
+	_, err := s.db.Exec(ctx, q, portfolio_id, symbol)
 	return err
 }
