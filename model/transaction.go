@@ -17,8 +17,10 @@ const (
 	Sell                 = "sell"
 )
 
+const TransactionsTablename = "transactions"
+
 // transaction table name
-func TransactionsTable() string { return "transactions" }
+func TransactionsTable() string { return TransactionsTablename }
 
 // transaction columns to perform search query
 func TransactionsSearchColumns() []string {
@@ -49,7 +51,7 @@ type Transaction struct {
 }
 
 func (t Transaction) TableName() string {
-	return "transactions"
+	return TransactionsTablename
 }
 
 func (t Transaction) PrimaryKey() string {

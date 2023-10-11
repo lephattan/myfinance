@@ -16,8 +16,10 @@ type Holding struct {
 	UpdatedAt    database.Nullable[int64] `db:"updated_at"`
 }
 
+const HoldingTablename = "holdings"
+
 func (h Holding) TableName() string {
-	return "holdings"
+	return HoldingTablename
 }
 
 func (h Holding) PrimaryKey() string {
