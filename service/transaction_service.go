@@ -30,6 +30,7 @@ type transaction struct {
 const TransactionTablename = "transactions"
 
 func (s *transaction) List(ctx context.Context, opt database.ListOptions, dest interface{}) error {
+	opt.SetTableName(model.TransactionsTable())
 	q, args := opt.BuildQuery()
 	rows, err := s.db.Select(ctx, q, args...)
 	if err != nil {
