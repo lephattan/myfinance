@@ -3,6 +3,7 @@ package database
 import (
 	"context"
 	"database/sql"
+	"log"
 
 	"github.com/golang-migrate/migrate/v4/database"
 	"github.com/golang-migrate/migrate/v4/database/sqlite3"
@@ -46,6 +47,8 @@ func (db *devdb) Connect(s dbconn) *sql.DB {
 
 // Execute query string and return result as Rows
 func (db *devdb) Select(ctx context.Context, query string, args ...interface{}) (*sql.Rows, error) {
+	log.Printf("Selecting query: %s", query)
+	log.Println("Query args: ", args)
 	conn := db.Connect(dbconn{})
 	defer conn.Close()
 	return conn.QueryContext(ctx, query, args...)
@@ -64,6 +67,8 @@ func (db *devdb) Select(ctx context.Context, query string, args ...interface{}) 
 
 /* Similar to Select but does not return the result*/
 func (db *devdb) Exec(ctx context.Context, query string, args ...interface{}) (sql.Result, error) {
+	log.Printf("Exec query: %s", query)
+	log.Printf("Query args: %v", args)
 	conn := db.Connect(dbconn{})
 	defer conn.Close()
 	res, err := conn.ExecContext(ctx, query, args...)
