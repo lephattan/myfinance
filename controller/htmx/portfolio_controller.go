@@ -1,8 +1,12 @@
 package htmx
 
 import (
+	"database/sql"
+	"errors"
+	"myfinance/database"
 	"myfinance/middleware"
 	"myfinance/model"
+	"myfinance/names"
 	"myfinance/service"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,7 +19,7 @@ func RegisterPortfolioComponentController(router fiber.Router) {
 	router.Get("/add-form", HandlePortfolioAddForm)
 	router.Get("/detail/:id", HandlePortfolioDetail)
 	router.Get("/edit-form/:id", HandlePortfolioEditForm)
-	router.Get("/holding/:id", HandlePortfolioHolding)
+	router.Get("/holding/:id", HandlePortfolioHolding).Name(names.PPortfolioHoldingList)
 }
 
 func HandlePortfolioList(c *fiber.Ctx) error {
@@ -86,8 +90,32 @@ func HandlePortfolioEditForm(c *fiber.Ctx) error {
 }
 
 func HandlePortfolioHolding(c *fiber.Ctx) error {
-	// svc, _ := c.Locals("Service").(service.PortfolioService)
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return err
+	}
+	holding_svc, ok := c.Locals("HoldingService").(service.HoldingService)
+	if !ok {
+		return errors.New("Invalid PortfolioService")
+	}
 
-	data := fiber.Map{}
+	listing_opt := database.ListOptions{
+		WhereColumn: "portfolio_id",
+		WhereValue:  id,
+	}
+
+	var holdings []*model.Holding
+
+	err = holding_svc.List(c.Context(), listing_opt, &holdings)
+	if err != nil {
+		if err == sql.ErrNoRows {
+		} else {
+			return err
+		}
+	}
+
+	data := fiber.Map{
+		"Holdings": &holdings,
+	}
 	return c.Render("parts/portfolio/holding", data)
 }

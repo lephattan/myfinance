@@ -4,6 +4,7 @@ import (
 	"myfinance/controller/htmx"
 	"myfinance/middleware"
 	"myfinance/model"
+	"myfinance/names"
 	"myfinance/service"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,6 +16,7 @@ func RegisterPortfolioController(router fiber.Router) {
 	router.Post("/", HandlePortfolioCreate)
 	router.Get("/:id", HandlePortfolioDetail).Name("VPortfolioDetail")
 	router.Put("/:id", HandlePortfolioUpdate)
+	router.Post("/:id/holding", HandlePortfolioHoldingUpdate)
 	router.Delete("/:id", HandlePortfolioDelete)
 }
 
@@ -86,4 +88,21 @@ func HandlePortfolioDelete(c *fiber.Ctx) error {
 	}
 	c.Set("HX-Redirect", c.App().GetRoute("VPortfolioList").Path)
 	return c.SendString("deleted")
+}
+
+func HandlePortfolioHoldingUpdate(c *fiber.Ctx) (err error) {
+	id, err := c.ParamsInt("id")
+	if err != nil {
+		return err
+	}
+
+	svc, _ := c.Locals("Service").(service.PortfolioService)
+	err = svc.UpdateHolding(c.Context(), uint64(id))
+	return c.RedirectToRoute(
+		names.PPortfolioHoldingList,
+		fiber.Map{
+			"id": id,
+		},
+		fiber.StatusSeeOther,
+	)
 }

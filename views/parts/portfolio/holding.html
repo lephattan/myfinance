@@ -1,1 +1,28 @@
-<div class="portfolio-holding"></div>
+<div class="portfolio-holding" id="holding">
+  <div class="holding-symbols">
+    {{ if .Holdings }}
+    <table>
+      <tr>
+        <th>Symbol</th>
+        <th>Portfolio ID</th>
+        <th>Total Shares</th>
+        <th>Total Cost</th>
+        <th>Average Price</th>
+        <th>Current Price</th>
+        <th>Updated At</th>
+      </tr>
+      {{ range .Holdings}}
+      <tr>
+        <td>{{.Symbol}}</td>
+        <td>{{.PortfolioID}}</td>
+        <td>{{.TotalShares}}</td>
+        <td>{{.TotalCost}}</td>
+        <td>{{.AveragePrice}}</td>
+        <td>{{.CurrentValue.Value}}</td>
+        <td>{{.UpdatedAt.Value}}</td>
+      </tr>
+      {{ end }}
+    </table>
+    {{ end }}
+  </div>
+</div>

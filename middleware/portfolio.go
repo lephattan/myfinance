@@ -8,10 +8,13 @@ import (
 )
 
 func PortfolioMiddleware(c *fiber.Ctx) error {
-	if db, ok := c.Locals("DB").(database.DB); ok {
-		c.Locals("Service", service.NewPortfolioService(db))
+	var db database.DB
+	if is_db, ok := c.Locals("DB").(database.DB); ok {
+		db = is_db
 	} else {
-		c.Locals("Service", service.NewPortfolioService(database.GetDB()))
+		db = database.GetDB()
 	}
+	c.Locals("Service", service.NewPortfolioService(db))
+	c.Locals("HoldingService", service.NewHoldingService(db))
 	return c.Next()
 }

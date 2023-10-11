@@ -7,3 +7,7 @@
 
 <div class="portfolio-holding" hx-get="/htmx/components/portfolio/holding/{{.PortfolioID}}" hx-trigger="load"
   hx-swap="outerHTML"></div>
+
+<button hx-post="/portfolio/{{.PortfolioID}}/holding" hx-target="#holding">
+  Update Holding
+</button>
