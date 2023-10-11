@@ -20,7 +20,7 @@ func ParseUint64(s string) (uint64, error) {
 }
 
 // Format unix timestamp into string with given format
-func UnixTimeFmt(unixT uint64, format string) string {
-	t := time.Unix(int64(unixT), 0)
+func UnixTimeFmt(unixT int64, format string) string {
+	t := time.Unix(unixT, 0)
 	return t.Format(format)
 }
