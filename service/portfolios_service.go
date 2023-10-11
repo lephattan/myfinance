@@ -21,6 +21,7 @@ type PortfolioService interface {
 	Update(ctx context.Context, t model.Portfolio) (int, error)
 	Delete(ctx context.Context, id uint64) (int, error)
 	HoldingSymbols(ctx context.Context, id uint64) (holding_symbols []*HoldingSymbol, err error)
+	UpdateHolding(ctx context.Context, portfolio_id uint64) (err error)
 }
 
 func NewPortfolioService(db database.DB) PortfolioService {
