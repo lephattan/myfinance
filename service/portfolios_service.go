@@ -27,16 +27,14 @@ type PortfolioService interface {
 func NewPortfolioService(db database.DB) PortfolioService {
 	holding_svc := NewHoldingService(db)
 	ticker_svc := NewTickerService(db)
-	transaction_svc := NewTransactionService(db)
-	service := &portfolio{db: db, holding: holding_svc, ticker: ticker_svc, transaction: transaction_svc}
+	service := &portfolio{db: db, holding: holding_svc, ticker: ticker_svc}
 	return service
 }
 
 type portfolio struct {
-	db          database.DB
-	holding     HoldingService
-	ticker      TickerService
-	transaction TransactionService
+	db      database.DB
+	holding HoldingService
+	ticker  TickerService
 }
 
 func (s *portfolio) List(ctx context.Context, dest interface{}) error {
