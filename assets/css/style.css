@@ -66,3 +66,18 @@ button:hover,
 button:focus {
   filter: brightness(120%);
 }
+
+input[type="text"],
+select {
+  padding: 8px 10px;
+  margin: 1px 0;
+  border: 1px solid #ccc;
+  border-radius: 0.5em;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus-visible,
+select:focus-visible {
+  outline-color: var(--accent);
+  outline-width: thin;
+}
