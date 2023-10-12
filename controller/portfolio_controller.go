@@ -1,6 +1,8 @@
 package controller
 
 import (
+	"errors"
+	"log"
 	"myfinance/controller/htmx"
 	"myfinance/middleware"
 	"myfinance/model"
@@ -17,6 +19,7 @@ func RegisterPortfolioController(router fiber.Router) {
 	router.Get("/:id", HandlePortfolioDetail).Name("VPortfolioDetail")
 	router.Put("/:id", HandlePortfolioUpdate)
 	router.Post("/:id/holding", HandlePortfolioHoldingUpdate)
+	router.Post("/:portfolio_id/holding/:symbol", HandlePortfolioSymbolHoldingUpdate)
 	router.Delete("/:id", HandlePortfolioDelete)
 }
 
@@ -102,6 +105,38 @@ func HandlePortfolioHoldingUpdate(c *fiber.Ctx) (err error) {
 		names.PPortfolioHoldingList,
 		fiber.Map{
 			"id": id,
+		},
+		fiber.StatusSeeOther,
+	)
+}
+
+// Update holding of one symbol in portfolio
+func HandlePortfolioSymbolHoldingUpdate(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("portfolio_id")
+	if err != nil {
+		log.Printf("Error reading portfolio_id")
+		return err
+	}
+
+	symbol := c.Params("symbol", "")
+	if symbol == "" {
+		log.Printf("Error reading ticker symbol")
+		return errors.New("Error reading ticker symbol")
+	}
+
+	svc, _ := c.Locals("Service").(service.PortfolioService)
+	if err = svc.ClearSymbolHolding(c.Context(), uint64(id), symbol); err != nil {
+		return err
+	}
+
+	if err = svc.UpdateSymbolHolding(c.Context(), uint64(id), symbol); err != nil {
+		return err
+	}
+	return c.RedirectToRoute(
+		names.PPortfolioSymbolHolding,
+		fiber.Map{
+			"portfolio_id": id,
+			"symbol":       symbol,
 		},
 		fiber.StatusSeeOther,
 	)

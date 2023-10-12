@@ -22,6 +22,7 @@ type PortfolioService interface {
 	HoldingSymbols(ctx context.Context, id uint64) (holding_symbols []*HoldingSymbol, err error)
 	UpdateHolding(ctx context.Context, portfolio_id uint64) (err error)
 	UpdateSymbolHolding(ctx context.Context, portfolio_id uint64, symbol string) error
+	ClearSymbolHolding(ctx context.Context, portfolio_id uint64, symbol string) error
 }
 
 func NewPortfolioService(db database.DB) PortfolioService {

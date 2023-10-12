@@ -3,6 +3,7 @@ package htmx
 import (
 	"database/sql"
 	"errors"
+	"log"
 	"myfinance/database"
 	"myfinance/middleware"
 	"myfinance/model"
@@ -20,6 +21,7 @@ func RegisterPortfolioComponentController(router fiber.Router) {
 	router.Get("/detail/:id", HandlePortfolioDetail)
 	router.Get("/edit-form/:id", HandlePortfolioEditForm)
 	router.Get("/holding/:id", HandlePortfolioHolding).Name(names.PPortfolioHoldingList)
+	router.Get("/holding/:portfolio_id/:symbol", HandlePortfolioSymbolHolding).Name(names.PPortfolioSymbolHolding)
 }
 
 func HandlePortfolioList(c *fiber.Ctx) error {
@@ -118,4 +120,38 @@ func HandlePortfolioHolding(c *fiber.Ctx) error {
 		"Holdings": &holdings,
 	}
 	return c.Render("parts/portfolio/holding", data)
+}
+
+func HandlePortfolioSymbolHolding(c *fiber.Ctx) (err error) {
+	id, err := c.ParamsInt("portfolio_id")
+	if err != nil {
+		log.Printf("Error reading portfolio_id")
+		return err
+	}
+
+	symbol := c.Params("symbol", "")
+	if symbol == "" {
+		log.Printf("Error reading ticker symbol")
+		return errors.New("Error reading ticker symbol")
+	}
+
+	holding_svc, ok := c.Locals("HoldingService").(service.HoldingService)
+	if !ok {
+		return errors.New("Invalid PortfolioService")
+	}
+
+	var holding *model.Holding
+	listing_opt := database.ListOptions{
+		WhereColumn: "portfolio_id",
+		WhereValue:  id,
+	}
+
+	err = holding_svc.Get(c.Context(), listing_opt, &holding)
+	if err != nil {
+		if err == sql.ErrNoRows {
+		} else {
+			return err
+		}
+	}
+	return c.Render("parts/portfolio/symbol-holding", holding)
 }

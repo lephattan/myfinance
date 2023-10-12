@@ -5,5 +5,6 @@ const (
 )
 
 const (
-	PPortfolioHoldingList = "PPortfolioHoldingList"
+	PPortfolioHoldingList   = "PPortfolioHoldingList"
+	PPortfolioSymbolHolding = "PPortfolioSymbolHolding"
 )

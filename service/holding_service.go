@@ -12,6 +12,7 @@ import (
 type HoldingService interface {
 	Create(ctx context.Context, h model.Holding) error
 	List(ctx context.Context, opt database.ListOptions, dest interface{}) error
+	Get(ctx context.Context, opt database.ListOptions, dest interface{}) error
 }
 
 func NewHoldingService(db database.DB) HoldingService {
@@ -44,4 +45,15 @@ func (s *holding) List(ctx context.Context, opt database.ListOptions, dest inter
 		return err
 	}
 	return helper.ModelListScan(dest, rows)
+}
+
+func (s *holding) Get(ctx context.Context, opt database.ListOptions, dest interface{}) (err error) {
+	opt.SetTableName(model.HoldingTablename)
+	opt.Limit = 1
+	q, args := opt.BuildQuery()
+	rows, err := s.db.Select(ctx, q, args...)
+	if err != nil {
+		return err
+	}
+	return helper.ModelScan(dest, rows)
 }
