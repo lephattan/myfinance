@@ -12,10 +12,27 @@
     integrity="sha384-xcuj3WpfgjlKF+FXhSQFQ0ZNr39ln+hwjN3npfM9VBnUskLolQAcN80McRIVOPuO"
     crossorigin="anonymous"></script>
   <style>
+    :root {
+      --accent: #f22693;
+    }
+
     .errors {
       color: red;
     }
+
+    body {
+      font-family: sans-serif;
+    }
+
+    h1 {
+      @apply text-red;
+    }
   </style>
+  <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/normalize.min.css" />
+  <script>
+    console.log("UnoCSS version: ", window.__unocss_runtime?.version);
+  </script>
 </head>
 
 <body>
