@@ -1,43 +1,57 @@
-<form hx-post="/transaction" hx-swap="outerHTML">
-  <label for="date">Date</label>
-  <input name="date" required type="date" />
-  <br />
+{{ $cell_class := ""}}
+{{ $lable_class := "w-full block"}}
+<form hx-post="/transaction" hx-swap="outerHTML" class="">
+  <div class="grid grid-cols-2 gap-2 overflow-auto mb-2">
 
-  <label for="ticker-symbol">Ticker</label>
-  <input name="ticker-symbol" required type="text" value="xxx" />
-  <br />
+    <div class="{{$cell_class}}">
+      <label for="date" class="{{$lable_class}}">Date</label>
+      <input name="date" required type="date" />
+    </div>
 
-  <label for="transaction-type">Type</label>
-  <select name="transaction-type" required value="buy">
-    <option disabled selected value="">Select a type</option>
-    <option value="buy">Buy</option>
-    <option value="sell">Sell</option>
-  </select>
-  <br />
+    <div class="{{$cell_class}}">
+      <label for="ticker-symbol" class="{{$lable_class}}">Ticker</label>
+      <input name="ticker-symbol" required type="text" value="" />
+    </div>
 
-  <label for="price">Price</label>
-  <input name="price" required type="number" value="1000" />
-  <br />
+    <div class="{{$cell_class}}">
+      <label for="transaction-type" class="{{$lable_class}}">Type</label>
+      <select name="transaction-type" required value="buy">
+        <option disabled selected value="">Select a type</option>
+        <option value="buy">Buy</option>
+        <option value="sell">Sell</option>
+      </select>
+    </div>
 
-  <label for="volume">Volume</label>
-  <input name="volume" required type="number" value="1000" />
-  <br />
+    <div class="{{$cell_class}}">
+      <label for="price" class="{{$lable_class}}">Price</label>
+      <input name="price" required type="number" value="" />
+    </div>
 
-  <label for="commission">Commission</label>
-  <input name="commission" type="number" />
-  <br />
+    <div class="{{$cell_class}}">
+      <label for="volume" class="{{$lable_class}}">Volume</label>
+      <input name="volume" required type="number" value="" />
+    </div>
 
-  <label for="note">Note</label>
-  <input name="note" type="text" />
-  <br />
+    <div class="{{$cell_class}}">
+      <label for="commission" class="{{$lable_class}}">Commission</label>
+      <input name="commission" type="number" />
+    </div>
 
-  <label for="portfolio-id">Portfolio</label>
-  <input name="portfolio-id" required type="number" value="2" />
-  <br />
+    <div class="{{$cell_class}}">
+      <label for="note" class="{{$lable_class}}">Note</label>
+      <input name="note" type="text" />
+    </div>
 
-  <label for="ref-id">Ref</label>
-  <input name="ref-id" type="number" />
-  <br />
+    <div class="{{$cell_class}}">
+      <label for="portfolio-id" class="{{$lable_class}}">Portfolio</label>
+      <input name="portfolio-id" required type="number" value="" />
+    </div>
 
-  <button type="submit">Add</button>
+    <div class="{{$cell_class}}">
+      <label for="ref-id" class="{{$lable_class}}">Ref</label>
+      <input name="ref-id" type="number" />
+    </div>
+  </div>
+
+  <button type="submit" class="main">Add</button>
 </form>
