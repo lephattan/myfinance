@@ -13,6 +13,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 	"github.com/gofiber/fiber/v2/middleware/logger"
 	"github.com/gofiber/template/html/v2"
+	"golang.org/x/text/language"
+	"golang.org/x/text/message"
 )
 
 func main() {
@@ -60,6 +62,7 @@ func AppMiddleWare(c *fiber.Ctx) error {
 func MakeViews() *html.Engine {
 	engine := html.New("./views", ".html")
 	engine.AddFunc("UnixTimeFmt", helper.UnixTimeFmt)
+	engine.AddFunc("format", message.NewPrinter(language.English).Sprintf)
 	return engine
 }
 

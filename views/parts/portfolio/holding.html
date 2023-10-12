@@ -5,7 +5,6 @@
     <thead>
       <tr>
         <th>Symbol</th>
-        <th>Portfolio ID</th>
         <th>Total Shares</th>
         <th>Total Cost</th>
         <th>Average Price</th>
@@ -15,7 +14,8 @@
       </tr>
     </thead>
     <tbody>
-      {{ range .Holdings}} {{ template "parts/portfolio/symbol-holding" .}}
+      {{ range .Holdings}}
+      {{ template "parts/portfolio/symbol-holding" .}}
       {{else}}
       <tr>
         <td>No holding found!</td>

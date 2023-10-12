@@ -6,6 +6,7 @@ require (
 	github.com/gofiber/fiber/v2 v2.49.2
 	github.com/gofiber/template/html/v2 v2.0.5
 	github.com/golang-migrate/migrate/v4 v4.16.2
+	golang.org/x/text v0.9.0
 )
 
 require (

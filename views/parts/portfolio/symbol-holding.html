@@ -1,11 +1,10 @@
 {{ $holding_id := printf "holding-%s-%d" .Symbol .PortfolioID}}
 <tr id="{{$holding_id}}">
-  <td>{{.Symbol}}</td>
-  <td>{{.PortfolioID}}</td>
-  <td>{{.TotalShares}}</td>
-  <td>{{.TotalCost}}</td>
-  <td>{{.AveragePrice}}</td>
-  <td>{{.CurrentValue.Value}}</td>
+  <td class="uppercase">{{.Symbol}}</td>
+  <td>{{ format "%v" .TotalShares}}</td>
+  <td>{{ format "%v" .TotalCost}}</td>
+  <td>{{ format "%v" .AveragePrice}}</td>
+  <td>{{ format "%v" .CurrentValue.Value}}</td>
   <td>{{ UnixTimeFmt .UpdatedAt.Value "15:04 02-01-2006"}}</td>
   <td>
     <button type="button" hx-post="/portfolio/{{.PortfolioID}}/holding/{{.Symbol}}" hx-target="#{{$holding_id}}"
