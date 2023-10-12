@@ -140,11 +140,13 @@ func HandlePortfolioSymbolHolding(c *fiber.Ctx) (err error) {
 		return errors.New("Invalid PortfolioService")
 	}
 
-	var holding *model.Holding
-	listing_opt := database.ListOptions{
-		WhereColumn: "portfolio_id",
-		WhereValue:  id,
-	}
+	var holding model.Holding
+	listing_opt := database.ListOptions{}
+
+	cond := database.WhereGroup{Operator: "and"}
+	cond.Where("portfolio_id", id, "and")
+	cond.Where("symbol", symbol, "and")
+	listing_opt.WhereGroup(&cond)
 
 	err = holding_svc.Get(c.Context(), listing_opt, &holding)
 	if err != nil {

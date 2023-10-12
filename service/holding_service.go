@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	// "database/sql"
 	// "fmt"
 	"myfinance/database"
@@ -52,8 +53,12 @@ func (s *holding) Get(ctx context.Context, opt database.ListOptions, dest interf
 	opt.Limit = 1
 	q, args := opt.BuildQuery()
 	rows, err := s.db.Select(ctx, q, args...)
+	defer rows.Close()
 	if err != nil {
 		return err
+	}
+	if !rows.Next() {
+		return sql.ErrNoRows
 	}
 	return helper.ModelScan(dest, rows)
 }
