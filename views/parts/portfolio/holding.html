@@ -1,22 +1,26 @@
 <div class="portfolio-holding" id="holding">
   {{ if .Holdings }}
   <table>
-    <tr>
-      <th>Symbol</th>
-      <th>Portfolio ID</th>
-      <th>Total Shares</th>
-      <th>Total Cost</th>
-      <th>Average Price</th>
-      <th>Current Price</th>
-      <th>Updated At</th>
-      <th>Actions</th>
-    </tr>
-    {{ range .Holdings}} {{ template "parts/portfolio/symbol-holding" .}}
-    {{else}}
-    <tr>
-      <td>No holding found!</td>
-    </tr>
-    {{end}}
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Portfolio ID</th>
+        <th>Total Shares</th>
+        <th>Total Cost</th>
+        <th>Average Price</th>
+        <th>Current Price</th>
+        <th>Updated At</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{ range .Holdings}} {{ template "parts/portfolio/symbol-holding" .}}
+      {{else}}
+      <tr>
+        <td>No holding found!</td>
+      </tr>
+      {{end}}
+    </tbody>
   </table>
   {{ end }}
 </div>
