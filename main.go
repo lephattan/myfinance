@@ -35,6 +35,8 @@ func main() {
 
 	app.Use(AppMiddleWare)
 
+	app.Static("/assets", "./assets")
+
 	controller.RegisterRootController(app.Group("/"))
 
 	controller.RegisterTickerController(app.Group("/ticker"))

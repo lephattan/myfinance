@@ -15,54 +15,13 @@
     :root {
       --accent: #f29326;
     }
-
-    .errors {
-      color: red;
-    }
-
-    body {
-      font-family: sans-serif;
-    }
-
-    h1 {
-      @apply text-red;
-    }
-
-    table {
-      border-collapse: collapse;
-      margin: 25px 0;
-      font-family: sans-serif;
-      box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
-    }
-
-    thead tr {
-      background-color: var(--accent);
-      color: #ffffff;
-      text-align: left;
-    }
-
-    th,
-    td {
-      padding: 12px 15px;
-    }
-
-    tbody tr {
-      border-bottom: thin solid #dddddd;
-    }
-
-    tbody tr:nth-of-type(even) {
-      background-color: #f3f3f3;
-    }
-
-    tbody tr:last-of-type {
-      border-bottom: medium solid var(--accent);
-    }
   </style>
   <script src="https://cdn.jsdelivr.net/npm/@unocss/runtime"></script>
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@unocss/reset/normalize.min.css" />
   <script>
     console.log("UnoCSS version: ", window.__unocss_runtime?.version);
   </script>
+  <link rel="stylesheet" href="/assets/css/style.css" />
   <script>
     // pass unocss options
     window.__unocss = {
