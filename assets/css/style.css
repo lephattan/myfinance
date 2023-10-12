@@ -3,7 +3,7 @@
 }
 
 body {
-  font-family: sans-serif;
+  font-family: Helvetica, Arial, sans-serif;
 }
 
 table {
@@ -34,4 +34,35 @@ tbody tr:nth-of-type(even) {
 
 tbody tr:last-of-type {
   border-bottom: medium solid var(--accent);
+}
+
+button {
+  border-radius: 0.5em;
+  border-style: none;
+  box-sizing: border-box;
+  cursor: pointer;
+  font-family: Helvetica, Arial, sans-serif;
+  font-weight: 500;
+  line-height: 20px;
+  list-style: none;
+  outline: none;
+  padding: 5px 10px;
+  text-align: center;
+  transition: color 100ms;
+  vertical-align: baseline;
+  user-select: none;
+  -webkit-user-select: none;
+  touch-action: manipulation;
+  color: #ffffff;
+  background-color: #363636;
+  margin: 0.1em;
+}
+
+button.main {
+  background-color: var(--accent);
+}
+
+button:hover,
+button:focus {
+  filter: brightness(120%);
 }
