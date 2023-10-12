@@ -1,0 +1,9 @@
+<tr id="holding-{{.Symbol}}-{{.PortfolioID}}">
+  <td>{{.Symbol}}</td>
+  <td>{{.PortfolioID}}</td>
+  <td>{{.TotalShares}}</td>
+  <td>{{.TotalCost}}</td>
+  <td>{{.AveragePrice}}</td>
+  <td>{{.CurrentValue.Value}}</td>
+  <td>{{ UnixTimeFmt .UpdatedAt.Value "15:04 02-01-2006"}}</td>
+</tr>
