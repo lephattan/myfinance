@@ -1,6 +1,18 @@
-<ul style="list-style-type: none; margin: 0; padding: 0">
-  <li><a href="/">Home</a></li>
-  <li><a href="/ticker">Tickers</a></li>
-  <li><a href="/portfolio">Portfolios</a></li>
-  <li><a href="/transaction">Transactions</a></li>
-</ul>
+{{$li_class := "float-left hover:bg-dark-1 p-2"}}
+{{$nav_link_class := "inline-block text-center color-white px-1 py-2 decoration-none"}}
+<div>
+  <ul class="list-none m-0 p-0 overflow-hidden w-full bg-dark">
+    <li class="{{$li_class}}">
+      <a class="{{$nav_link_class}}" href="/">Home</a>
+    </li>
+    <li class="{{$li_class}}">
+      <a class="{{$nav_link_class}}" href="/ticker">Tickers</a>
+    </li>
+    <li class="{{$li_class}}">
+      <a class="{{$nav_link_class}}" href="/portfolio">Portfolios</a>
+    </li>
+    <li class="{{$li_class}}">
+      <a class="{{$nav_link_class}}" href="/transaction">Transactions</a>
+    </li>
+  </ul>
+</div>

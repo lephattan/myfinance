@@ -37,13 +37,16 @@
 </head>
 
 <body class="rounded-lg">
-  <div class="nav">{{ template "partials/nav" . }}</div>
+  {{ template "partials/nav" . }}
   <div class="errors">
     {{ if .Errors }} {{ range .Errors }}
     <p>{{ . }}</p>
     {{ end }} {{ end }}
   </div>
-  {{embed}}
+  <div class="p-2">
+    {{embed}}
+  </div>
+
 
   <footer>{{ template "partials/footer" . }}</footer>
 </body>
