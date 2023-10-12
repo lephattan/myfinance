@@ -68,7 +68,7 @@ button:focus {
   filter: brightness(120%);
 }
 
-input[type="text"],
+input,
 select {
   padding: 8px 10px;
   margin: 1px 0;
@@ -77,7 +77,7 @@ select {
   box-sizing: border-box;
 }
 
-input[type="text"]:focus-visible,
+input:focus-visible,
 select:focus-visible {
   outline-color: var(--accent);
   outline-width: thin;
