@@ -80,3 +80,18 @@ func (h *Holding) HandleTransaction(t *Transaction) (err error) {
 	}
 	return nil
 }
+
+func (h *Holding) GainLoss() int64 {
+	if h.CurrentValue.Valid {
+		return h.CurrentValue.Actual - h.TotalCost
+	}
+	return 0
+}
+
+func (h *Holding) GainLossPercent() float64 {
+	if h.TotalCost == 0 {
+		return 0
+	}
+	gl := float64(h.GainLoss()) / float64(h.TotalCost)
+	return gl * 100
+}

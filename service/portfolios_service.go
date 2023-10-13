@@ -191,6 +191,10 @@ func (s *portfolio) UpdateSymbolHolding(ctx context.Context, portfolio_id uint64
 		ticker_holding.HandleTransaction(transaction)
 	}
 	ticker_holding.AveragePrice = ticker_holding.GetAveragePrice()
+	if ticker.CurrentPrice.Valid {
+		ticker_holding.CurrentValue.Actual = ticker_holding.TotalShares * ticker.CurrentPrice.Actual
+		ticker_holding.CurrentValue.Valid = true
+	}
 	log.Printf("Ticker holding: %v", ticker_holding)
 	err = s.holding.Create(ctx, ticker_holding)
 	if err != nil {
