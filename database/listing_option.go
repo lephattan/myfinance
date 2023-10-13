@@ -149,7 +149,7 @@ const (
 
 func ParseOrder(order string) string {
 	order = strings.TrimSpace(order)
-	if len(order) > 4 {
+	if len(order) >= 4 {
 		if strings.HasPrefix(strings.ToUpper(order), descending) {
 			return descending
 		}

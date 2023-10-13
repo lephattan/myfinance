@@ -23,6 +23,7 @@ func RegisterPortfolioComponentController(router fiber.Router) {
 	router.Get("/holding/:id", HandlePortfolioHolding).Name(names.PPortfolioHoldingList)
 	router.Get("/holding/:portfolio_id/:symbol", HandlePortfolioSymbolHolding).Name(names.PPortfolioSymbolHolding)
 	router.Get("/holding-value/:portfolio_id", HandlePortfolioHoldingValue)
+	router.Get("/holding-cost/:portfolio_id", HandlePortfolioHoldingCost)
 }
 
 func HandlePortfolioList(c *fiber.Ctx) error {
@@ -173,4 +174,20 @@ func HandlePortfolioHoldingValue(c *fiber.Ctx) (err error) {
 	var holding_total int64
 	svc.HoldingValue(c.Context(), uint64(id), &holding_total)
 	return c.Render("parts/portfolio/holding-value", holding_total)
+}
+
+func HandlePortfolioHoldingCost(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("portfolio_id")
+	if err != nil {
+		log.Printf("Error reading portfolio_id")
+		return err
+	}
+
+	svc, ok := c.Locals("Service").(service.PortfolioService)
+	if !ok {
+		return errors.New("Invalid PortfolioService")
+	}
+	var holding_cost int64
+	svc.HoldingCost(c.Context(), uint64(id), &holding_cost)
+	return c.Render("parts/portfolio/holding-cost", holding_cost)
 }

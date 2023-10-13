@@ -24,6 +24,7 @@ type PortfolioService interface {
 	UpdateSymbolHolding(ctx context.Context, portfolio_id uint64, symbol string) error
 	ClearSymbolHolding(ctx context.Context, portfolio_id uint64, symbol string) error
 	HoldingValue(ctx context.Context, portfolio_id uint64, dest interface{}) error
+	HoldingCost(ctx context.Context, portfolio_id uint64, dest interface{}) error
 }
 
 func NewPortfolioService(db database.DB) PortfolioService {
@@ -215,6 +216,19 @@ func (s *portfolio) ClearSymbolHolding(ctx context.Context, portfolio_id uint64,
 
 func (s *portfolio) HoldingValue(ctx context.Context, portfolio_id uint64, dest interface{}) error {
 	query := "Select Sum(current_value) From holdings Where portfolio_id = ? And current_value Is Not Null;"
+	rows, err := s.db.Select(ctx, query, portfolio_id)
+	if err != nil {
+		return err
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		return sql.ErrNoRows
+	}
+	return rows.Scan(dest)
+}
+
+func (s *portfolio) HoldingCost(ctx context.Context, portfolio_id uint64, dest interface{}) error {
+	query := "Select Sum(total_cost) From holdings Where portfolio_id = ? And current_value Is Not Null;"
 	rows, err := s.db.Select(ctx, query, portfolio_id)
 	if err != nil {
 		return err
