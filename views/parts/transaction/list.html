@@ -17,17 +17,21 @@
     </tr>
     {{range .Transactions }}
     <tr>
-      <td>{{ .ID }}</td>
-      <td>{{ .Date.String }}</td>
-      <td>{{ .TickerSymbol }}</td>
-      <td>{{ .TransactionType }}</td>
-      <td>{{ .Volume }}</td>
-      <td>{{ .Price }}</td>
-      <td>{{ .Commission }}</td>
+      <td class="text-center">{{ .ID }}</td>
+      <td class="text-center">{{ .Date.String }}</td>
+      <td class="uppercase text-center">{{ .TickerSymbol }}</td>
+      <td class="uppercase text-center">{{ .TransactionType }}</td>
+      <td class="text-right">{{ format "%v" .Volume }}</td>
+      <td class="text-right">{{ format "%v" .Price }}</td>
+      <td class="text-right">{{ format "%v" .Commission }}</td>
       <td>{{ .Note.Value }}</td>
-      <td>{{ .PortfolioID }}</td>
+      <td class="text-center ">
+        <a href="/portfolio/{{.PortfolioID}}" class="decoration-none">
+          {{ .PortfolioID }}
+        </a>
+      </td>
       <td>{{ .RefID.Value }}</td>
-      <td>{{ .Total}}</td>
+      <td class="text-right">{{ format "%v" .Total}}</td>
     </tr>
     {{ end }}
   </table>
