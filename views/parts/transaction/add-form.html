@@ -1,6 +1,6 @@
 {{ $cell_class := ""}}
 {{ $lable_class := "w-full block"}}
-<form hx-post="/transaction" hx-swap="outerHTML" class="">
+<form hx-post="/transaction" hx-target=".add-transaction-msg" class="">
   <div class="grid grid-cols-2 gap-2 overflow-auto mb-2">
 
     <div class="{{$cell_class}}">
@@ -55,3 +55,4 @@
 
   <button type="submit" class="main">Add</button>
 </form>
+<div class="add-transaction-msg"></div>

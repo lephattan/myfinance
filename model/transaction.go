@@ -159,5 +159,12 @@ func (t *Transactions) ParseListOptions(q *url.Values) database.ListOptions {
 		opt.Where("transaction_type", transaction_type)
 	}
 
+	if opt.OrderByColumn == "" {
+		opt.OrderByColumn = "date"
+	}
+	if opt.Order == "" {
+		opt.Order = "DESC"
+	}
+
 	return opt
 }
