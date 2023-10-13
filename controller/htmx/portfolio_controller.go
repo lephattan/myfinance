@@ -157,7 +157,7 @@ func HandlePortfolioSymbolHolding(c *fiber.Ctx) (err error) {
 			return err
 		}
 	}
-	return c.Render("parts/portfolio/symbol-holding", holding)
+	return c.Render("parts/portfolio/symbol-holding", &holding)
 }
 
 func HandlePortfolioHoldingValue(c *fiber.Ctx) (err error) {

@@ -228,7 +228,7 @@ func (s *portfolio) HoldingValue(ctx context.Context, portfolio_id uint64, dest 
 }
 
 func (s *portfolio) HoldingCost(ctx context.Context, portfolio_id uint64, dest interface{}) error {
-	query := "Select Sum(total_cost) From holdings Where portfolio_id = ? And current_value Is Not Null;"
+	query := "Select Sum(total_cost) From holdings Where portfolio_id = ?;"
 	rows, err := s.db.Select(ctx, query, portfolio_id)
 	if err != nil {
 		return err
