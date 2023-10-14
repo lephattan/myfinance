@@ -1,5 +1,6 @@
-{{ if .Ticker }} {{ with .Ticker }}
-<form hx-put="/ticker/{{.Symbol}}" hx-target="this" hx-swap="outerHTML">
+{{- if .Ticker }} {{ with .Ticker }}
+{{- $ticker_id := printf "ticker-%s-row" .Symbol}}
+<form hx-put="/ticker/{{.Symbol}}" hx-target="this" hx-swap="outerHTML" class="ticker-edit">
   <div>
     <label>Symbol: </label>
     {{.Symbol}}
@@ -13,6 +14,19 @@
     <input type="text" name="current-price" value="{{.CurrentPrice.Actual}}" />
   </div>
   <button>Save</button>
-  <button hx-get="/htmx/components/ticker/detail/{{.Symbol}}">Cancel</button>
+  <button hx-get="/htmx/components/ticker/detail/{{.Symbol}}" hx-select=".ticker-detail">Cancel</button>
+</form>
+<form id="{{$ticker_id}}" class="table-row edit-row" hx-target="this" hx-swap="outerHTML" hx-put="/ticker/{{.Symbol}}"
+  hx-select="#{{$ticker_id}}">
+  <div class="table-cell">{{.Symbol}}</div>
+  <div class="table-cell"><input type="text" name="name" value="{{.Name}}"></div>
+  <div class="table-cell"><input type="text" name="current-price" value="{{.CurrentPrice.Actual}}"></div>
+  <div class="table-cell">
+    {{if .PriceUpdatedAt.Valid }}{{ UnixTimeFmt .PriceUpdatedAt.Actual "15:04 02-01-2006"}}{{end}}</div>
+  <div class="table-cell">
+    <button type="submit">Save</button>
+    <button type="button" hx-get="/htmx/components/ticker/detail/{{.Symbol}}" hx-swap="outerHTML"
+      hx-select="#{{$ticker_id}}">Cancel</button>
+  </div>
 </form>
 {{ end }} {{end}}

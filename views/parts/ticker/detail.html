@@ -1,13 +1,15 @@
-<div class="ticker-detail" hx-target="this" hx-swap="outerHTML">
-  {{ if .Ticker }} {{ with .Ticker }}
+{{ if .Ticker }} {{ with .Ticker }}
+<div class="ticker-detail" hx-target="this" hx-swap="outerHTML" hx-select=".ticker-detail">
   <div><label>Symbol: </label>{{.Symbol}}</div>
   <div><label>Name: </label>{{.Name}}</div>
   <div><label>CurrentPrice: </label>{{format "%v" .CurrentPrice.Actual}}</div>
   <div><label>PriceUpdatedAt: </label>
     {{if .PriceUpdatedAt.Valid }}{{ UnixTimeFmt .PriceUpdatedAt.Actual "15:04 02-01-2006"}}{{end}}
   </div>
-  <button hx-get="/htmx/components/ticker/edit-form/{{.Symbol}}">Edit</button>
-  {{ end }} {{else}}
-  <p>Ticker not found</p>
-  {{ end }}
+  <button hx-get="/htmx/components/ticker/edit-form/{{.Symbol}}" hx-select=".ticker-edit">Edit</button>
 </div>
+{{ template "parts/ticker/ticker-row" .}}
+{{ end }}
+{{else}}
+<p>Ticker not found</p>
+{{ end }}

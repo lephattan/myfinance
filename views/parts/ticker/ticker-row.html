@@ -1,4 +1,4 @@
-{{ $ticker_id := printf "ticker-%s" .Symbol}}
+{{ $ticker_id := printf "ticker-%s-row" .Symbol}}
 <div id="{{$ticker_id}}" class="table-row">
   <div class="table-cell">
     <a href="/ticker/{{ .Symbol }}">{{ .Symbol}}</a>
