@@ -2,6 +2,10 @@
   {{ if .Ticker }} {{ with .Ticker }}
   <div><label>Symbol: </label>{{.Symbol}}</div>
   <div><label>Name: </label>{{.Name}}</div>
+  <div><label>CurrentPrice: </label>{{format "%v" .CurrentPrice.Actual}}</div>
+  <div><label>PriceUpdatedAt: </label>
+    {{if .PriceUpdatedAt.Valid }}{{ UnixTimeFmt .PriceUpdatedAt.Actual "15:04 02-01-2006"}}{{end}}
+  </div>
   <button hx-get="/htmx/components/ticker/edit-form/{{.Symbol}}">Edit</button>
   {{ end }} {{else}}
   <p>Ticker not found</p>

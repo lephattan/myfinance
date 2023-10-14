@@ -9,15 +9,17 @@ import (
 	"strings"
 )
 
+const TickerTablename = "tickers"
+
 type Ticker struct {
-	Symbol         string                   `db:"symbol" json:"symbol"`
-	Name           string                   `db:"name" json:"name"`
-	CurrentPrice   database.Nullable[int64] `db:"current_price"`
+	Symbol         string                   `db:"symbol" form:"symbol"`
+	Name           string                   `db:"name" form:"name"`
+	CurrentPrice   database.Nullable[int64] `db:"current_price" form:"current_price"`
 	PriceUpdatedAt database.Nullable[int64] `db:"price_updated_at"`
 }
 
 func (t *Ticker) TableName() string {
-	return "tickers"
+	return TickerTablename
 }
 
 func (t *Ticker) PrimaryKey() string {
@@ -78,9 +80,11 @@ type (
 		Symbol string `json:"symbol"`
 	}
 
-	UpdateTickerRequest struct {
-		Name string `json:"name"`
-	} // at least 1 required.
+	TickerUpdate struct {
+		Symbol       string                   `db:"symbol"`
+		Name         string                   `db:"name" form:"name"`
+		CurrentPrice database.Nullable[int64] `db:"current_price" form:"current-price"`
+	}
 
 	GetTickerRequest struct {
 		Symbol string `json:"symbol"` // required
@@ -92,3 +96,20 @@ type (
 	// 	// [page, offset...]
 	// }
 )
+
+func (t *TickerUpdate) UpdateQuery() (query string, args []interface{}) {
+	query = fmt.Sprintf(`Update %s
+		Set 
+			name = ?,
+			current_price = ?
+		Where %s = Lower(?);`,
+		TickerTablename,
+		"symbol",
+	)
+	args = append(args, &t.Name, &t.CurrentPrice, &t.Symbol)
+	return
+}
+
+func (t *TickerUpdate) ValidateUpdate() bool {
+	return true
+}

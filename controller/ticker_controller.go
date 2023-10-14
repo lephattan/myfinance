@@ -50,17 +50,22 @@ func TickerHanlde(c *fiber.Ctx) error {
 }
 
 // Handle ticker update request
-func HandleTickerUpdate(c *fiber.Ctx) error {
+func HandleTickerUpdate(c *fiber.Ctx) (err error) {
 	symbol := strings.TrimSpace(c.Params("symbol"))
-	ticker := model.Ticker{
-		Symbol: symbol,
-		Name:   c.FormValue("ticker-name"),
-	}
+	// ticker := model.Ticker{
+	// 	Symbol: symbol,
+	// 	Name:   c.FormValue("ticker-name"),
+	// }
 	svc, _ := c.Locals("Service").(service.TickerService)
 
-	_, err := svc.Update(c.Context(), ticker)
-	if err != nil {
-		return c.SendString(fmt.Sprintf("<h3>%s</h3>", err.Error()))
+	var ticker model.TickerUpdate
+
+	if err = c.BodyParser(&ticker); err != nil {
+		return
+	}
+	ticker.Symbol = strings.ToLower(symbol)
+	if _, err := svc.Update(c.Context(), ticker); err != nil {
+		return err
 	}
 	return c.Redirect(fmt.Sprintf("/htmx/components/ticker/detail/%s", symbol), fiber.StatusSeeOther)
 }

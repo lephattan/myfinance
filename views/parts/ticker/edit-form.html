@@ -5,8 +5,12 @@
     {{.Symbol}}
   </div>
   <div>
-    <label for="ticker-name">Name: </label>
-    <input type="text" name="ticker-name" value="{{.Name}}" />
+    <label for="name">Name: </label>
+    <input type="text" name="name" value="{{.Name}}" />
+  </div>
+  <div>
+    <label for="current-price">Name: </label>
+    <input type="text" name="current-price" value="{{.CurrentPrice.Actual}}" />
   </div>
   <button>Save</button>
   <button hx-get="/htmx/components/ticker/detail/{{.Symbol}}">Cancel</button>

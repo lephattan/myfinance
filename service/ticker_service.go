@@ -13,7 +13,7 @@ type TickerService interface {
 	List(ctx context.Context, opt database.ListOptions, dest interface{}) error
 	Create(ctx context.Context, t model.Ticker) (int64, error)
 	Get(ctx context.Context, symbol string, dest interface{}) (err error)
-	Update(ctx context.Context, t model.Ticker) (int, error)
+	Update(ctx context.Context, t model.TickerUpdate) (int, error)
 }
 
 func NewTickerService(db database.DB) TickerService {
@@ -53,16 +53,18 @@ func (s *ticker) Get(ctx context.Context, symbol string, dest interface{}) (err 
 	return
 }
 
-func (s *ticker) Update(ctx context.Context, t model.Ticker) (int, error) {
-	if !t.ValidateInsert() {
+func (s *ticker) Update(ctx context.Context, t model.TickerUpdate) (int, error) {
+	if !t.ValidateUpdate() {
 		return 0, database.ErrUnprocessable
 	}
-	q := fmt.Sprintf(`Update %s
-		Set
-			name = ?
-		Where %s = Lower(?);
-		`, t.TableName(), t.PrimaryKey())
-	res, err := s.db.Exec(ctx, q, t.Name, strings.ToLower(t.Symbol))
+	// q := fmt.Sprintf(`Update %s
+	// 	Set
+	// 		name = ?
+	// 	Where %s = Lower(?);
+	// 	`, t.TableName(), t.PrimaryKey())
+	q, args := t.UpdateQuery()
+	// res, err := s.db.Exec(ctx, q, t.Name, strings.ToLower(t.Symbol))
+	res, err := s.db.Exec(ctx, q, args...)
 	if err != nil {
 		return 0, err
 	}
