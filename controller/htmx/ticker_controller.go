@@ -2,7 +2,6 @@ package htmx
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"myfinance/database"
 	"myfinance/model"
@@ -82,9 +81,9 @@ func HandleTickerEditForm(c *fiber.Ctx) error {
 	log.Printf("Edit form for %s", symbol)
 	svc, _ := c.Locals("Service").(service.TickerService)
 	var ticker model.Ticker
-	err := svc.Get(c.Context(), symbol, ticker)
+	err := svc.Get(c.Context(), symbol, &ticker)
 	if err != nil {
-		return c.SendString(fmt.Sprintf("<h3>%s</h3>", err.Error()))
+		return err
 	}
 	data := fiber.Map{
 		"Ticker": &ticker,
