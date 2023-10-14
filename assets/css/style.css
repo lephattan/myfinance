@@ -7,33 +7,40 @@ body {
   margin: 0;
 }
 
-table {
+table,
+.table {
   border-collapse: collapse;
   margin: 25px 0;
   font-family: sans-serif;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.15);
 }
 
-thead tr {
+thead tr,
+.table-header-group .table-row {
   background-color: var(--accent);
   color: #ffffff;
   text-align: left;
+  font-weight: bold;
 }
 
 th,
-td {
+td,
+.table-cell {
   padding: 12px 15px;
 }
 
-tbody tr {
+tbody tr,
+.table-row-group .table-row {
   border-bottom: thin solid #dddddd;
 }
 
-tbody tr:nth-of-type(even) {
+tbody tr:nth-of-type(even),
+.table-row-group .table-row:nth-of-type(even) {
   background-color: #f3f3f3;
 }
 
-tbody tr:last-of-type {
+tbody tr:last-of-type,
+.table-row:last-of-type {
   border-bottom: medium solid var(--accent);
 }
 

@@ -1,8 +1,14 @@
-<tr id="ticker-{{.Symbol}}">
-  <td>
+{{ $ticker_id := printf "ticker-%s" .Symbol}}
+<div id="{{$ticker_id}}" class="table-row">
+  <div class="table-cell">
     <a href="/ticker/{{ .Symbol }}">{{ .Symbol}}</a>
-  </td>
-  <td>{{ .Name }}</td>
-  <td>{{if .CurrentPrice.Valid }}{{ format "%v" .CurrentPrice.Value}}{{end}}</td>
-  <td>{{if .PriceUpdatedAt.Valid }}{{ UnixTimeFmt .PriceUpdatedAt.Actual "15:04 02-01-2006"}}{{end}}</td>
-</tr>
+  </div>
+  <div class="table-cell">{{ .Name }}</div>
+  <div class="table-cell">{{if .CurrentPrice.Valid }}{{ format "%v" .CurrentPrice.Value}}{{end}}</div>
+  <div class="table-cell">{{if .PriceUpdatedAt.Valid }}{{ UnixTimeFmt .PriceUpdatedAt.Actual "15:04 02-01-2006"}}{{end}}
+  </div>
+  <div class="table-cell">
+    <button hx-get="/htmx/components/ticker/edit-form/{{.Symbol}}" type="button" hx-target="#{{$ticker_id}}"
+      hx-select="#{{$ticker_id}}">Edit</button>
+  </div>
+</div>

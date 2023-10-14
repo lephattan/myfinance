@@ -6,21 +6,22 @@
     {{ end }} {{ end }}
   </div>
   {{ if .Tickers }}
-  <table>
-    <thead>
-      <tr>
-        <th>Symbol</th>
-        <th>Name</th>
-        <th>Current Price</th>
-        <th>Price Updated At</th>
-      </tr>
-    </thead>
-    <tbody>
+  <div class="table">
+    <div class="table-header-group">
+      <div class="table-row">
+        <div class="table-cell">Symbol</div>
+        <div class="table-cell">Name</div>
+        <div class="table-cell">Current Price</div>
+        <div class="table-cell">Price Updated At</div>
+        <div class="table-cell">Actions</div>
+      </div>
+    </div>
+    <div class="table-row-group">
       {{range .Tickers }}
       {{ template "parts/ticker/ticker-row" . }}
       {{ end }}
-    </tbody>
-  </table>
+    </div>
+  </div>
   {{ else }}
   <p>No ticker found!</p>
   {{ end }}
