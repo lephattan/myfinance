@@ -7,22 +7,26 @@
   </div>
   {{ if .Tickers }}
   <table>
-    <tr>
-      <th>Symbol</th>
-      <th>Name</th>
-      <th>Current Price</th>
-      <th>Price Updated At</th>
-    </tr>
-    {{range .Tickers }}
-    <tr>
-      <td>
-        <a href="/ticker/{{ .Symbol }}">{{ .Symbol}}</a>
-      </td>
-      <td>{{ .Name }}</td>
-      <td>{{ .CurrentPrice.Value}}</td>
-      <td>{{ .PriceUpdatedAt.Value }}</td>
-    </tr>
-    {{ end }}
+    <thead>
+      <tr>
+        <th>Symbol</th>
+        <th>Name</th>
+        <th>Current Price</th>
+        <th>Price Updated At</th>
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Tickers }}
+      <tr>
+        <td>
+          <a href="/ticker/{{ .Symbol }}">{{ .Symbol}}</a>
+        </td>
+        <td>{{ .Name }}</td>
+        <td>{{if .CurrentPrice.Valid }}{{ format "%v" .CurrentPrice.Value}}{{end}}</td>
+        <td>{{if .PriceUpdatedAt.Valid }}{{ UnixTimeFmt .PriceUpdatedAt.Actual "15:04 02-01-2006"}}{{end}}</td>
+      </tr>
+      {{ end }}
+    </tbody>
   </table>
   {{ else }}
   <p>No ticker found!</p>
