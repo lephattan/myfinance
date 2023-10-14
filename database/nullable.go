@@ -2,6 +2,10 @@ package database
 
 import (
 	"database/sql/driver"
+	"reflect"
+	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 // Implementation of SQL nullable with generic
@@ -37,4 +41,32 @@ func (n Nullable[T]) Value() (driver.Value, error) {
 		return nil, nil
 	}
 	return n.Actual, nil
+}
+
+// Convert input string to Nullable[int64]
+func NullableInt64Converter(value string) reflect.Value {
+	null_value := reflect.ValueOf(Nullable[int64]{
+		Actual: 0,
+		Valid:  false,
+	})
+
+	if value == "" {
+		return null_value
+	}
+
+	v, err := strconv.ParseInt(value, 10, 64)
+	if err != nil {
+		return null_value
+	}
+
+	return reflect.ValueOf(Nullable[int64]{
+		Actual: v,
+		Valid:  true,
+	})
+}
+
+// Custom parser for Nullable[int64]
+var NullableInt64Parser = fiber.ParserType{
+	Customtype: Nullable[int64]{},
+	Converter:  NullableInt64Converter,
 }

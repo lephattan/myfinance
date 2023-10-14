@@ -23,8 +23,11 @@ func main() {
 	// Set cutome type parser
 	fiber.SetParserDecoder(fiber.ParserConfig{
 		IgnoreUnknownKeys: true,
-		ParserType:        []fiber.ParserType{database.UnixDateParser},
-		ZeroEmpty:         true,
+		ParserType: []fiber.ParserType{
+			database.UnixDateParser,
+			database.NullableInt64Parser,
+		},
+		ZeroEmpty: true,
 	})
 
 	views := MakeViews()
