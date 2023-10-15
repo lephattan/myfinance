@@ -29,4 +29,11 @@ dev*
 !database/dev.go
 tmp/
 .air.toml
+
 assets/js/web-components/
+/node_modules/
+/lib/
+/test/
+custom-elements.json
+# top level source
+build/
