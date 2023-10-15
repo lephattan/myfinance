@@ -9,12 +9,7 @@ import {terser} from 'rollup-plugin-terser';
 import resolve from '@rollup/plugin-node-resolve';
 import replace from '@rollup/plugin-replace';
 
-export default {
-  input: 'my-element.js',
-  output: {
-    file: 'my-element.bundled.js',
-    format: 'esm',
-  },
+const options = {
   onwarn(warning) {
     if (warning.code !== 'THIS_IS_UNDEFINED') {
       console.error(`(!) ${warning.message}`);
@@ -40,3 +35,16 @@ export default {
     summary(),
   ],
 };
+
+function component(name) {
+  return {
+    input: `build/${name}.js`,
+    output: {
+      file: `../assets/js/web-components/${name}.js`,
+      format: 'esm',
+    },
+    ...options,
+  };
+}
+
+export default [component('my-element')];

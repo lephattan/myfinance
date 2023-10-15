@@ -29,3 +29,4 @@ dev*
 !database/dev.go
 tmp/
 .air.toml
+assets/js/web-components/
