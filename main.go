@@ -1,7 +1,7 @@
 package main
 
 import (
-	// "errors"
+	"encoding/json"
 	"fmt"
 	"log"
 
@@ -66,6 +66,12 @@ func MakeViews() *html.Engine {
 	engine := html.New("./views", ".html")
 	engine.AddFunc("UnixTimeFmt", helper.UnixTimeFmt)
 	engine.AddFunc("format", message.NewPrinter(language.English).Sprintf)
+	engine.AddFuncMap(map[string]interface{}{
+		"json": func(in interface{}) (string, error) {
+			out, err := json.Marshal(in)
+			return string(out), err
+		},
+	})
 	return engine
 }
 
