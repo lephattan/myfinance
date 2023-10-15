@@ -19,7 +19,7 @@ const options = {
   plugins: [
     replace({ "Reflect.decorate": "undefined" }),
     nodeResolve({
-      exportConditions: ["development"],
+      exportConditions: ["production"],
     }),
     resolve(),
     /**

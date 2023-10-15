@@ -1,16 +1,12 @@
 {
-  "name": "@lit/lit-starter-ts",
+  "name": "myfinance-web-components",
   "private": true,
-  "version": "2.0.0",
+  "version": "1.0.0",
   "description": "A simple web component",
-  "main": "my-element.js",
-  "module": "my-element.js",
-  "type": "module",
   "scripts": {
     "build": "tsc",
-    "build:watch": "tsc --watch",
-    "build:production": "tsc --project tsconfig.production.json && rollup -c",
-    "clean": "rimraf my-element.{d.ts,d.ts.map,js,js.map} test/my-element.{d.ts,d.ts.map,js,js.map} test/my-element_test.{d.ts,d.ts.map,js,js.map}",
+    "build:watch": "tsc --watch & rollup -c --watch",
+    "build:production": "tsc --project tsconfig.production.json && rollup -c rollup.config.production.js",
     "lint": "npm run lint:lit-analyzer && npm run lint:eslint",
     "lint:eslint": "eslint 'src/**/*.ts'",
     "lint:lit-analyzer": "lit-analyzer",
@@ -23,8 +19,7 @@
     "test:dev": "wtr",
     "test:watch": "wtr --watch",
     "test:prod": "MODE=prod wtr",
-    "test:prod:watch": "MODE=prod wtr --watch",
-    "checksize": "rollup -c ; cat my-element.bundled.js | gzip -9 | wc -c ; rm my-element.bundled.js"
+    "test:prod:watch": "MODE=prod wtr --watch"
   },
   "keywords": [
     "web-components",
@@ -35,6 +30,7 @@
   "author": "Google LLC",
   "license": "BSD-3-Clause",
   "dependencies": {
+    "chart.js": "^4.4.0",
     "lit": "^3.0.0"
   },
   "devDependencies": {
