@@ -47,4 +47,4 @@ function component(name) {
   };
 }
 
-export default [component('my-element')];
+export default [component('pie-chart')];
