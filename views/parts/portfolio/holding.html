@@ -1,6 +1,10 @@
+<div>
+
+</div>
 <div class="portfolio-holding" id="holding">
   <h3>Current Holding</h3>
   {{ if .Holdings }}
+  {{ template "parts/portfolio/distribution-chart" .}}
   <table class="w-full">
     <thead>
       <tr>

@@ -1,0 +1,5 @@
+<div class="max-h-xl py-4">
+  <script src="/assets/js/web-components/pie-chart.js" type="module"></script>
+  <pie-chart class="max-h-xl my-4" holdings=" {{ .Holdings | json}}" chart_id="distribution-chart" labelField="Symbol"
+    dataField="TotalCost" chartTitle="Ticker Cost Distribution"></pie-chart>
+</div>
