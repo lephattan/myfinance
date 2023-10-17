@@ -1,9 +1,6 @@
+<h1>Portfolio</h1>
 <div class="portfolio-detail" hx-get="/htmx/components/portfolio/detail/{{.PortfolioID}}" hx-trigger="load"
   hx-swap="outerHTML"></div>
-
-<button hx-delete="/portfolio/{{.PortfolioID}}" hx-confirm="Are you sure you wish to delete this portfolio?">
-  Delete
-</button>
 
 <div class="portfolio-holding" hx-get="/htmx/components/portfolio/holding/{{.PortfolioID}}" hx-trigger="load"
   hx-swap="outerHTML"></div>
