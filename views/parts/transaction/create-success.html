@@ -1,0 +1,5 @@
+<p class="text-green">New transaction added:
+  <span class="uppercase">{{.TransactionType}}</span>
+  {{format "%v" .Volume}}
+  <span class="uppercase">{{.TickerSymbol}}</span>@{{format "%v" .Price}}
+</p>

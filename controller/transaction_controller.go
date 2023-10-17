@@ -1,7 +1,6 @@
 package controller
 
 import (
-	// "myfinance/controller/htmx"
 	"myfinance/middleware"
 	"myfinance/model"
 	"myfinance/names"
@@ -37,7 +36,5 @@ func HandleTransactionCreate(c *fiber.Ctx) error {
 	if _, err := svc.Create(c.Context(), *&transaction); err != nil {
 		return err
 	}
-	c.Set("HX-Trigger", "new-transaction")
-	return c.SendString("<p>New transaction added</p>")
-	// return htmx.HandleTransactionAddForm(c)
+	return c.Render("parts/transaction/create-success", transaction)
 }
