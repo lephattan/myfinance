@@ -25,5 +25,5 @@ BEGIN
 			ELSE null END,				
 		updated_at = unixepoch('now')
 	FROM tickers
-	Where symbol = NEW.ticker_symbol And portfolio_id = NEW.portfolio_id AND tickers.symbol = NEW.ticker_symbol;
+	Where holdings.symbol = NEW.ticker_symbol And holdings.portfolio_id = NEW.portfolio_id AND tickers.symbol = NEW.ticker_symbol;
 END;
