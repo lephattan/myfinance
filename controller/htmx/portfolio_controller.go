@@ -119,7 +119,8 @@ func HandlePortfolioHolding(c *fiber.Ctx) error {
 	}
 
 	data := fiber.Map{
-		"Holdings": &holdings,
+		"Holdings":    &holdings,
+		"PortfolioID": id,
 	}
 	return c.Render("parts/portfolio/holding", data)
 }

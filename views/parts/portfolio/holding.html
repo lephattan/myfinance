@@ -1,4 +1,4 @@
-<div class="portfolio-holding" id="holding">
+<div class="portfolio-holding overflow-auto" id="holding">
   <h3>Current Holding</h3>
   {{ if .Holdings }}
   {{ template "parts/portfolio/distribution-chart" .}}
@@ -16,6 +16,21 @@
       </tr>
     </thead>
     <tbody>
+      <tr>
+        <td class="font-bold">Summary</td>
+        <td></td>
+        <td class="font-bold text-right" hx-get="/htmx/components/portfolio/holding-cost/{{.PortfolioID}}"
+          hx-trigger="load, update-holding from:body"></td>
+        <td></td>
+        <td></td>
+        <td class="font-bold text-right" hx-get="/htmx/components/portfolio/holding-value/{{.PortfolioID}}"
+          hx-trigger="load, update-holding from:body"></td>
+        <td colspan="2" class="text-right">
+          <button hx-post="/portfolio/{{.PortfolioID}}/holding" hx-target="#holding">
+            Update All
+          </button>
+        </td>
+      </tr>
       {{ range .Holdings}}
       {{ template "parts/portfolio/symbol-holding" .}}
       {{else}}

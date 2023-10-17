@@ -5,24 +5,5 @@
   Delete
 </button>
 
-<div>
-  <h4 class="inline-block">Total Cost:</h4>
-  <div class="inline-block" hx-get="/htmx/components/portfolio/holding-cost/{{.PortfolioID}}"
-    hx-trigger="load, update-holding from:body">
-  </div>
-</div>
-
-<div>
-  <h4 class="inline-block">Total Value:</h4>
-  <div class="inline-block" hx-get="/htmx/components/portfolio/holding-value/{{.PortfolioID}}"
-    hx-trigger="load, update-holding from:body">
-  </div>
-</div>
-
 <div class="portfolio-holding" hx-get="/htmx/components/portfolio/holding/{{.PortfolioID}}" hx-trigger="load"
   hx-swap="outerHTML"></div>
-
-
-<button hx-post="/portfolio/{{.PortfolioID}}/holding" hx-target="#holding">
-  Update Holding
-</button>

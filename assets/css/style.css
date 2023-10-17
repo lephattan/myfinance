@@ -6,6 +6,9 @@ body {
   font-family: Helvetica, Arial, sans-serif;
   margin: 0;
 }
+p {
+  margin: 0;
+}
 
 table,
 .table {

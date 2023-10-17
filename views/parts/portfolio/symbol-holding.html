@@ -40,7 +40,7 @@
     {{ end }}
   </td>
   <td>{{ UnixTimeFmt .UpdatedAt.Value "15:04 02-01-2006"}}</td>
-  <td>
+  <td class="text-right">
     <button type="button" hx-post="/portfolio/{{.PortfolioID}}/holding/{{.Symbol}}" hx-target="#{{$holding_id}}"
       hx-swap="outerHTML">
       Update
