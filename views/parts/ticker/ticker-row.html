@@ -1,7 +1,7 @@
 {{ $ticker_id := printf "ticker-%s-row" .Symbol}}
 <div id="{{$ticker_id}}" class="table-row">
   <div class="table-cell">
-    <a href="/ticker/{{ .Symbol }}">{{ .Symbol}}</a>
+    <a class="uppercase" href="/ticker/{{ .Symbol }}">{{ .Symbol}}</a>
   </div>
   <div class="table-cell">{{ .Name }}</div>
   <div class="table-cell">{{if .CurrentPrice.Valid }}{{ format "%v" .CurrentPrice.Value}}{{end}}</div>

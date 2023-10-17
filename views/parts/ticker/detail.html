@@ -1,12 +1,18 @@
 {{ if .Ticker }} {{ with .Ticker }}
-<div class="ticker-detail" hx-target="this" hx-swap="outerHTML" hx-select=".ticker-detail">
-  <div><label>Symbol: </label>{{.Symbol}}</div>
-  <div><label>Name: </label>{{.Name}}</div>
-  <div><label>CurrentPrice: </label>{{format "%v" .CurrentPrice.Actual}}</div>
-  <div><label>PriceUpdatedAt: </label>
-    {{if .PriceUpdatedAt.Valid }}{{ UnixTimeFmt .PriceUpdatedAt.Actual "15:04 02-01-2006"}}{{end}}
+<div class="ticker-detail" hx-target="this" hx-swap="outerHTML" >
+  <div
+    class="card m-auto rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-white overflow-hidden p-4 max-w-md">
+    <div class="w-full flex text-right items-center">
+      <p class="text-3xl font-bold uppercase">{{.Symbol}}</p>
+      <div class="buttons ml-auto">
+        <button hx-get="/htmx/components/ticker/edit-form/{{.Symbol}}" hx-select=".ticker-edit">Edit</button>
+      </div>
+    </div>
+    <p class="text-lg font-light">{{format "%v" .CurrentPrice.Actual}}
+      <span class="text-sm">{{if .PriceUpdatedAt.Valid }}@{{ UnixTimeFmt .PriceUpdatedAt.Actual "15:04 02-01-2006"}}{{end}}</span>
+    </p>
+    <p>{{.Name}}</p>
   </div>
-  <button hx-get="/htmx/components/ticker/edit-form/{{.Symbol}}" hx-select=".ticker-edit">Edit</button>
 </div>
 {{ template "parts/ticker/ticker-row" .}}
 {{ end }}

@@ -1,26 +1,23 @@
 {{- if .Ticker }} {{ with .Ticker }}
 {{- $ticker_id := printf "ticker-%s-row" .Symbol}}
-<form hx-put="/ticker/{{.Symbol}}" hx-target="this" hx-swap="outerHTML" class="ticker-edit">
-  <div>
-    <label>Symbol: </label>
-    {{.Symbol}}
+{{ $input_cls := "text-white bg-transparent focus-visible:outline-none p-0 border-b-gray-4 focus-visible:border-b-white border-t-none border-x-none rounded-none"}}
+<form hx-put="/ticker/{{.Symbol}}" hx-target="this" hx-swap="outerHTML" hx-select=".ticker-detail"
+  class="ticker-edit card m-auto rounded-lg bg-gradient-to-r from-cyan-500 to-blue-500 text-white overflow-hidden p-4 max-w-md">
+  <div class="w-full flex text-right items-center">
+    <p class="text-3xl font-bold uppercase">{{.Symbol}}</p>
+    <div class="buttons ml-auto">
+      <button>Save</button>
+      <button hx-get="/htmx/components/ticker/detail/{{.Symbol}}" hx-select=".ticker-detail">Cancel</button>
+    </div>
   </div>
-  <div>
-    <label for="name">Name: </label>
-    <input type="text" name="name" value="{{.Name}}" />
-  </div>
-  <div>
-    <label for="current-price">Name: </label>
-    <input type="text" name="current-price" value="{{.CurrentPrice.Actual}}" />
-  </div>
-  <button>Save</button>
-  <button hx-get="/htmx/components/ticker/detail/{{.Symbol}}" hx-select=".ticker-detail">Cancel</button>
+  <input class="{{$input_cls}} text-lg w-full" type="number" name="current-price" value="{{.CurrentPrice.Actual}}" placeholder="Current market price"/>
+  <input class="{{$input_cls}} w-full" type="text" name="name" value="{{.Name}}" placeholder="Ticker name" />
 </form>
 <form id="{{$ticker_id}}" class="table-row edit-row" hx-target="this" hx-swap="outerHTML" hx-put="/ticker/{{.Symbol}}"
   hx-select="#{{$ticker_id}}">
-  <div class="table-cell">{{.Symbol}}</div>
+  <div class="table-cell uppercase">{{.Symbol}}</div>
   <div class="table-cell"><input type="text" name="name" value="{{.Name}}"></div>
-  <div class="table-cell"><input type="text" name="current-price" value="{{.CurrentPrice.Actual}}"></div>
+  <div class="table-cell"><input type="number" name="current-price" value="{{.CurrentPrice.Actual}}"></div>
   <div class="table-cell">
     {{if .PriceUpdatedAt.Valid }}{{ UnixTimeFmt .PriceUpdatedAt.Actual "15:04 02-01-2006"}}{{end}}</div>
   <div class="table-cell">
