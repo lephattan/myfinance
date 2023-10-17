@@ -1,15 +1,33 @@
 {{ $holding_id := printf "holding-%s-%d" .Symbol .PortfolioID}}
-{{$cv_class := ""}}
+{{ $cv_class := ""}}
+{{ $cp_class := ""}}
+{{ $current_price := 0 }}
+{{ $price_compare := 0 }}
 {{ if gt .GainLoss 0}}
 {{ $cv_class = "text-green-5"}}
 {{ else }}
 {{ $cv_class = "text-red"}}
+{{ end }}
+{{ if .CurrentValue.Valid }}
+{{ $current_price = devideint64 .CurrentValue.Actual .TotalShares }}
+{{ $price_compare = minus $current_price .AveragePrice }}
+{{ if gt $price_compare 0 }}
+{{ $cp_class = "text-green-5"}}
+{{ else}}
+{{ $cp_class = "text-red"}}
+{{ end}}
 {{ end }}
 <tr id="{{$holding_id}}">
   <td class="uppercase text-center">{{.Symbol}}</td>
   <td class="text-right">{{ format "%v" .TotalShares}}</td>
   <td class="text-right">{{ format "%v" .TotalCost}}</td>
   <td class="text-right">{{ format "%v" .AveragePrice}}</td>
+  <td class="text-right">
+    {{if gt $current_price 0}}{{ format "%v" $current_price}}{{end}}
+    {{ if ne $price_compare 0}}
+    <p class="{{$cp_class}} m-0">{{if gt $price_compare 0}}+{{ end }}{{format "%v" $price_compare}}</p>
+    {{ end }}
+  </td>
   <td class="text-right">
     {{ if ne .GainLoss 0}}
     <span class="{{$cv_class}} text-sm">

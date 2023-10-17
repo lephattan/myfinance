@@ -24,3 +24,17 @@ func UnixTimeFmt(unixT int64, format string) string {
 	t := time.Unix(unixT, 0)
 	return t.Format(format)
 }
+
+type number interface {
+	int | uint | int64 | uint64
+}
+
+func Devide[T number](a, b T) T {
+	var s T
+	s = a / b
+	return s
+}
+
+func Minus[T number](a, b T) T {
+	return a - b
+}

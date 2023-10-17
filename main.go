@@ -71,6 +71,8 @@ func MakeViews() *html.Engine {
 			out, err := json.Marshal(in)
 			return string(out), err
 		},
+		"devideint64": helper.Devide[int64],
+		"minus":       helper.Minus[int64],
 	})
 	return engine
 }
