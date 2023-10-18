@@ -10,10 +10,13 @@
         <button hx-get="/htmx/components/portfolio/detail/{{.ID}}">Cancel</button>
       </div>
     </div>
-    <input class="{{$input_cls}} text-3xl font-bold" type="text" name="name" value="{{.Name}}" placeholder="Portfolio name"/>
-    <input class="{{$input_cls}} text-base" type="text" name="description" value="{{.Description}}" placeholder="Description" />
+    <input class="{{$input_cls}} text-3xl font-bold" type="text" name="name" value="{{.Name}}"
+      placeholder="Portfolio name" />
+    <input class="{{$input_cls}} text-base" type="text" name="description" value="{{.Description}}"
+      placeholder="Description" />
     <div class="w-full flex">
-      <button class="ml-auto" hx-delete="/portfolio/{{.ID}}" hx-confirm="Are you sure you wish to delete this portfolio?">
+      <button style="--_bg-color:var(--danger);" class="ml-auto" hx-delete="/portfolio/{{.ID}}"
+        hx-confirm="Are you sure you wish to delete this portfolio?">
         Delete
       </button>
     </div>
