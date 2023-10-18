@@ -1,40 +1,44 @@
-<div class="transactions-list" id="transaction-list" hx-trigger="new-transaction from:body" hx-swap="outerHTML"
-  hx-get="htmx/components/transaction/list{{ if .QueryString }}?{{.QueryString}}{{ end }}">
+<div class="transactions-list overflow-auto" id="transaction-list" hx-trigger="new-transaction from:body"
+  hx-swap="outerHTML" hx-get="htmx/components/transaction/list{{ if .QueryString }}?{{.QueryString}}{{ end }}">
   {{ if .Transactions }}
-  <table>
-    <tr>
-      <th>ID</th>
-      <th>Date</th>
-      <th>TickerSymbol</th>
-      <th>TransactionType</th>
-      <th>Volume</th>
-      <th>Price</th>
-      <th>Commission</th>
-      <th>Note</th>
-      <th>PortfolioID</th>
-      <th>RefID</th>
-      <th>Total</th>
-    </tr>
-    {{range .Transactions }}
-    <tr>
-      <td class="text-center">{{ .ID }}</td>
-      <td class="text-center">{{ .Date.String }}</td>
-      <td class="uppercase text-center">{{ .TickerSymbol }}</td>
-      <td class="uppercase text-center">{{ .TransactionType }}</td>
-      <td class="text-right">{{ format "%v" .Volume }}</td>
-      <td class="text-right">{{ format "%v" .Price }}</td>
-      <td class="text-right">{{ format "%v" .Commission }}</td>
-      <td>{{ .Note.Value }}</td>
-      <td class="text-center ">
-        <a href="/portfolio/{{.PortfolioID}}" class="decoration-none">
-          {{ .PortfolioID }}
-        </a>
-      </td>
-      <td>{{ .RefID.Value }}</td>
-      <td class="text-right">{{ format "%v" .Total}}</td>
-    </tr>
-    {{ end }}
-  </table>
+  <div class="table w-full">
+    <div class="table-header-group">
+      <div class="table-row">
+        <div class="table-cell">ID</div>
+        <div class="table-cell">Date</div>
+        <div class="table-cell">TickerSymbol</div>
+        <div class="table-cell">TransactionType</div>
+        <div class="table-cell">Volume</div>
+        <div class="table-cell">Price</div>
+        <div class="table-cell">Commission</div>
+        <div class="table-cell">Note</div>
+        <div class="table-cell">PortfolioID</div>
+        <div class="table-cell">RefID</div>
+        <div class="table-cell">Total</div>
+      </div>
+    </div>
+    <div class="table-row-group">
+      {{range .Transactions }}
+      <div class="table-row">
+        <div class="table-cell text-center">{{ .ID }}</div>
+        <div class="table-cell text-center">{{ .Date.String }}</div>
+        <div class="table-cell uppercase text-center">{{ .TickerSymbol }}</div>
+        <div class="table-cell uppercase text-center">{{ .TransactionType }}</div>
+        <div class="table-cell text-right">{{ format "%v" .Volume }}</div>
+        <div class="table-cell text-right">{{ format "%v" .Price }}</div>
+        <div class="table-cell text-right">{{ format "%v" .Commission }}</div>
+        <div>{{ .Note.Value }}</div>
+        <div class="table-cell text-center ">
+          <a href="/portfolio/{{.PortfolioID}}" class="decoration-none">
+            {{ .PortfolioID }}
+          </a>
+        </div>
+        <div class="table-cell">{{ .RefID.Value }}</div>
+        <div class="table-cell text-right">{{ format "%v" .Total}}</div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
   {{ else }}
   <p>No transaction found!</p>
   {{ end }}
