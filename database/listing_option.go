@@ -95,9 +95,7 @@ func (opt *ListOptions) ShouldAddFirstWhereGroupWhere() bool {
 	return !has_where_before && len(opt.WhereGroups) > 0
 }
 
-func (opt ListOptions) BuildQuery() (q string, args []interface{}) {
-	q = fmt.Sprintf("SELECT * From %s", opt.Table)
-
+func (opt *ListOptions) BuildWhereClauses() (q string, args []interface{}) {
 	if opt.WhereColumn != "" && opt.WhereValue != nil {
 		q += fmt.Sprintf(" WHERE %s = :whereValue", opt.WhereColumn)
 		args = append(args, sql.Named("whereValue", opt.WhereValue))
@@ -126,18 +124,41 @@ func (opt ListOptions) BuildQuery() (q string, args []interface{}) {
 		q += " " + query
 		args = append(args, where_args...)
 	}
+	return
+}
 
+func (opt *ListOptions) BuildOrderClause() (q string) {
 	if opt.OrderByColumn != "" {
 		q += fmt.Sprintf(" Order By %s %s", opt.OrderByColumn, ParseOrder(opt.Order))
 	}
+	return
+}
 
+func (opt *ListOptions) BuildLimitClause() (q string) {
 	if opt.Limit > 0 {
 		q += fmt.Sprintf(" Limit %d", opt.Limit)
 	}
+	return
+}
 
+func (opt *ListOptions) BuildOffsetClause() (q string) {
 	if opt.Offset > 0 {
 		q += fmt.Sprintf(" Offset %d", opt.Offset)
 	}
+	return
+}
+
+func (opt *ListOptions) BuildQuery() (q string, args []interface{}) {
+	q = fmt.Sprintf("SELECT * From %s", opt.Table)
+
+	where, where_args := opt.BuildWhereClauses()
+	if where != "" {
+		q += where
+		args = append(args, where_args...)
+	}
+	q += opt.BuildOrderClause()
+	q += opt.BuildLimitClause()
+	q += opt.BuildOffsetClause()
 	q += ";"
 	return
 }
