@@ -163,6 +163,16 @@ func (opt *ListOptions) BuildQuery() (q string, args []interface{}) {
 	return
 }
 
+func (opt *ListOptions) BuildCountQuery() (q string, args []interface{}) {
+	q = fmt.Sprintf("SELECT Count(*) From %s", opt.Table)
+	where, where_args := opt.BuildWhereClauses()
+	if where != "" {
+		q += where
+		args = append(args, where_args...)
+	}
+	return
+}
+
 const (
 	ascending  = "ASC"
 	descending = "DESC"

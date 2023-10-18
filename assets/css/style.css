@@ -69,12 +69,17 @@ button {
   -webkit-user-select: none;
   touch-action: manipulation;
   color: #ffffff;
-  background-color: #363636;
   margin: 0.1em;
+  background-color: var(--_bg-color, #363636);
+}
+
+button:disabled {
+  background-color: var(--_bg_color_disable, gray);
+  cursor: default;
 }
 
 button.main {
-  background-color: var(--accent);
+  --_bg-color: var(--accent);
 }
 
 button:hover,

@@ -11,6 +11,7 @@ import (
 
 type TransactionService interface {
 	List(ctx context.Context, opt database.ListOptions, dest interface{}) error
+	Count(ctx context.Context, opt database.ListOptions) (count uint64, err error)
 	Create(ctx context.Context, t model.Transaction) (int64, error)
 	Get(ctx context.Context, t model.Transaction, dest interface{}) (err error)
 	Update(ctx context.Context, t model.Transaction) (int, error)
@@ -101,5 +102,16 @@ func (s *transaction) Delete(ctx context.Context, id uint64) (n int, err error) 
 		return 0, err
 	}
 	n = database.GetAffectedRows(res)
+	return
+}
+
+func (s *transaction) Count(ctx context.Context, opt database.ListOptions) (count uint64, err error) {
+	opt.SetTableName(model.TransactionsTable())
+	q, args := opt.BuildCountQuery()
+	rows, err := s.db.Select(ctx, q, args...)
+	if !rows.Next() {
+		return 0, sql.ErrNoRows
+	}
+	err = rows.Scan(&count)
 	return
 }

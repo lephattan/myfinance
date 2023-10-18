@@ -1,6 +1,7 @@
 package htmx
 
 import (
+	"log"
 	"myfinance/middleware"
 	"myfinance/model"
 	"myfinance/service"
@@ -18,6 +19,8 @@ func RegisterTransactionComponentController(router fiber.Router) {
 
 func HandleTransactionList(c *fiber.Ctx) error {
 	queryString := string(c.Request().URI().QueryString())
+	pagination := model.NewPagination()
+	c.QueryParser(&pagination)
 
 	var transactions model.Transactions
 	svc, _ := c.Locals("Service").(service.TransactionService)
@@ -30,9 +33,15 @@ func HandleTransactionList(c *fiber.Ctx) error {
 	if err = svc.List(c.Context(), opt, &transactions); err != nil {
 		return err
 	}
+	count, count_err := svc.Count(c.Context(), opt)
+	log.Printf("Count: %d %s", count, count_err)
+	pagination.Count = count
+	log.Printf("%+v", pagination)
+
 	data := fiber.Map{
 		"QueryString":  queryString,
 		"Transactions": transactions,
+		"Pagination":   &pagination,
 	}
 	return c.Render("parts/transaction/list", data)
 

@@ -73,6 +73,8 @@ func MakeViews() *html.Engine {
 		},
 		"devideint64": helper.Devide[int64],
 		"minus":       helper.Minus[int64],
+		"seq":         helper.Sequence,
+		"add":         helper.Add,
 	})
 	return engine
 }

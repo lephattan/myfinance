@@ -1,5 +1,27 @@
 <div class="transactions-list overflow-auto" id="transaction-list" hx-trigger="new-transaction from:body"
-  hx-swap="outerHTML" hx-get="htmx/components/transaction/list{{ if .QueryString }}?{{.QueryString}}{{ end }}">
+  hx-swap="outerHTML" hx-get="htmx/components/transaction/list{{ if .QueryString }}?{{.QueryString}}{{ end }}"
+  hx-target="this">
+  {{block "transaction-pagination" .}}
+  {{ if .Pagination }}
+  {{ $pagination := .Pagination}}
+  {{ $per_page := .Pagination.PerPage }}
+  {{ $count := .Pagination.Count }}
+  <div class="pagination transactions__pagination pagination__warper">
+    <div class="pagination__buttons flex gap-1 justify-end">
+      {{ range $_page := seq .Pagination.MaxPage}}
+      {{ $page := add $_page 1}}
+      <button type="button" {{if eq $page $pagination.Page}}disabled{{end}}
+        hx-get="htmx/components/transaction/list?page={{$page}}&per_page={{$pagination.PerPage}}">
+        {{$page}}
+      </button>
+      {{ end }}
+    </div>
+    <div>
+      <p class="text-right">Showing {{$per_page}} of {{$count}} transactions</p>
+    </div>
+  </div>
+  {{ end }}
+  {{end}}
   {{ if .Transactions }}
   <div class="table w-full">
     <div class="table-header-group">
@@ -39,6 +61,7 @@
       {{ end }}
     </div>
   </div>
+  {{ template "transaction-pagination" . }}
   {{ else }}
   <p>No transaction found!</p>
   {{ end }}
