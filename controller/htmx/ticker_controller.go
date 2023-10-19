@@ -38,8 +38,9 @@ func GetTicker(symbol string, db database.DB, ctx context.Context) (model.Ticker
 }
 
 func HandleTickerList(c *fiber.Ctx) error {
-	errors := []string{}
-	queryString := string(c.Request().URI().QueryString())
+	query := model.NewGetTickersRequest()
+	c.QueryParser(&query)
+	c.QueryParser(query.Pagination)
 
 	var tickers model.Tickers
 	svc, _ := c.Locals("Service").(service.TickerService)
@@ -50,12 +51,19 @@ func HandleTickerList(c *fiber.Ctx) error {
 	urlValues := url.Query()
 	opt := tickers.ParseListOptions(&urlValues)
 	if err := svc.List(c.Context(), opt, &tickers); err != nil {
-		errors = append(errors, err.Error())
+		return err
 	}
+	count, err := svc.Count(c.Context(), opt)
+	if err != nil {
+		return err
+	}
+	query.Pagination.Count = count
+	log.Printf("Tickers Query: %+v", query)
+
+	log.Printf("Maxpage: %d", query.Pagination.MaxPage())
 	data := fiber.Map{
 		"Tickers":     tickers,
-		"Errors":      errors,
-		"QueryString": queryString,
+		"TickerQuery": &query,
 	}
 	return c.Render("parts/ticker/list", data)
 }

@@ -1,11 +1,33 @@
+{{ $query_string := "" }}
+{{ if .TickerQuery }}
+{{ $query_string = (printf "%v%v" $query_string (queryString .TickerQuery)) }}
+{{ end }}
 <div class="ticker-list" id="ticker-list" hx-trigger="new-ticker from:body" hx-swap="outerHTML"
-  hx-get="htmx/components/ticker/list{{ if .QueryString }}?{{.QueryString}}{{ end }}">
-  <div class="errors">
-    {{ if .Errors }} {{ range .Errors }}
-    <p>{{ . }}</p>
-    {{ end }} {{ end }}
-  </div>
+  hx-get="htmx/components/ticker/list{{if ne $query_string ""}}?{{$query_string}}{{end}}" hx-target="this">
   {{ if .Tickers }}
+  {{block "ticker-pagination" .}}
+  {{ if .TickerQuery.Pagination }}
+  {{ $pagination := .TickerQuery.Pagination}}
+  {{ $per_page := .TickerQuery.Pagination.PerPage }}
+  {{ $count := .TickerQuery.Pagination.Count }}
+  <div class="pagination tickers__pagination pagination__warper">
+    <div class="pagination__buttons flex gap-1 justify-end">
+      {{ range $_page := seq $pagination.MaxPage }}
+      {{ $page := add $_page 1}}
+      <button type="button" {{if eq $page $pagination.Page}}disabled{{end}}
+        hx-get="htmx/components/ticker/list?page={{$page}}&per_page={{$pagination.PerPage}}">
+        {{$page}}
+      </button>
+      {{ end }}
+    </div>
+    <div>
+      <p class="text-right">
+        Showing {{ if lt $per_page $count }}{{$per_page}} {{else}} {{$count}}{{end}} of {{$count}} tickers
+      </p>
+    </div>
+  </div>
+  {{ end }}
+  {{ end }}
   <div class="table w-full overflow-auto">
     <div class="table-header-group">
       <div class="table-row">
@@ -22,6 +44,7 @@
       {{ end }}
     </div>
   </div>
+  {{ template "ticker-pagination" . }}
   {{ else }}
   <p>No ticker found!</p>
   {{ end }}

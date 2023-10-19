@@ -92,10 +92,21 @@ type (
 
 	DeleteTickerRequest GetTickerRequest
 
-	// GetTickersRequest struct {
-	// 	// [page, offset...]
-	// }
+	GetTickersRequest struct {
+		Symbol     string `query:"symbol"`
+		Name       string `query:"name"`
+		Search     string `query:"s"`
+		Pagination *Pagination
+	}
 )
+
+func NewGetTickersRequest() GetTickersRequest {
+	pagination := NewPagination()
+	query := GetTickersRequest{
+		Pagination: &pagination,
+	}
+	return query
+}
 
 func (t *TickerUpdate) UpdateQuery() (query string, args []interface{}) {
 	query = fmt.Sprintf(`Update %s

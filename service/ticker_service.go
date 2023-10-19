@@ -2,6 +2,7 @@ package service
 
 import (
 	"context"
+	"database/sql"
 	"fmt"
 	"myfinance/database"
 	"myfinance/helper"
@@ -14,6 +15,7 @@ type TickerService interface {
 	Create(ctx context.Context, t model.Ticker) (int64, error)
 	Get(ctx context.Context, symbol string, dest interface{}) (err error)
 	Update(ctx context.Context, t model.TickerUpdate) (int, error)
+	Count(ctx context.Context, opt database.ListOptions) (count uint64, err error)
 }
 
 func NewTickerService(db database.DB) TickerService {
@@ -70,4 +72,16 @@ func (s *ticker) Update(ctx context.Context, t model.TickerUpdate) (int, error) 
 	}
 	n := database.GetAffectedRows(res)
 	return n, err
+}
+
+func (s *ticker) Count(ctx context.Context, opt database.ListOptions) (count uint64, err error) {
+	opt.SetTableName(model.TickerTablename)
+	q, args := opt.BuildCountQuery()
+	rows, err := s.db.Select(ctx, q, args...)
+	if !rows.Next() {
+		return 0, sql.ErrNoRows
+	}
+	err = rows.Scan(&count)
+	return
+
 }

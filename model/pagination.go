@@ -23,6 +23,7 @@ func (p *Pagination) Default() {
 	p.Count = 0
 }
 
+// Create new Pagination object with default value
 func NewPagination() Pagination {
 	var pagination Pagination
 	pagination.Default()
