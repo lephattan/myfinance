@@ -75,6 +75,7 @@ func MakeViews() *html.Engine {
 		"minus":       helper.Minus[int64],
 		"seq":         helper.Sequence,
 		"add":         helper.Add,
+		"queryString": helper.QueryString,
 	})
 	return engine
 }

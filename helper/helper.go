@@ -1,9 +1,12 @@
 package helper
 
 import (
+	"fmt"
 	"log"
 	"math"
+	"reflect"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -93,5 +96,28 @@ func Sequence(args ...uint64) []uint64 {
 		seq[inx] = start + step*uint64(inx)
 	}
 	return seq
+}
 
+func QueryString(query interface{}) string {
+	var query_string []string
+	tag_name := "query"
+	// typ := reflect.TypeOf(query)
+	values := reflect.ValueOf(query)
+	i := reflect.Indirect(values)
+	typ := i.Type()
+	for i := 0; i < typ.NumField(); i++ {
+		// value := values.Field(i).Interface()
+		value := reflect.Indirect(values).Field(i).Interface()
+		struct_field := typ.Field(i)
+		query_tag := string(struct_field.Tag.Get(tag_name))
+		if query_tag == "" {
+			continue
+		}
+		if v := fmt.Sprintf("%v", value); v == "" {
+			continue
+		} else {
+			query_string = append(query_string, fmt.Sprintf("%s=%v", query_tag, v))
+		}
+	}
+	return strings.Join(query_string, "&")
 }
