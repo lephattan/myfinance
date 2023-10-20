@@ -8,9 +8,17 @@
       <input name="date" required type="date" />
     </div>
 
-    <div class="{{$cell_class}}">
-      <label for="ticker-symbol" class="{{$lable_class}}">Ticker</label>
-      <input name="ticker-symbol" required type="text" value="" />
+    <div class="{{$cell_class}} w-full relative">
+      <div>
+        <label for="ticker-symbol" class=" inline-block">Ticker:</label>
+        <input name="ticker-symbol" id="ticker-symbol" required type="text" value="" disabled
+          class="border-none inline-block uppercase text-base font-bold p-0" />
+      </div>
+      <input type="search" hx-get="htmx/components/ticker/list" hx-trigger="keyup changed delay:500ms, search"
+        hx-target="#ticker-search-results" name="s" hx-select=".search-results" class="peer ">
+      <div id="ticker-search-results"
+        class="peer-focus:block hidden hover:block rounded-lg bg-gray p-2 absolute w-11/12">
+      </div>
     </div>
 
     <div class="{{$cell_class}}">

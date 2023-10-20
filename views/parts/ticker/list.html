@@ -3,7 +3,8 @@
 {{ $query_string = (printf "%v%v" $query_string (queryString .TickerQuery)) }}
 {{ end }}
 <div class="ticker-list" id="ticker-list" hx-trigger="new-ticker from:body" hx-swap="outerHTML"
-  hx-get="htmx/components/ticker/list{{if ne $query_string ""}}?{{$query_string}}{{end}}" hx-target="this">
+  hx-get="htmx/components/ticker/list{{if ne $query_string ""}}?{{$query_string}}{{end}}" hx-target="this"
+  hx-select="#ticker-list">
   {{ if .Tickers }}
   {{block "ticker-pagination" .}}
   {{ if .TickerQuery.Pagination }}
@@ -48,4 +49,14 @@
   {{ else }}
   <p>No ticker found!</p>
   {{ end }}
+</div>
+<div class="search-results">
+  {{ if .Tickers }}
+  {{range .Tickers }}
+  {{ template "parts/ticker/search-result-row" . }}
+  {{ end }}
+  {{else}}
+  <p>No ticker found!</p>
+  {{end}}
+
 </div>
