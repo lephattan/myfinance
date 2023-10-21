@@ -1,6 +1,29 @@
 {{ $cell_class := ""}}
-{{ $lable_class := "w-full block"}}
-<form hx-post="/transaction" hx-target=".add-transaction-msg" class="">
+{{ $lable_class := "w-full block font-bold"}}
+
+<form hx-post="/transaction" hx-target=".add-transaction-msg" class=""
+  _="on init set $price to 0 then set $volume to 0 then set $commission to 0 then set $typ to null">
+  <script type="text/hyperscript">
+  def triggerSummaryUpdate()
+    trigger transSumUpdate on .transaction__summarry
+  end
+
+  behavior CommissionBtn(percent)
+    on click set $commission to ($price * $volume * percent) / 100 then 
+    set <input[name='commission']/>@value to $commission as Int then
+    trigger transSumUpdate on .transaction__summarry
+  end
+
+  js
+    function formatNumber(number){
+      const formatted = new Intl.NumberFormat().format(number)
+      return formatted
+    }
+    return {formatNumber}
+  end
+
+
+  </script>
   <div class="grid grid-cols-2 gap-2 overflow-auto mb-2">
 
     <div class="{{$cell_class}}">
@@ -8,9 +31,30 @@
       <input name="date" required type="date" />
     </div>
 
+    <div class="{{$cell_class}}">
+      <label for="portfolio-id" class="{{$lable_class}}">Portfolio</label>
+      <input name="portfolio-id" required type="number" value="" />
+    </div>
+
+    <div class="{{$cell_class}}">
+      <label for="transaction-type" class="{{$lable_class}}">Type</label>
+      <select name="transaction-type" required value="buy"
+        _="on change set $typ to @value then call triggerSummaryUpdate()">
+        <option disabled selected value="">Select a type</option>
+        <option value="buy">Buy</option>
+        <option value="sell">Sell</option>
+      </select>
+    </div>
+
+    <div class="{{$cell_class}}">
+      <label for="volume" class="{{$lable_class}}">Volume</label>
+      <input name="volume" required type="number" value=""
+        _="on change set $volume to target.value then call triggerSummaryUpdate()" />
+    </div>
+
     <div class="{{$cell_class}} w-full relative">
       <div>
-        <label for="ticker-symbol" class=" inline-block">Ticker:</label>
+        <label for="ticker-symbol" class="font-bold inline-block">Ticker </label>
         <input name="ticker-symbol" id="ticker-symbol" required type="text" value="" disabled
           class="border-none inline-block uppercase text-base font-bold p-0" />
       </div>
@@ -22,37 +66,64 @@
     </div>
 
     <div class="{{$cell_class}}">
-      <label for="transaction-type" class="{{$lable_class}}">Type</label>
-      <select name="transaction-type" required value="buy">
-        <option disabled selected value="">Select a type</option>
-        <option value="buy">Buy</option>
-        <option value="sell">Sell</option>
-      </select>
-    </div>
-
-    <div class="{{$cell_class}}">
       <label for="price" class="{{$lable_class}}">Price</label>
-      <input name="price" required type="number" value="" />
-    </div>
-
-    <div class="{{$cell_class}}">
-      <label for="volume" class="{{$lable_class}}">Volume</label>
-      <input name="volume" required type="number" value="" />
+      <input name="price" required type="number" value=""
+        _="on change set $price to target.value then call triggerSummaryUpdate()" />
     </div>
 
     <div class="{{$cell_class}}">
       <label for="commission" class="{{$lable_class}}">Commission</label>
-      <input name="commission" type="number" />
+      <input name="commission" type="number"
+        _="on change set $commission to target.value then call triggerSummaryUpdate()" />
+      <div>
+        <button type="button" _="install CommissionBtn(percent: 0.01)">
+          0.01%
+        </button>
+        <button type="button" _="install CommissionBtn(percent: 0.03)">
+          0.03%
+        </button>
+        <button type="button" _="install CommissionBtn(percent: 0.05)">
+          0.05%
+        </button>
+        <div class="inline-block">
+          <input type="number"
+            class="w-14 [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none border-x-none border-t-none rounded-none"
+            _="on change or keyup debounced at 200ms or focus 
+            set $commission to ($price * $volume * target.value )/ 100 then 
+            set <input[name='commission']/>@value to $commission as Int then
+            trigger transSumUpdate on .transaction__summarry
+            ">
+          <span>%</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="{{$cell_class}}">
+      <label class="{{$lable_class}}">Summary</label>
+      <div class="">
+        <p>Sub total: <span id="transaction-subtotal" class="transaction__summarry"
+            _="on transSumUpdate call formatNumber($price * $volume ) then set my innerHTML to it"></span>
+        </p>
+        <p>Total: <span id="transaction-total" _="on transSumUpdate 
+          set :subTotal to $volume * $price 
+          set :total to :subTotal
+          if $typ is 'buy' then 
+            set :total to (:total as Int + $commission as Int)
+          else 
+            if $typ is 'sell' then 
+              set :total to (:total as Int - $commission as Int)
+            else 
+              set :total to ('unsupported transaction type: ' + $typ)
+            end
+          end
+          call formatNumber(:total) then set my innerHTML to it
+          " class="transaction__summarry"></span></p>
+      </div>
     </div>
 
     <div class="{{$cell_class}}">
       <label for="note" class="{{$lable_class}}">Note</label>
       <input name="note" type="text" />
-    </div>
-
-    <div class="{{$cell_class}}">
-      <label for="portfolio-id" class="{{$lable_class}}">Portfolio</label>
-      <input name="portfolio-id" required type="number" value="" />
     </div>
 
     <div class="{{$cell_class}}">
