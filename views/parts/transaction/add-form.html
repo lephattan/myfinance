@@ -55,7 +55,7 @@
     <div class="{{$cell_class}} w-full relative">
       <div>
         <label for="ticker-symbol" class="font-bold inline-block">Ticker </label>
-        <input name="ticker-symbol" id="ticker-symbol" required type="text" value="" readonly
+        <input name="ticker-symbol" id="ticker-symbol" required type="text" value="" readonly tabindex="-1"
           class="border-none inline-block uppercase text-base font-bold p-0" />
       </div>
       <input type="search" hx-get="htmx/components/ticker/list" hx-trigger="keyup changed delay:500ms, search"
@@ -76,13 +76,13 @@
       <input name="commission" type="number"
         _="on change set $commission to target.value then call triggerSummaryUpdate()" />
       <div>
-        <button type="button" _="install CommissionBtn(percent: 0.01)">
+        <button type="button" _="install CommissionBtn(percent: 0.01)" tabindex="-1">
           0.01%
         </button>
-        <button type="button" _="install CommissionBtn(percent: 0.03)">
+        <button type="button" _="install CommissionBtn(percent: 0.03)" tabindex="-1">
           0.03%
         </button>
-        <button type="button" _="install CommissionBtn(percent: 0.05)">
+        <button type="button" _="install CommissionBtn(percent: 0.05)" tabindex="-1">
           0.05%
         </button>
         <div class="inline-block">
@@ -92,7 +92,7 @@
             set $commission to ($price * $volume * target.value )/ 100 then 
             set <input[name='commission']/>@value to $commission as Int then
             trigger transSumUpdate on .transaction__summarry
-            ">
+            " tabindex="-1">
           <span>%</span>
         </div>
       </div>
