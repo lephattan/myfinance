@@ -62,22 +62,33 @@ func (t Transaction) SortBy() string {
 	return "id"
 }
 
-func (t *Transaction) ValidateInsert() bool {
-	return t.Date.Init64() > 0 &&
-		t.TickerSymbol != "" &&
-		t.ValidateType() &&
-		t.Volume > 0 &&
-		t.PortfolioID > 0
+func (t *Transaction) ValidateInsert() error {
+	if t.Date.Init64() <= 0 {
+		return errors.New("invalid transaction date")
+	}
+	if t.TickerSymbol == "" {
+		return errors.New("missing transaction ticker symbol")
+	}
+	if err := t.ValidateType(); err != nil {
+		return err
+	}
+	if t.Volume < 0 {
+		return errors.New("negative transaction volume")
+	}
+	if t.PortfolioID < 0 {
+		return errors.New("invalid transaction portfolio_id")
+	}
+	return nil
 }
 
 // Validate TransactionType
-func (t *Transaction) ValidateType() bool {
+func (t *Transaction) ValidateType() error {
 	for _, trans_type := range TransactionTypes {
 		if t.TransactionType == trans_type {
-			return true
+			return nil
 		}
 	}
-	return false
+	return errors.New(fmt.Sprintf("transaction type: %v is not implemented", t.TransactionType))
 }
 
 // Binds sql rows to transaction

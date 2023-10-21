@@ -41,8 +41,8 @@ func (s *transaction) List(ctx context.Context, opt database.ListOptions, dest i
 }
 
 func (s *transaction) Create(ctx context.Context, t model.Transaction) (int64, error) {
-	if !t.ValidateInsert() {
-		return 0, database.ErrUnprocessable
+	if err := t.ValidateInsert(); err != nil {
+		return 0, err
 	}
 	query, args, err := t.GenerateInsertStatement()
 	if err != nil {
@@ -62,8 +62,8 @@ func (s *transaction) Get(ctx context.Context, t model.Transaction, dest interfa
 }
 
 func (s *transaction) Update(ctx context.Context, t model.Transaction) (int, error) {
-	if !t.ValidateInsert() {
-		return 0, database.ErrUnprocessable
+	if err := t.ValidateInsert(); err != nil {
+		return 0, err
 	}
 	q := fmt.Sprintf(`Update %s
 		Set
