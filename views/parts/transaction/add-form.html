@@ -22,7 +22,6 @@
     return {formatNumber}
   end
 
-
   </script>
   <div class="grid grid-cols-2 gap-2 overflow-auto mb-2">
 
@@ -32,8 +31,17 @@
     </div>
 
     <div class="{{$cell_class}}">
-      <label for="portfolio-id" class="{{$lable_class}}">Portfolio</label>
-      <input name="portfolio-id" required type="number" value="" />
+      <label for="portfolio-id" class="{{$lable_class}}">
+        Portfolio <span class="transaction__selected-portfolio font-light"></span>
+      </label>
+      <input name="portfolio-id" required type="number" value="" hidden />
+      <div class="relative w-full">
+        <input type="search" hx-get="htmx/components/portfolio/list" hx-trigger="keyup changed delay:500ms, search"
+          hx-target="#portfolio-search-results" name="s" hx-select=".search-results" class="peer ">
+        <div id="portfolio-search-results"
+          class="peer-focus:block hidden hover:block rounded-lg bg-gray p-2 absolute w-11/12">
+        </div>
+      </div>
     </div>
 
     <div class="{{$cell_class}}">

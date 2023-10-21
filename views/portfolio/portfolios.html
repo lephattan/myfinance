@@ -4,4 +4,4 @@
   <div hx-get="htmx/components/portfolio/add-form" hx-trigger="load" hx-swap="outerHTML"></div>
 </div>
 <div id="portfolio-list" hx-get="htmx/components/portfolio/list{{ if .QueryString }}?{{.QueryString}}{{ end }}"
-  hx-trigger="load" hx-swap="outerHTML"></div>
+  hx-trigger="load" hx-swap="outerHTML" hx-select="#portfolio-list"></div>

@@ -1,5 +1,5 @@
 <div class="portfolio-list" id="portfolio-list" hx-trigger="new-portfolio from:body" hx-swap="outerHTML"
-  hx-get="htmx/components/portfolio/list{{ if .QueryString }}?{{.QueryString}}{{ end }}">
+  hx-get="htmx/components/portfolio/list{{ if .QueryString }}?{{.QueryString}}{{ end }}" hx-select="#portfolio-list">
   {{ if .Portfolios }}
   <table>
     <tr>
@@ -20,4 +20,13 @@
   {{ else }}
   <p>No portfolio found!</p>
   {{ end }}
+</div>
+<div class="search-results">
+  {{ if .Portfolios }}
+  {{range .Portfolios }}
+  {{ template "parts/portfolio/search-result-row" . }}
+  {{ end }}
+  {{else}}
+  <p>No portfolio found!</p>
+  {{end}}
 </div>

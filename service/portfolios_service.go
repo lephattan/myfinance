@@ -13,7 +13,7 @@ import (
 )
 
 type PortfolioService interface {
-	List(ctx context.Context, dest interface{}) error
+	List(ctx context.Context, opt database.ListOptions, dest interface{}) error
 	Create(ctx context.Context, t model.Portfolio) (int64, error)
 	Get(ctx context.Context, id uint64, dest interface{}) (err error)
 	// Update Portfolio to database, return number of affected rows and error
@@ -25,6 +25,7 @@ type PortfolioService interface {
 	ClearSymbolHolding(ctx context.Context, portfolio_id uint64, symbol string) error
 	HoldingValue(ctx context.Context, portfolio_id uint64, dest interface{}) error
 	HoldingCost(ctx context.Context, portfolio_id uint64, dest interface{}) error
+	Count(ctx context.Context, opt database.ListOptions) (count uint64, err error)
 }
 
 func NewPortfolioService(db database.DB) PortfolioService {
@@ -40,10 +41,7 @@ type portfolio struct {
 	ticker  TickerService
 }
 
-func (s *portfolio) List(ctx context.Context, dest interface{}) error {
-	opt := database.ListOptions{
-		Table: "portfolios",
-	}
+func (s *portfolio) List(ctx context.Context, opt database.ListOptions, dest interface{}) error {
 	q, args := opt.BuildQuery()
 	rows, err := s.db.Select(ctx, q, args...)
 	if err != nil {
@@ -238,4 +236,18 @@ func (s *portfolio) HoldingCost(ctx context.Context, portfolio_id uint64, dest i
 		return sql.ErrNoRows
 	}
 	return rows.Scan(dest)
+}
+
+func (s *portfolio) Count(ctx context.Context, opt database.ListOptions) (count uint64, err error) {
+	q, args := opt.BuildCountQuery()
+	rows, err := s.db.Select(ctx, q, args...)
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
+	if !rows.Next() {
+		return 0, sql.ErrNoRows
+	}
+	err = rows.Scan(&count)
+	return
 }

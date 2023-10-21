@@ -9,6 +9,7 @@ import (
 	"myfinance/model"
 	"myfinance/names"
 	"myfinance/service"
+	"net/url"
 
 	"github.com/gofiber/fiber/v2"
 )
@@ -27,26 +28,31 @@ func RegisterPortfolioComponentController(router fiber.Router) {
 }
 
 func HandlePortfolioList(c *fiber.Ctx) error {
-	errors := []string{}
-	queryString := string(c.Request().URI().QueryString())
+	query := model.NewGetPortfoliosRequest()
+	c.QueryParser(&query)
+	c.QueryParser(query.Pagination)
 
-	var portfolios model.Portfolios
-	svc, _ := c.Locals("Service").(service.PortfolioService)
-	// url, err := url.ParseRequestURI(c.OriginalURL())
-	// if err != nil {
-	// 	return err
-	// }
-	// urlValues := url.Query()
-	// opt := portfolios.ParseListOptions(&urlValues)
-	err := svc.List(c.Context(), &portfolios)
+	url, err := url.ParseRequestURI(c.OriginalURL())
 	if err != nil {
-		errors = append(errors, err.Error())
+		return err
 	}
+	urlValues := url.Query()
+	var portfolios model.Portfolios
+	opt := portfolios.ParseListOptions(&urlValues)
+	svc, _ := c.Locals("Service").(service.PortfolioService)
+	if err := svc.List(c.Context(), opt, &portfolios); err != nil {
+		return err
+	}
+	count, err := svc.Count(c.Context(), opt)
+	if err != nil {
+		return err
+	}
+	query.Pagination.Count = count
+
 	data := fiber.Map{
-		"Title":       "Portfolios",
-		"Errors":      errors,
-		"QueryString": queryString,
-		"Portfolios":  portfolios,
+		"Title":          "Portfolios",
+		"Portfolios":     portfolios,
+		"PortfolioQuery": &query,
 	}
 	return c.Render("parts/portfolio/list", data)
 }

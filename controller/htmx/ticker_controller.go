@@ -49,6 +49,7 @@ func HandleTickerList(c *fiber.Ctx) error {
 		return err
 	}
 	urlValues := url.Query()
+	// NOTE: why do I need both query and listingOptions
 	opt := tickers.ParseListOptions(&urlValues)
 	if err := svc.List(c.Context(), opt, &tickers); err != nil {
 		return err
@@ -58,9 +59,6 @@ func HandleTickerList(c *fiber.Ctx) error {
 		return err
 	}
 	query.Pagination.Count = count
-	log.Printf("Tickers Query: %+v", query)
-
-	log.Printf("Maxpage: %d", query.Pagination.MaxPage())
 	data := fiber.Map{
 		"Tickers":     tickers,
 		"TickerQuery": &query,
