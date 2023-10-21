@@ -55,7 +55,7 @@
     <div class="{{$cell_class}} w-full relative">
       <div>
         <label for="ticker-symbol" class="font-bold inline-block">Ticker </label>
-        <input name="ticker-symbol" id="ticker-symbol" required type="text" value="" disabled
+        <input name="ticker-symbol" id="ticker-symbol" required type="text" value="" readonly
           class="border-none inline-block uppercase text-base font-bold p-0" />
       </div>
       <input type="search" hx-get="htmx/components/ticker/list" hx-trigger="keyup changed delay:500ms, search"
