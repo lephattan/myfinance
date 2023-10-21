@@ -36,5 +36,6 @@ func HandleTransactionCreate(c *fiber.Ctx) error {
 	if _, err := svc.Create(c.Context(), *&transaction); err != nil {
 		return err
 	}
+	c.Set("HX-Trigger", "new-transaction")
 	return c.Render("parts/transaction/create-success", transaction)
 }

@@ -37,6 +37,7 @@ func (s *transaction) List(ctx context.Context, opt database.ListOptions, dest i
 	if err != nil {
 		return err
 	}
+	defer rows.Close()
 	return helper.ModelListScan(dest, rows)
 }
 
@@ -109,6 +110,10 @@ func (s *transaction) Count(ctx context.Context, opt database.ListOptions) (coun
 	opt.SetTableName(model.TransactionsTable())
 	q, args := opt.BuildCountQuery()
 	rows, err := s.db.Select(ctx, q, args...)
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
 	if !rows.Next() {
 		return 0, sql.ErrNoRows
 	}
