@@ -78,6 +78,10 @@ func (s *ticker) Count(ctx context.Context, opt database.ListOptions) (count uin
 	opt.SetTableName(model.TickerTablename)
 	q, args := opt.BuildCountQuery()
 	rows, err := s.db.Select(ctx, q, args...)
+	if err != nil {
+		return 0, err
+	}
+	defer rows.Close()
 	if !rows.Next() {
 		return 0, sql.ErrNoRows
 	}
