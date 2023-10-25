@@ -1,18 +1,36 @@
 <tr hx-get="/htmx/components/portfolio/holding-summarry/{{.PortfolioID}}/row" hx-trigger="update-holding from:body"
   hx-swap="outerHTML">
+  {{ with .HoldingSummarry }}
+  {{ $cv_class := ""}}
+  {{ if gt .GainLoss 0}}
+  {{ $cv_class = "text-green-5"}}
+  {{ else }}
+  {{ $cv_class = "text-red"}}
+  {{ end }}
   <td class="font-bold">Summary</td>
   <td></td>
   <td class="font-bold text-right">
-    <p class="holding-cost">{{ format "%v" .HoldingSummarry.TotalCost}}</p>
+    <p class="holding-cost">{{ format "%v" .TotalCost}}</p>
   </td>
   <td></td>
   <td></td>
   <td class="font-bold text-right">
-    <p class="holding-value">{{ format "%v" .HoldingSummarry.TotalValue}}</p>
+    {{ if ne .GainLoss 0}}
+    <p class="holding-value">
+      <span class="{{$cv_class}} text-sm">
+        {{ if gt .GainLoss 0}}+{{end}}{{ format "%.2f" .GainLossPercent }}%
+      </span>
+      {{ format "%v" .TotalValue}}
+    </p>
+    <p class="{{$cv_class}} m-0">{{format "%v" .GainLoss}}</p>
+    {{ else }}
+    <p class="holding-value">{{ format "%v" .TotalValue}}</p>
+    {{ end }}
   </td>
   <td colspan="2" class="text-right">
     <button hx-post="/portfolio/5/holding" hx-target="#holding">
       Update All
     </button>
   </td>
+  {{end}}
 </tr>
