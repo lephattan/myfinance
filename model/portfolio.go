@@ -88,3 +88,21 @@ func NewGetPortfoliosRequest() GetPortfoliosRequest {
 	}
 	return query
 }
+
+type HoldingSummarry struct {
+	TotalCost  int64
+	TotalValue int64
+}
+
+func (h *HoldingSummarry) GainLoss() int64 {
+	return h.TotalValue - h.TotalCost
+}
+
+func (h *HoldingSummarry) GainLossPercent() float64 {
+	if h.TotalCost == 0 {
+		return 0
+	}
+	gain_loss := h.GainLoss()
+	percent := float64(gain_loss) / float64(h.TotalCost) * 100
+	return percent
+}

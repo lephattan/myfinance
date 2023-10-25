@@ -1,0 +1,18 @@
+<tr hx-get="/htmx/components/portfolio/holding-summarry/{{.PortfolioID}}/row" hx-trigger="update-holding from:body"
+  hx-swap="outerHTML">
+  <td class="font-bold">Summary</td>
+  <td></td>
+  <td class="font-bold text-right">
+    <p class="holding-cost">{{ format "%v" .HoldingSummarry.TotalCost}}</p>
+  </td>
+  <td></td>
+  <td></td>
+  <td class="font-bold text-right">
+    <p class="holding-value">{{ format "%v" .HoldingSummarry.TotalValue}}</p>
+  </td>
+  <td colspan="2" class="text-right">
+    <button hx-post="/portfolio/5/holding" hx-target="#holding">
+      Update All
+    </button>
+  </td>
+</tr>

@@ -16,20 +16,8 @@
       </tr>
     </thead>
     <tbody>
-      <tr>
-        <td class="font-bold">Summary</td>
-        <td></td>
-        <td class="font-bold text-right" hx-get="/htmx/components/portfolio/holding-cost/{{.PortfolioID}}"
-          hx-trigger="load, update-holding from:body"></td>
-        <td></td>
-        <td></td>
-        <td class="font-bold text-right" hx-get="/htmx/components/portfolio/holding-value/{{.PortfolioID}}"
-          hx-trigger="load, update-holding from:body"></td>
-        <td colspan="2" class="text-right">
-          <button hx-post="/portfolio/{{.PortfolioID}}/holding" hx-target="#holding">
-            Update All
-          </button>
-        </td>
+      <tr hx-get="/htmx/components/portfolio/holding-summarry/{{.PortfolioID}}/row" hx-trigger="load"
+        hx-swap="outerHTML">
       </tr>
       {{ range .Holdings}}
       {{ template "parts/portfolio/symbol-holding" .}}

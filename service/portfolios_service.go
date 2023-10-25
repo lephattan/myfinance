@@ -26,6 +26,7 @@ type PortfolioService interface {
 	HoldingValue(ctx context.Context, portfolio_id uint64, dest interface{}) error
 	HoldingCost(ctx context.Context, portfolio_id uint64, dest interface{}) error
 	Count(ctx context.Context, opt database.ListOptions) (count uint64, err error)
+	HoldingSummarry(ctx context.Context, portfolio_id uint64) (*model.HoldingSummarry, error)
 }
 
 func NewPortfolioService(db database.DB) PortfolioService {
@@ -250,4 +251,21 @@ func (s *portfolio) Count(ctx context.Context, opt database.ListOptions) (count 
 	}
 	err = rows.Scan(&count)
 	return
+}
+
+func (p *portfolio) HoldingSummarry(ctx context.Context, portfolio_id uint64) (*model.HoldingSummarry, error) {
+	var holding_cost int64
+	if err := p.HoldingCost(ctx, portfolio_id, &holding_cost); err != nil {
+		return nil, err
+	}
+
+	var holding_value int64
+	if err := p.HoldingValue(ctx, portfolio_id, &holding_value); err != nil {
+		return nil, err
+	}
+	return &model.HoldingSummarry{
+		TotalCost:  holding_cost,
+		TotalValue: holding_value,
+	}, nil
+
 }

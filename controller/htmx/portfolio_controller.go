@@ -3,6 +3,7 @@ package htmx
 import (
 	"database/sql"
 	"errors"
+	"fmt"
 	"log"
 	"myfinance/database"
 	"myfinance/middleware"
@@ -23,8 +24,7 @@ func RegisterPortfolioComponentController(router fiber.Router) {
 	router.Get("/edit-form/:id", HandlePortfolioEditForm)
 	router.Get("/holding/:id", HandlePortfolioHolding).Name(names.PPortfolioHoldingList)
 	router.Get("/holding/:portfolio_id/:symbol", HandlePortfolioSymbolHolding).Name(names.PPortfolioSymbolHolding)
-	router.Get("/holding-value/:portfolio_id", HandlePortfolioHoldingValue)
-	router.Get("/holding-cost/:portfolio_id", HandlePortfolioHoldingCost)
+	router.Get("/holding-summarry/:id/:elem", HandlePortfolioSummarry)
 }
 
 func HandlePortfolioList(c *fiber.Ctx) error {
@@ -167,34 +167,40 @@ func HandlePortfolioSymbolHolding(c *fiber.Ctx) (err error) {
 	return c.Render("parts/portfolio/symbol-holding", &holding)
 }
 
-func HandlePortfolioHoldingValue(c *fiber.Ctx) (err error) {
-	id, err := c.ParamsInt("portfolio_id")
+// Handle GET /hoding/:id/summarry/:elem
+func HandlePortfolioSummarry(c *fiber.Ctx) error {
+	id, err := c.ParamsInt("id")
 	if err != nil {
-		log.Printf("Error reading portfolio_id")
 		return err
+	}
+
+	summarry_elems := map[string]func(data *fiber.Map) error{
+		"row": func(data *fiber.Map) error {
+			return c.Render("parts/portfolio/summary-row", data)
+		},
+	}
+
+	elem := c.Params("elem", "")
+	var render_func func(data *fiber.Map) error
+	if f, ok := summarry_elems[elem]; ok {
+		render_func = f
+	} else {
+		return fmt.Errorf("invalid portfolio summarry element: %s", elem)
 	}
 
 	svc, ok := c.Locals("Service").(service.PortfolioService)
 	if !ok {
 		return errors.New("Invalid PortfolioService")
 	}
-	var holding_total int64
-	svc.HoldingValue(c.Context(), uint64(id), &holding_total)
-	return c.Render("parts/portfolio/holding-value", holding_total)
-}
 
-func HandlePortfolioHoldingCost(c *fiber.Ctx) error {
-	id, err := c.ParamsInt("portfolio_id")
+	holding_summary, err := svc.HoldingSummarry(c.Context(), uint64(id))
 	if err != nil {
-		log.Printf("Error reading portfolio_id")
 		return err
 	}
 
-	svc, ok := c.Locals("Service").(service.PortfolioService)
-	if !ok {
-		return errors.New("Invalid PortfolioService")
+	data := fiber.Map{
+		"HoldingSummarry": holding_summary,
+		"PortfolioID":     id,
 	}
-	var holding_cost int64
-	svc.HoldingCost(c.Context(), uint64(id), &holding_cost)
-	return c.Render("parts/portfolio/holding-cost", holding_cost)
+	return render_func(&data)
 }
