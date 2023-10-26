@@ -104,7 +104,7 @@ type HoldingSymbol struct {
 
 // Return slice of ticker symbols that portfolio_id is holding
 func (s *portfolio) HoldingSymbols(ctx context.Context, id uint64) (holding_symbols []*HoldingSymbol, err error) {
-	q := fmt.Sprintf("Select Distinct ticker_symbol from %s Where portfolio_id = ?", TransactionTablename)
+	q := fmt.Sprintf("Select Distinct ticker_symbol from %s Where portfolio_id = ?", model.TransactionsTablename)
 	rows, err := s.db.Select(ctx, q, id)
 	if err != nil {
 		return

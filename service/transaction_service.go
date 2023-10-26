@@ -28,8 +28,6 @@ type transaction struct {
 	rec database.Record
 }
 
-const TransactionTablename = "transactions"
-
 func (s *transaction) List(ctx context.Context, opt database.ListOptions, dest interface{}) error {
 	opt.SetTableName(model.TransactionsTable())
 	q, args := opt.BuildQuery()
