@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql/driver"
+	"encoding/json"
 	"reflect"
 	"strconv"
 
@@ -13,6 +14,14 @@ import (
 type Nullable[T any] struct {
 	Actual T
 	Valid  bool
+}
+
+// json Marshaler interface impl
+func (n *Nullable[T]) MarshalJSON() ([]byte, error) {
+	if n.Valid != true {
+		return json.Marshal(nil)
+	}
+	return json.Marshal(n.Actual)
 }
 
 func convertAssign[T any](out *T, in any) error {
