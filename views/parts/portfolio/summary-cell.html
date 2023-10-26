@@ -1,0 +1,19 @@
+{{- with .HoldingSummarry }}
+{{- $cv_class := ""}}
+{{- if gt .GainLoss 0}}
+{{- $cv_class = "text-green-5"}}
+{{- else }}
+{{- $cv_class = "text-red"}}
+{{- end }}
+<div class="holding-summarry__cell">
+  {{ if ne .GainLoss 0 -}}
+  <p class="holding-value">
+    <span class="{{$cv_class}} text-sm">{{- if gt .GainLoss 0}}+{{end}}{{ format "%.2f" .GainLossPercent }}%</span>
+    {{ format "%v" .TotalValue}}
+  </p>
+  <p class="{{$cv_class}} m-0">{{format "%v" .GainLoss}}</p>
+  {{- else }}
+  <p class="holding-value">{{ format "%v" .TotalValue}}</p>
+  {{- end }}
+</div>
+{{ end -}}

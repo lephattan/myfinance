@@ -1,22 +1,30 @@
-<div class="portfolio-list" id="portfolio-list" hx-trigger="new-portfolio from:body" hx-swap="outerHTML"
+<div class="portfolio-list my-4 " id="portfolio-list" hx-trigger="new-portfolio from:body" hx-swap="outerHTML"
   hx-get="htmx/components/portfolio/list{{ if .QueryString }}?{{.QueryString}}{{ end }}" hx-select="#portfolio-list">
   {{ if .Portfolios }}
-  <table>
-    <tr>
-      <th>ID</th>
-      <th>Name</th>
-      <th>Description</th>
-    </tr>
-    {{range .Portfolios }}
-    <tr>
-      <td>{{ .ID }}</td>
-      <td>
-        <a href="/portfolio/{{ .ID }}">{{ .Name}}</a>
-      </td>
-      <td>{{ .Description }}</td>
-    </tr>
-    {{ end }}
-  </table>
+  <div class="table m-auto" hx-select="unset" hx-swap="unset">
+    <div class="table-header-group">
+      <div class="table-row">
+        <div class="table-cell">ID</div>
+        <div class="table-cell">Name</div>
+        <div class="table-cell">Description</div>
+        <div class="table-cell">Summarry</div>
+      </div>
+    </div>
+    <div class="table-row-group">
+      {{range .Portfolios }}
+      <div class="table-row">
+        <div class="table-cell">{{ .ID }}</div>
+        <div class="table-cell">
+          <a href="/portfolio/{{ .ID }}">{{ .Name}}</a>
+        </div>
+        <div class="table-cell">{{ .Description }}</div>
+        <div class="table-cell text-right" hx-get="/htmx/components/portfolio/holding-summarry/{{.ID}}/cell"
+          hx-trigger="load">
+        </div>
+      </div>
+      {{ end }}
+    </div>
+  </div>
   {{ else }}
   <p>No portfolio found!</p>
   {{ end }}

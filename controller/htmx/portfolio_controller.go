@@ -178,6 +178,9 @@ func HandlePortfolioSummarry(c *fiber.Ctx) error {
 		"row": func(data *fiber.Map) error {
 			return c.Render("parts/portfolio/summary-row", data)
 		},
+		"cell": func(data *fiber.Map) error {
+			return c.Render("parts/portfolio/summary-cell", data)
+		},
 	}
 
 	elem := c.Params("elem", "")
@@ -195,7 +198,7 @@ func HandlePortfolioSummarry(c *fiber.Ctx) error {
 
 	holding_summary, err := svc.HoldingSummarry(c.Context(), uint64(id))
 	if err != nil {
-		return err
+		log.Println(fmt.Errorf("Error calculating portfolio summarry: %s", err.Error()))
 	}
 
 	data := fiber.Map{
