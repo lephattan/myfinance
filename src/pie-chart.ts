@@ -2,6 +2,9 @@ import { LitElement, TemplateResult, html, css } from "lit";
 import { customElement, property, state } from "lit/decorators.js";
 import Chart, { ChartConfiguration } from "chart.js/auto";
 
+// TODO: optimize chartjs import to reduce bundle size
+// TODO: optimize properties and methods like "bar-line-chart"
+
 @customElement("pie-chart")
 export default class PieChart extends LitElement {
   static override styles = css`

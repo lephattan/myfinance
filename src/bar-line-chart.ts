@@ -3,6 +3,8 @@ import { customElement, property } from "lit/decorators.js";
 import Chart, { ChartConfiguration } from "chart.js/auto";
 import { responsiveChartStyles } from "./chart-styles";
 
+// TODO: optimize chartjs import to reduce bundle size
+
 @customElement("bar-line-chart")
 export default class BarLineChart extends LitElement {
   static override styles = responsiveChartStyles;
