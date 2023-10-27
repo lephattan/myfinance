@@ -51,4 +51,4 @@ function component(name) {
   };
 }
 
-export default [component("pie-chart")];
+export default [component("pie-chart"), component("bar-line-chart")];
