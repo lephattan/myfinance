@@ -1,6 +1,8 @@
 package model
 
 import (
+	"database/sql"
+	"fmt"
 	"myfinance/database"
 	"myfinance/helper"
 )
@@ -60,4 +62,35 @@ func (d *DayCashflow) Net() int64 {
 		outflow = 0
 	}
 	return inflow - outflow
+}
+
+type CashflowListingOptions struct {
+	PortfolioID database.Nullable[int64] `query:"portfolio_id"`
+}
+
+func (c *CashflowListingOptions) PrepareQuery() (query string, args []interface{}) {
+	where := ""
+	if c.PortfolioID.Valid {
+		where += " portfolio_id = :portfolio_id"
+		args = append(args, sql.Named("portfolio_id", c.PortfolioID.Actual))
+	}
+	if where != "" {
+		where = "WHERE " + where
+	}
+	query = fmt.Sprintf(`
+		SELECT t.date,
+			SUM(CASE 
+					When t.transaction_type = 'sell' THEN 
+							t.volume * t.price - commission
+					END) inflow,
+			SUM(CASE 
+					When t.transaction_type = 'buy' THEN 
+							t.volume * t.price + commission 
+					END) outflow
+			From 
+					%s as t
+			-- Where clause:
+			%s
+			Group By t.date;`, TransactionsTablename, where)
+	return
 }

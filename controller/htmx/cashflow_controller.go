@@ -11,14 +11,18 @@ import (
 func RegisterCashflowComponentController(router fiber.Router) {
 	router.Use(middleware.CashflowMiddleware)
 
-	router.Get("chart", HandleAllCashflow)
+	router.Get("chart", HandleCashflowChart)
 
 }
 
-func HandleAllCashflow(c *fiber.Ctx) error {
+func HandleCashflowChart(c *fiber.Ctx) error {
 	svc, _ := c.Locals("Service").(service.CashflowService)
+
+	var req model.CashflowListingOptions
+	c.QueryParser(&req)
+
 	var cashflow model.Cashflow
-	if err := svc.List(c.Context(), &cashflow.Days); err != nil {
+	if err := svc.List(c.Context(), req, &cashflow.Days); err != nil {
 		return err
 	}
 	data := fiber.Map{
