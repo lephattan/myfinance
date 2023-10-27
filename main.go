@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"fmt"
+	"html/template"
 	"log"
 
 	"myfinance/controller"
@@ -53,6 +54,8 @@ func main() {
 	controller.RegisterTransactionController(app.Group("/transaction"))
 	htmx.RegisterTransactionComponentController(app.Group("/htmx/components/transaction"))
 
+	htmx.RegisterCashflowComponentController(app.Group("/htmx/components/cashflow"))
+
 	log.Fatal(app.Listen("0.0.0.0:8080"))
 }
 
@@ -67,9 +70,9 @@ func MakeViews() *html.Engine {
 	engine.AddFunc("UnixTimeFmt", helper.UnixTimeFmt)
 	engine.AddFunc("format", message.NewPrinter(language.English).Sprintf)
 	engine.AddFuncMap(map[string]interface{}{
-		"json": func(in interface{}) (string, error) {
+		"json": func(in interface{}) (template.JS, error) {
 			out, err := json.Marshal(in)
-			return string(out), err
+			return template.JS(out), err
 		},
 		"devideint64": helper.Devide[int64],
 		"minus":       helper.Minus[int64],

@@ -1,0 +1,8 @@
+<div class="cashflow-chart h-full">
+  <script src="/assets/js/web-components/bar-line-chart.js" type="module"></script>
+  <div class="h-full">
+    <bar-line-chart chartDatasets__bars="{{json .Cashflow.Datasets}}" chartLabels="{{json .Cashflow.ChartLabels}}"
+      chartTitle="Cashflow" style="height: 100%; display: block;">
+    </bar-line-chart>
+  </div>
+</div>

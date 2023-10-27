@@ -3,5 +3,12 @@
   <p>Add New Transaction</p>
   {{template "parts/transaction/add-form"}}
 </div>
+<div>
+  <h3>Cashflow</h3>
+  <div hx-get="/htmx/components/cashflow/chart" hx-trigger="load"
+    class="resize-y overflow-auto p-2 m-2 border-solid rounded-lg border-1 border-gray-2"
+    style="height: 300px; background-image: linear-gradient(135deg, rgba(255, 255, 255, 0) 98%, var(--accent) 95%);">
+  </div>
+</div>
 <h3>Transactions</h3>
 <div id="transactions-list" hx-get="htmx/components/transaction/list" hx-trigger="load" hx-swap="outerHTML"></div>
