@@ -34,9 +34,10 @@ func HandleTransactionList(c *fiber.Ctx) error {
 		return err
 	}
 	count, count_err := svc.Count(c.Context(), opt)
-	log.Printf("Count: %d %s", count, count_err)
+	if count_err != nil {
+		log.Printf("error get transaction count: %s", count_err.Error())
+	}
 	pagination.Count = count
-	log.Printf("%+v", pagination)
 
 	data := fiber.Map{
 		"QueryString":  queryString,
