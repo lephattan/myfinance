@@ -1,42 +1,28 @@
-import { LitElement, TemplateResult, html, css } from "lit";
-import { customElement, property, state } from "lit/decorators.js";
-import Chart, { ChartConfiguration } from "chart.js/auto";
+import { LitElement, TemplateResult, html } from "lit";
+import { customElement, property } from "lit/decorators.js";
+import { ChartConfiguration } from "chart.js";
+import {
+  Chart,
+  DoughnutController,
+  ArcElement,
+  Tooltip,
+  Colors,
+  Legend,
+} from "chart.js";
+import { responsiveChartStyles } from "./chart-styles";
 
-// TODO: optimize chartjs import to reduce bundle size
-// TODO: optimize properties and methods like "bar-line-chart"
+Chart.register(DoughnutController, ArcElement, Tooltip, Colors, Legend);
 
 @customElement("pie-chart")
 export default class PieChart extends LitElement {
-  static override styles = css`
-    :host div[container] {
-      position: relative;
-      margin: auto;
-      /* height: 80vh; */
-      width: 100%;
-    }
-    ,
-    :host [canvas] {
-      margin: auto;
-    }
-  `;
-
-  @property()
-  holdings?: string;
-  @property()
-  chart_id?: string;
-  @property()
-  labelField?: string;
-  @property()
-  dataField?: string;
-  @property({ type: String })
-  chartTitle: string;
-
-  @state()
-  _chartData: object[] = [];
+  static override styles = responsiveChartStyles;
+  @property({ type: Array }) holdings = [];
+  @property({ type: String }) chartTitle = "";
+  @property({ type: String }) labelField = undefined;
+  @property({ type: String }) dataField = undefined;
 
   constructor() {
     super();
-    this.chartTitle = "";
   }
 
   readLabels(): string[] {
@@ -44,7 +30,7 @@ export default class PieChart extends LitElement {
       return [];
     }
     const label = this.labelField;
-    return this._chartData.map((datum: Record<string, any>): string => {
+    return this.holdings.map((datum: Record<string, any>): string => {
       if (datum[label] !== undefined) {
         return datum[label];
       }
@@ -58,7 +44,7 @@ export default class PieChart extends LitElement {
       return [];
     }
     const label = this.dataField;
-    return this._chartData.map((datum: Record<string, any>): number => {
+    return this.holdings.map((datum: Record<string, any>): number => {
       if (datum[label] !== undefined) {
         return datum[label];
       }
@@ -108,32 +94,14 @@ export default class PieChart extends LitElement {
         maintainAspectRatio: false,
       },
     } as ChartConfiguration;
-    const ctx = this.renderRoot.querySelector(`#${this.chart_id}`)!;
+    const ctx = this.renderRoot.querySelector(`#chart`)!;
     new Chart(ctx as HTMLCanvasElement, chartConfig);
   }
 
   override render(): void | TemplateResult {
-    function onEmpty() {
-      return html`<p>No holdings data!</p>`;
-    }
-
-    function onError(err: any) {
-      return html`<p>Error parsing holdings data: ${err}</p>`;
-    }
-
-    if (this.holdings === undefined) {
-      return onEmpty();
-    }
-
-    try {
-      const data = JSON.parse(this.holdings) as object[];
-      this._chartData = data;
-      return html`<div container>
-        <canvas id="${this.chart_id}" canvas></canvas>
-      </div> `;
-    } catch (err) {
-      return onError(err);
-    }
+    return html`<div container>
+      <canvas id="chart" canvas></canvas>
+    </div> `;
   }
 }
 

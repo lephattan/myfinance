@@ -67,9 +67,6 @@ export default class BarLineChart extends LitElement {
   }
 
   override render() {
-    console.debug("render called");
-    console.debug(this.chartDatasets__bars);
-    console.debug(this.chartLabels);
     return html`<div container>
       <canvas id="chart" canvas></canvas>
     </div> `;
