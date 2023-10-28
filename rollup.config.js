@@ -5,7 +5,6 @@
  */
 
 import summary from "rollup-plugin-summary";
-import { terser } from "rollup-plugin-terser";
 import resolve from "@rollup/plugin-node-resolve";
 import replace from "@rollup/plugin-replace";
 import { nodeResolve } from "@rollup/plugin-node-resolve";
@@ -22,20 +21,6 @@ const options = {
       exportConditions: ["development"],
     }),
     resolve(),
-    /**
-     * This minification setup serves the static site generation.
-     * For bundling and minification, check the README.md file.
-     */
-    terser({
-      ecma: 2021,
-      module: true,
-      warnings: true,
-      mangle: {
-        properties: {
-          regex: /^__/,
-        },
-      },
-    }),
     summary(),
   ],
 };
