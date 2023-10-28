@@ -1,9 +1,28 @@
 import { LitElement, html } from "lit";
 import { customElement, property } from "lit/decorators.js";
-import Chart, { ChartConfiguration } from "chart.js/auto";
+import { ChartConfiguration } from "chart.js/auto";
+
+import {
+  Chart,
+  BarController,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Colors,
+  Legend,
+} from "chart.js";
 import { responsiveChartStyles } from "./chart-styles";
 
-// TODO: optimize chartjs import to reduce bundle size
+Chart.register(
+  BarController,
+  BarElement,
+  CategoryScale,
+  LinearScale,
+  Tooltip,
+  Colors,
+  Legend
+);
 
 @customElement("bar-line-chart")
 export default class BarLineChart extends LitElement {
