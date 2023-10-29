@@ -40,6 +40,16 @@ func (c *Cashflow) Datasets() (datasets *CashflowChartDatasets) {
 	return
 }
 
+func (c *Cashflow) NetDatasets() (datasets *CashflowChartDatasets) {
+	net := CashflowChartDataset{
+		Label: "net",
+	}
+	for _, v := range c.Days {
+		net.Data = append(net.Data, database.Nullable[int64]{Actual: v.Net(), Valid: true})
+	}
+	return &CashflowChartDatasets{&net}
+}
+
 type DayCashflow struct {
 	Date    int64                    `db:"date"`
 	Inflow  database.Nullable[int64] `db:"inflow"`
