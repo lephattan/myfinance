@@ -6,6 +6,9 @@ import {
   Chart,
   BarController,
   BarElement,
+  LineController,
+  LineElement,
+  PointElement,
   CategoryScale,
   LinearScale,
   Tooltip,
@@ -17,6 +20,9 @@ import { responsiveChartStyles } from "./chart-styles";
 Chart.register(
   BarController,
   BarElement,
+  LineController,
+  LineElement,
+  PointElement,
   CategoryScale,
   LinearScale,
   Tooltip,
@@ -28,15 +34,28 @@ Chart.register(
 export default class BarLineChart extends LitElement {
   static override styles = responsiveChartStyles;
   @property({ type: Array }) chartDatasets__bars = [];
+  @property({ type: Array }) chartDatasets__lines = [];
   @property({ type: Array }) chartLabels = [];
   @property({ type: String }) chartTitle = "";
+  @property({ type: String }) rightAxesTitle = "";
+  @property({ type: String }) leftAxesTitle = "";
+  @property({ type: String }) botAxesTitle = "";
 
   override firstUpdated() {
+    const datasets: object[] = [];
+    this.chartDatasets__bars.map((dataset: object) => {
+      datasets.push({ ...dataset, type: "bar", order: 2 });
+    });
+
+    this.chartDatasets__lines.map((dataset: object) => {
+      datasets.push({ ...dataset, type: "line", order: 1, yAxisID: "y2" });
+    });
+
     const chartConfig = {
       type: "bar",
       data: {
-        datasets: this.chartDatasets__bars,
         labels: this.chartLabels,
+        datasets: datasets,
       },
       options: {
         plugins: {
@@ -52,9 +71,24 @@ export default class BarLineChart extends LitElement {
         scales: {
           x: {
             stacked: true,
+            title: {
+              text: this.botAxesTitle,
+              display: this.botAxesTitle !== "",
+            },
           },
           y: {
             stacked: true,
+            title: {
+              text: this.leftAxesTitle,
+              display: this.leftAxesTitle !== "",
+            },
+          },
+          y2: {
+            position: "right",
+            title: {
+              text: this.rightAxesTitle,
+              display: true,
+            },
           },
         },
         responsive: true,
